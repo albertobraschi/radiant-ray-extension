@@ -1,6 +1,6 @@
 namespace :ray do
 
-  desc "Install extensions from github. NAME=extension_name is required. You can also specify HUB=github_user_name in order to install extensions outside the Radiant repository."
+  desc "Install extensions from github. `NAME=extension_name` is required; if you specify `FULLNAME` you must also specify `HUB=github_user_name`. You can also use `HUB=user` with the `NAME` option to install from outside the Radiant repository."
   task :install do
       if ENV['NAME'].nil?
         puts "You have to tell me which extension to install. Try something like: rake ray:install NAME=extension_name"
@@ -23,11 +23,18 @@ namespace :ray do
 
         case
         when ENV['HUB']
-          puts "user specific install"
-          system "git clone git://github.com/#{ENV['HUB']}/radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
-          system "rake radiant:extensions:#{vendor_name}:migrate"
-          system "rake radiant:extensions:#{vendor_name}:update"
-          puts "The #{ENV['NAME']} extension has been installed. Use the :disable command to disable it later."
+          if ENV['FULLNAME'].nil?
+            puts "user specific install"
+            system "git clone git://github.com/#{ENV['HUB']}/radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
+            system "rake radiant:extensions:#{vendor_name}:migrate"
+            system "rake radiant:extensions:#{vendor_name}:update"
+          else
+            puts "full custom"
+            system "git clone git://github.com/#{ENV['HUB']}/#{ENV['FULLNAME']}.git vendor/extensions/#{vendor_name}"
+            system "rake radiant:extensions:#{vendor_name}:migrate"
+            system "rake radiant:extensions:#{vendor_name}:update"
+          end
+          puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
           if ENV['RESTART'].nil?
             puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
           else
@@ -48,7 +55,7 @@ namespace :ray do
           system "git clone #{radiant_git}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
           system "rake radiant:extensions:#{vendor_name}:migrate"
           system "rake radiant:extensions:#{vendor_name}:update"
-          puts "The #{ENV['NAME']} extension has been installed. Use the :disable command to disable it later."
+          puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
           if ENV['RESTART'].nil?
             puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
           else
@@ -97,6 +104,12 @@ namespace :ray do
       puts "The #{ENV['NAME']} extension has been disabled. Use the :enable command to re-enable it later."
       puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
     end
+  end
+
+  namespace :deploy do
+
+    
+
   end
 
 end
