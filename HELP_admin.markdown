@@ -18,10 +18,10 @@ Tasks you can use today
 	rake ray:extension:install name=multi_site
 	
 	# from some other user's repository
-	rake ray:extension:install name=markdown HUB=johnmuhl
+	rake ray:extension:install name=markdown hub=johnmuhl
 	
 	# from some completely arbritrary github repository
-	rake ray:extension:install name=sweet-sauce HUB=bob fullname=sweet-sauce-for-radiant
+	rake ray:extension:install name=sweet-sauce hub=bob fullname=sweet-sauce-for-radiant
 	
 	# restart your Mongrel cluster or Passenger processes after install an extension (or enabling/disabling)
 	rake ray:extension:install name=mailer restart=mongrel_cluster
@@ -32,6 +32,6 @@ Tasks you can use today
 	# enable a disabled extension
 	rake ray:extension:enable name=multi_site
 
-**Ray** doesn't particularly care if you use `name=multi_site` or `name=multi-site`. The `HUB=github_user_name ` needs to be the exact user name.
+**Ray** doesn't particularly care if you use `name=multi_site` or `name=multi-site`. The `hub=github_user_name ` needs to be the exact user name.
 
 The `extension:disable` command just moves extensions to `vendor/extensions_disabled` until there is a real way to disable extensions.
