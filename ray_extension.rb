@@ -3,7 +3,7 @@
 
 class RayExtension < Radiant::Extension
   version "1.0"
-  description "A comfy sofa."
+  description "Sunshine"
   url "http://johnmuhl.com/workbook/ray"
   
   # define_routes do |map|

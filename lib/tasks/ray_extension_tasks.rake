@@ -17,6 +17,32 @@ namespace :ray do
     end
   end
 
+  def install_extension
+    name = ENV['NAME']
+    github_name = name.gsub(/\_/, "-")
+    vendor_name = name.gsub(/\-/, "_")
+    radiant_git = "git://github.com/radiant/"
+    if ENV['HUB'].nil?
+      ext_repo = radiant_git
+    else
+      ext_repo = "git://github.com/#{ENV['HUB']}/"
+    end
+    system "git clone #{ext_repo}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
+    system "rake radiant:extensions:#{vendor_name}:migrate"
+    system "rake radiant:extensions:#{vendor_name}:update"
+    puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
+  end
+
+  def install_custom_extension
+    name = ENV['NAME']
+    vendor_name = name.gsub(/\-/, "_")
+    ext_repo = "git://github.com/#{ENV['HUB']}/"
+    system "git clone #{ext_repo}/#{ENV['FULLNAME']}.git vendor/extensions/#{vendor_name}"
+    system "rake radiant:extensions:#{vendor_name}:migrate"
+    system "rake radiant:extensions:#{vendor_name}:update"
+    puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
+  end
+
   desc "Install extensions from github. `NAME=extension_name` is required; if you specify `FULLNAME` you must also specify `HUB=github_user_name`. You can also use `HUB=user` with the `NAME` option to install from outside the Radiant repository."
   task :install do
       if ENV['NAME'].nil?
@@ -30,12 +56,6 @@ namespace :ray do
           $stderr.puts "ERROR: Must have git available in the PATH to install extensions from github.\nSome common commands for instaling git are:\n`aptitude install git-core`\n`port install git-core`\n`emerge git`\nRedHat users should use the RPMs available here: http://kernel.org/pub/software/scm/git/RPMS/"
           exit 1
         end
-
-        name = ENV['NAME']
-        github_name = name.gsub(/\_/, "-")
-        vendor_name = name.gsub(/\-/, "_")
-        radiant_git = "git://github.com/radiant/"
-
         mkdir_p "vendor/extensions"
 
         case
@@ -43,33 +63,20 @@ namespace :ray do
           if ENV['HUB'].nil?
             puts "You have to tell me which github user to get the extension from. Try something like: rake ray:install FULLNAME=sweet-sauce-for-radiant HUB=bob NAME=sweet-sauce"
           else
-            puts "full custom install"
-            system "git clone git://github.com/#{ENV['HUB']}/#{ENV['FULLNAME']}.git vendor/extensions/#{vendor_name}"
-            system "rake radiant:extensions:#{vendor_name}:migrate"
-            system "rake radiant:extensions:#{vendor_name}:update"
+            install_custom_extension
+            restart_server
           end
 
         when ENV['HUB']
           if ENV['FULLNAME'].nil?
-            puts "user specific install"
-            system "git clone git://github.com/#{ENV['HUB']}/radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
-            system "rake radiant:extensions:#{vendor_name}:migrate"
-            system "rake radiant:extensions:#{vendor_name}:update"
+            install_extension
           else
-            puts "full custom"
-            system "git clone git://github.com/#{ENV['HUB']}/#{ENV['FULLNAME']}.git vendor/extensions/#{vendor_name}"
-            system "rake radiant:extensions:#{vendor_name}:migrate"
-            system "rake radiant:extensions:#{vendor_name}:update"
+            install_custom_extension
           end
-          puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
           restart_server
 
         else
-          puts "normal install"
-          system "git clone #{radiant_git}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
-          system "rake radiant:extensions:#{vendor_name}:migrate"
-          system "rake radiant:extensions:#{vendor_name}:update"
-          puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
+          install_extension
           restart_server
         end
 
