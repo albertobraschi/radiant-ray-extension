@@ -22,6 +22,16 @@ namespace :ray do
         mkdir_p "vendor/extensions"
 
         case
+        when ENV['FULLNAME']
+          if ENV['HUB'].nil?
+            puts "You have to tell me which github user to get the extension from. Try something like: rake ray:install FULLNAME=sweet-sauce-for-radiant HUB=bob NAME=sweet-sauce"
+          else
+            puts "full custom install"
+            system "git clone git://github.com/#{ENV['HUB']}/#{ENV['FULLNAME']}.git vendor/extensions/#{vendor_name}"
+            system "rake radiant:extensions:#{vendor_name}:migrate"
+            system "rake radiant:extensions:#{vendor_name}:update"
+          end
+
         when ENV['HUB']
           if ENV['FULLNAME'].nil?
             puts "user specific install"
