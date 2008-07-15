@@ -1,5 +1,22 @@
 namespace :ray do
 
+  def restart_server
+    if ENV['RESTART'].nil?
+      puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
+    else
+      server = ENV['RESTART']
+      if server == "mongrel_cluster"
+        system "mongrel_rails cluster::restart"
+        puts "Your mongrel_cluster has been restarted."
+      elsif server == "passenger"
+        system "touch tmp/restart.txt"
+        puts "Your passengers have been restarted."
+      else
+        puts "I don't know how to restart #{ENV['RESTART']}. You'll need to restart your server manually."
+      end
+    end
+  end
+
   desc "Install extensions from github. `NAME=extension_name` is required; if you specify `FULLNAME` you must also specify `HUB=github_user_name`. You can also use `HUB=user` with the `NAME` option to install from outside the Radiant repository."
   task :install do
       if ENV['NAME'].nil?
@@ -10,7 +27,7 @@ namespace :ray do
         `git --version` rescue nil
         unless !$?.nil? && $?.success?
           # TODO Make sure these are actual commands
-          $stderr.puts "ERROR: Must have git available in the PATH to install extensions from github.\nSome common commands for instaling git are:\n`aptitude install git-core`\n`port install git-core`\n`yum install git-core`\n`emerge git-core`"
+          $stderr.puts "ERROR: Must have git available in the PATH to install extensions from github.\nSome common commands for instaling git are:\n`aptitude install git-core`\n`port install git-core`\n`emerge git`\nRedHat users should use the RPMs available here: http://kernel.org/pub/software/scm/git/RPMS/"
           exit 1
         end
 
@@ -45,20 +62,7 @@ namespace :ray do
             system "rake radiant:extensions:#{vendor_name}:update"
           end
           puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
-          if ENV['RESTART'].nil?
-            puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
-          else
-            server = ENV['RESTART']
-            if server == "mongrel_cluster"
-              system "mongrel_rails cluster::restart"
-              puts "Your mongrel_cluster has been restarted."
-            elsif server == "passenger"
-              system "touch tmp/restart.txt"
-              puts "Your passengers have been restarted."
-            else
-              puts "I don't know how to restart #{ENV['RESTART']}. You'll need to restart your server manually."
-            end
-          end
+          restart_server
 
         else
           puts "normal install"
@@ -66,21 +70,7 @@ namespace :ray do
           system "rake radiant:extensions:#{vendor_name}:migrate"
           system "rake radiant:extensions:#{vendor_name}:update"
           puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
-          if ENV['RESTART'].nil?
-            puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
-          else
-            server = ENV['RESTART']
-            if server == "mongrel_cluster"
-              system "mongrel_rails cluster::restart"
-              puts "Your mongrel_cluster has been restarted."
-            elsif server == "passenger"
-              system "touch tmp/restart.txt"
-              puts "Your passengers have been restarted."
-            else
-              puts "I don't know how to restart #{ENV['RESTART']}. You'll need to restart your server manually."
-            end
-          end
-
+          restart_server
         end
 
       end
@@ -97,7 +87,7 @@ namespace :ray do
       mkdir_p "vendor/extensions"
       system "mv vendor/extensions_disabled/#{vendor_name} vendor/extensions/#{vendor_name}"
       puts "The #{ENV['NAME']} extension has been enabled. Use the :disable command to re-enable it later."
-      puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
+      restart_server
     end
   end
 
@@ -112,7 +102,7 @@ namespace :ray do
       mkdir_p "vendor/extensions_disabled"
       system "mv vendor/extensions/#{vendor_name} vendor/extensions_disabled/#{vendor_name}"
       puts "The #{ENV['NAME']} extension has been disabled. Use the :enable command to re-enable it later."
-      puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
+      restart_server
     end
   end
 
