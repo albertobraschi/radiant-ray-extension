@@ -16,6 +16,12 @@ Tasks you can use today
 	# from some other user's repository
 	rake ray:install NAME=markdown HUB=johnmuhl
 	
+	# from some completely arbritrary github repository
+	rake ray:install NAME=sweet-sauce HUB=bob FULLNAME=sweet-sauce-for-radiant
+	
+	# restart your Mongrel cluster or Passenger processes after install an extension (or enabling/disabling)
+	rake ray:install NAME=mailer RESTART=mongrel_cluster
+	
 	# disable an installed extension
 	rake ray:disable NAME=multi-site
 	
