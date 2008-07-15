@@ -49,7 +49,20 @@ namespace :ray do
           system "rake radiant:extensions:#{vendor_name}:migrate"
           system "rake radiant:extensions:#{vendor_name}:update"
           puts "The #{ENV['NAME']} extension has been installed. Use the :disable command to disable it later."
-          puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
+          if ENV['RESTART'].nil?
+            puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
+          else
+            server = ENV['RESTART']
+            if server == "mongrel_cluster"
+              system "mongrel_rails cluster::restart"
+              puts "Your mongrel_cluster has been restarted."
+            elsif server == "passenger"
+              system "touch tmp/restart.txt"
+              puts "Your passengers have been restarted."
+            else
+              puts "I don't know how to restart #{ENV['RESTART']}. You'll need to restart your server manually."
+            end
+          end
 
         end
 
