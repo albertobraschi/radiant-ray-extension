@@ -222,13 +222,35 @@ namespace :ray do
     end
 
     task :markdown do
+      setup_file = File.new("config/ray.setup", "r")
+      ray_setup = setup_file.gets
+      setup_file.close
+      mkdir_p "vendor/extensions"
       system "sudo gem install rdiscount"
-      system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+      if ray_setup == "git\n"
+        system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+      else
+        mkdir_p "vendor/extensions_tmp"
+        system "cd vendor/extensions_tmp; wget http://github.com/johnmuhl/radiant-markdown-extension/tarball/master; tar xzvf *markdown*.tar.gz; rm *.tar.gz"
+        system "mv vendor/extensions_tmp/* vendor/extensions/markdown_filter"
+        rm_rf "vendor/extensions_tmp"
+      end
       restart_server
     end
 
     task :help do
-      system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+      setup_file = File.new("config/ray.setup", "r")
+      ray_setup = setup_file.gets
+      setup_file.close
+      mkdir_p "vendor/extensions"
+      if ray_setup == "git\n"
+        system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+      else
+        mkdir_p "vendor/extensions_tmp"
+        system "cd vendor/extensions_tmp; wget http://github.com/saturnflyer/radiant-help-extension/tarball/master; tar xzvf *help*.tar.gz; rm *.tar.gz"
+        system "mv vendor/extensions_tmp/* vendor/extensions/help"
+        rm_rf "vendor/extensions_tmp"
+      end
       restart_server
     end
 
