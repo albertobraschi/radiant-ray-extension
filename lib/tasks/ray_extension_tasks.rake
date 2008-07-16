@@ -5,8 +5,10 @@ namespace :ray do
     system "git --version" rescue nil
     unless !$?.nil? && $?.success?
       puts "You don't have the `git` utilities installed and/or available in your path."
-      puts "If you install `git` later simply run `rake ray:setup:install` again."
+      puts "I created a `config/ray.setup` file and set your preferred download method."
       puts "For now I'll be using the slower, less efficient HTTP fetch method."
+      puts "---"
+      puts "If you install `git` later simply run `rake ray:setup:install`"
       ray_setup = File.open("config/ray.setup", "w")
       ray_setup.puts "http"
     else
@@ -14,9 +16,9 @@ namespace :ray do
       system "touch config/ray.setup"
       ray_setup = File.open("config/ray.setup", "w")
       ray_setup.puts "git"
+      puts "I created a `config/ray.setup` file and set your preferred download method to `git`"
     end
-    puts "I created a `config/ray.setup` file and set your preferred download method."
-    puts "If you want to update it you can just run `rake ray:setup:install` again."
+    ray_setup.close
   end
 
   def restart_server
@@ -78,18 +80,19 @@ namespace :ray do
 
     desc "Install extensions from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
     task :install do
-      setup_file = File.new("config/ray.setup", "r") rescue nil
-      if setup_file == nil
+      setup_check = File.new("config/ray.setup", "r") rescue nil
+      if setup_check == nil
         setup_install
       end
-
+      
       if ENV['name'].nil?
         puts "You have to tell me which extension to install. Try something like: rake ray:extension:install name=extension_name"
       else
-        mkdir_p "vendor/extensions"
+        setup_file = File.new("config/ray.setup", "r")
         ray_setup = setup_file.gets
         setup_file.close
-        if ray_setup = "git"
+        mkdir_p "vendor/extensions"
+        if ray_setup == "git\n"
           case
           when ENV['fullname']
             if ENV['hub'].nil?
@@ -98,7 +101,7 @@ namespace :ray do
               install_custom_extension
               restart_server
             end
-      
+          
           when ENV['hub']
             if ENV['fullname'].nil?
               install_extension
@@ -106,14 +109,19 @@ namespace :ray do
               install_custom_extension
             end
             restart_server
-      
+          
           else
             install_extension
             restart_server
           end
+        elsif ray_setup == "http\n"
+          puts "HTTP fetch not yet implemented."
+          puts "Failed to install extension."
         else
-          puts "sad ol'http"
+          puts "Your Ray setup file is not providing any helpful information."
+          puts "Please run `rake ray:setup:install`"
         end
+        
       end
 
     end
@@ -132,7 +140,7 @@ namespace :ray do
         restart_server
       end
     end
-    
+
     desc "disable extensions"
     task :disable do
       if ENV['name'].nil?
@@ -147,7 +155,7 @@ namespace :ray do
         restart_server
       end
     end
-    
+
     task :page_attachments do
       if ENV['lib'].nil?
         puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments lib=mini_magick"
@@ -168,18 +176,18 @@ namespace :ray do
       system "rake radiant:extensions:page_attachments:update"
       restart_server
     end
-    
+
     task :markdown do
       system "sudo gem install rdiscount"
       system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
       restart_server
     end
-    
+
     task :help do
       system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
       restart_server
     end
-  
+
   end
-  
+
 end
