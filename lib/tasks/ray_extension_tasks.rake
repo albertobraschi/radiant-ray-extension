@@ -79,7 +79,7 @@ namespace :ray do
     desc "Install extensions from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
     task :install do
       setup_file = File.new("config/ray.setup", "r") rescue nil
-      
+
       unless !$?.nil? && $?.success?
         setup_install
       end
@@ -180,7 +180,7 @@ namespace :ray do
       system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
       restart_server
     end
-
+  
   end
-
+  
 end
