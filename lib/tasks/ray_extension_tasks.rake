@@ -118,7 +118,69 @@ namespace :ray do
       end
 
     end
+
+    desc "enable extensions"
+    task :enable do
+      if ENV['name'].nil?
+        puts "You have to tell me which extension to enable. Try something like: rake ray:extension:enable name=extension_name"
     
+      else
+        name = ENV['name']
+        vendor_name = name.gsub(/\-/, "_")
+        mkdir_p "vendor/extensions"
+        system "mv vendor/extensions_disabled/#{vendor_name} vendor/extensions/#{vendor_name}"
+        puts "The #{ENV['name']} extension has been enabled. Use the :disable command to re-enable it later."
+        restart_server
+      end
+    end
+    
+    desc "disable extensions"
+    task :disable do
+      if ENV['name'].nil?
+        puts "You have to tell me which extension to disable. Try something like: rake ray:extension:disable name=extension_name"
+    
+      else
+        name = ENV['name']
+        vendor_name = name.gsub(/\-/, "_")
+        mkdir_p "vendor/extensions_disabled"
+        system "mv vendor/extensions/#{vendor_name} vendor/extensions_disabled/#{vendor_name}"
+        puts "The #{ENV['name']} extension has been disabled. Use the :enable command to re-enable it later."
+        restart_server
+      end
+    end
+    
+    task :page_attachments do
+      if ENV['lib'].nil?
+        puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments lib=mini_magick"
+      else
+        image_lib = ENV['lib']
+        if image_lib == "mini_magick"
+          system "sudo gem install mini_magick"
+        elsif image_lib == "rmagick"
+          system "sudo gem install mini_magick"
+        else
+          puts "I only know how to install mini_magick and rmagick. You'll need to install #{ENV['lib']} manually."
+        end
+      end
+      mkdir_p "vendor/plugins"
+      system "git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
+      system "git clone git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+      system "rake radiant:extensions:page_attachments:migrate"
+      system "rake radiant:extensions:page_attachments:update"
+      restart_server
+    end
+    
+    task :markdown do
+      system "sudo gem install rdiscount"
+      system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+      restart_server
+    end
+    
+    task :help do
+      system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+      restart_server
+    end
+
   end
 
 end
