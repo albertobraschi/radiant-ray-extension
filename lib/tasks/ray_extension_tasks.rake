@@ -79,11 +79,10 @@ namespace :ray do
     desc "Install extensions from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
     task :install do
       setup_file = File.new("config/ray.setup", "r") rescue nil
-
-      unless !$?.nil? && $?.success?
+      if setup_file == nil
         setup_install
       end
-      
+
       if ENV['name'].nil?
         puts "You have to tell me which extension to install. Try something like: rake ray:extension:install name=extension_name"
       else
@@ -99,7 +98,7 @@ namespace :ray do
               install_custom_extension
               restart_server
             end
-
+      
           when ENV['hub']
             if ENV['fullname'].nil?
               install_extension
@@ -107,7 +106,7 @@ namespace :ray do
               install_custom_extension
             end
             restart_server
-
+      
           else
             install_extension
             restart_server
