@@ -60,6 +60,34 @@ namespace :ray do
     post_install_extension
   end
 
+  def install_extension_http
+    name = ENV['name']
+    github_name = name.gsub(/\_/, "-")
+    vendor_name = name.gsub(/\-/, "_")
+    radiant_git = "http://github.com/radiant/"
+    if ENV['hub'].nil?
+      ext_repo = radiant_git
+    else
+      ext_repo = "http://github.com/#{ENV['hub']}/"
+    end
+    mkdir_p "vendor/extensions_tmp"
+    system "cd vendor/extensions_tmp; wget #{ext_repo}radiant-#{github_name}-extension/tarball/master; tar xzvf *#{github_name}*.tar.gz; rm *.tar.gz"
+    system "mv vendor/extensions_tmp/* vendor/extensions/#{vendor_name}"
+    rm_rf "vendor/extensions_tmp"
+    post_install_extension
+  end
+  
+  def install_custom_extension_http
+    name = ENV['name']
+    vendor_name = name.gsub(/\-/, "_")
+    ext_repo = "http://github.com/#{ENV['hub']}/"
+    mkdir_p "vendor/extensions_tmp"
+    system "cd vendor/extensions_tmp; wget #{ext_repo}#{ENV['fullname']}/tarball/master; tar xzvf *#{ENV['fullname']}*.tar.gz; rm *.tar.gz"
+    system "mv vendor/extensions_tmp/* vendor/extensions/#{vendor_name}"
+    rm_rf "vendor/extensions_tmp"
+    post_install_extension
+  end
+
   def post_install_extension
     name = ENV['name']
     vendor_name = name.gsub(/\-/, "_")
@@ -115,11 +143,27 @@ namespace :ray do
             restart_server
           end
         elsif ray_setup == "http\n"
-          puts "HTTP fetch not yet implemented."
-          puts "Failed to install extension."
-        else
-          puts "Your Ray setup file is not providing any helpful information."
-          puts "Please run `rake ray:setup:install`"
+          case
+          when ENV['fullname']
+            if ENV['hub'].nil?
+              puts "You have to tell me which github user to get the extension from. Try something like: rake ray:extension:install fullname=sweet-sauce-for-radiant hub=bob name=sweet-sauce"
+            else
+              install_custom_extension_http
+              restart_server
+            end
+          
+          when ENV['hub']
+            if ENV['fullname'].nil?
+              install_extension_http
+            else
+              install_custom_extension_http
+            end
+            restart_server
+
+          else
+            install_extension_http
+            restart_server
+          end
         end
         
       end
