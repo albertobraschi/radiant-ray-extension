@@ -28,11 +28,11 @@ Ray isn't too uptight about how to refer to an extension, so you could also run
 
 ####Install a regularly named extension from any GitHub user
 
-The next simplest installation is of extensions from authors who have named their extensions like `radiant-extension-name-extension`. If you wanted to install the [Help extension][he] from *saturnflyer* you would run
+The next simplest installation is of extensions from authors who have named their extensions like `radiant-extension-name-extension`. If you wanted to install the [Tags extension][te] from *jomz* you would run
 
-	rake ray:extension:install name=help hub=saturnflyer
+	rake ray:extension:install name=tags hub=jomz
 
-[he]: http://github.com/saturnflyer/radiant-help-extension
+[te]: http://github.com/jomz/radiant-tags-extension
 
 ####Install any extension from any GitHub user
 
