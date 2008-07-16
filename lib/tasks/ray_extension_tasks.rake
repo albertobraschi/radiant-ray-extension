@@ -204,7 +204,6 @@ namespace :ray do
       if ENV['lib'].nil?
         puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments lib=mini_magick"
       else
-        image_lib = ENV['lib']
         if image_lib == "mini_magick"
           system "sudo gem install mini_magick"
         elsif image_lib == "rmagick"
@@ -213,9 +212,23 @@ namespace :ray do
           puts "I only know how to install mini_magick and rmagick. You'll need to install #{ENV['lib']} manually."
         end
       end
+      setup_file = File.new("config/ray.setup", "r")
+      ray_setup = setup_file.gets
+      setup_file.close
       mkdir_p "vendor/plugins"
-      system "git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
-      system "git clone git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+      mkdir_p "vendor/extensions"
+      image_lib = ENV['lib']
+      if ray_setup == "git\n"
+        system "git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
+        system "git clone git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+      else
+        mkdir_p "vendor/extensions_tmp"
+        system "cd vendor/extensions_tmp; wget http://github.com/technoweenie/attachment_fu/tarball/master; tar xzvf *attachment_fu*.tar.gz; rm *.tar.gz"
+        system "mv vendor/extensions_tmp/* vendor/plugins/attachment_fu"
+        system "cd vendor/extensions_tmp; wget http://github.com/radiant/radiant-page-attachments-extension/tarball/master; tar xzvf *page-attachments*.tar.gz; rm *.tar.gz"
+        system "mv vendor/extensions_tmp/* vendor/extensions/page_attachments"
+        rm_rf "vendor/extensions_tmp"
+      end
       system "rake radiant:extensions:page_attachments:migrate"
       system "rake radiant:extensions:page_attachments:update"
       restart_server
