@@ -46,9 +46,11 @@ You still need to supply the `name` variable so Ray can install the extension in
 
 ####Special extensions
 
+Some extensions are downright special and deserve special attention.
+
 #####Page Attachments
 
-Some extensions are downright special and deserve special attention. So far Ray only gives this special attention to the [Page Attachments extension][pa]. If you want to install Page Attachments then you would run
+If you want to install [Page Attachments][pa] then you would run
 
 	rake ray:extension:page_attachments
 
@@ -67,6 +69,24 @@ To install Page Attachments with `rmagick` run
 	rake ray:extension:page_attachments lib=rmagick
 
 [pa]: http://github.com/radiant/radiant-page-attachments-extension
+
+#####Markdown Filter (RDiscount version)
+
+To install the RDiscount version of the Markdown filter run
+
+	rake ray:extension:markdown
+
+This will install the RDiscount gem, then the new Markdown filter. If you have trouble getting the new Markdown filter to load in Radiant < 0.6.8 (you should see "(RDiscount)" in the extension description) check [the installation section on this page][tp]
+
+[tp]: http://github.com/johnmuhl/radiant-markdown-extension/tree/master
+
+#####Help Extension
+
+Every single extension should come with documentation ready to be absorbed by the [Help extension][hp]; Ray does. To install the Help extension simply run
+
+	rake ray:extension:help
+
+[hp]: http://github.com/saturnflyer/radiant-help-extension/tree/master
 
 Disabling extensions
 ---

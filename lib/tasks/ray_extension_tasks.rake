@@ -133,13 +133,25 @@ namespace :ray do
           puts "I only know how to install mini_magick and rmagick. You'll need to install #{ENV['lib']} manually."
         end
       end
-      
-      
       mkdir_p "vendor/plugins"
       system "git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
       system "git clone git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
       system "rake radiant:extensions:page_attachments:migrate"
       system "rake radiant:extensions:page_attachments:update"
+      restart_server
+    end
+
+    task :markdown do
+      system "sudo gem install rdiscount"
+      system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+      restart_server
+    end
+
+    task :help do
+      system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+      system "rake radiant:extensions:help:migrate"
+      system "rake radiant:extensions:help:update"
+      restart_server
     end
 
   end
