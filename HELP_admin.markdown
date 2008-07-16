@@ -6,7 +6,7 @@ Ray is not so much an "extension" to Radiant as it is a collection of `rake` tas
 Installing extensions
 ---
 
-Under the hood Ray uses `git` to install download extensions from GitHub. This means you'll need `git` installed and in your `PATH`.
+Under the hood Ray uses `git` or `wget` to install extensions from GitHub. This means you'll need either `git` or `wget` installed and in your `PATH`.
 
 ####Installation variables
 
@@ -118,4 +118,13 @@ After you install, enable or disable any extension you need to restart your appl
 Or
 
 	rake ray:extension:install name=link-roll restart=passenger
+
+Setup
+---
+
+###Install setup
+
+Under normal circumstances Ray will guess and do all the install setup for you the first time you try to install an extension. Nobody is perfect and occasionally your setup file doesn't provide a response Ray understands. When this happens just run the command
+
+	rake ray:setup:install
 
