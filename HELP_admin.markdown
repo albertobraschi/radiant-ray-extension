@@ -6,7 +6,7 @@ Ray is not so much an "extension" to Radiant as it is a collection of `rake` tas
 Installing extensions
 ---
 
-Under the hood Ray uses `git` to install download extensions from GitHub. This means you'll need to get familiar with the available variables.
+Under the hood Ray uses `git` to install download extensions from GitHub. This means you'll need `git` installed and in your `PATH`.
 
 ####Installation variables
 
