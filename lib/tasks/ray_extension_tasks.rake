@@ -121,6 +121,7 @@ namespace :ray do
     end
 
     task :page_attachments do
+      # TODO apparently new versions of page_attachments include attachment_fu as a submodule – see if that's useful
       if ENV['lib'].nil?
         puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments LIB=mini_magick"
       else
@@ -149,8 +150,6 @@ namespace :ray do
 
     task :help do
       system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
-      system "rake radiant:extensions:help:migrate"
-      system "rake radiant:extensions:help:update"
       restart_server
     end
 
