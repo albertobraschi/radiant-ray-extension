@@ -123,7 +123,7 @@ namespace :ray do
     task :page_attachments do
       # TODO apparently new versions of page_attachments include attachment_fu as a submodule – see if that's useful
       if ENV['lib'].nil?
-        puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments LIB=mini_magick"
+        puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments lib=mini_magick"
       else
         image_lib = ENV['lib']
         if image_lib == "mini_magick"
