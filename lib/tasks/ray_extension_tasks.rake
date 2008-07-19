@@ -99,10 +99,10 @@ namespace :ray do
       while (line = task_check.gets)
         migrate_search = line.include? ":migrate"
         update_search = line.include? ":update"
-        if migrate_search == true
+        if migrate_search
           system "rake radiant:extensions:#{vendor_name}:migrate"
         end
-        if update_search == true
+        if update_search
           system "rake radiant:extensions:#{vendor_name}:update"
         end
         counter = counter + 1
