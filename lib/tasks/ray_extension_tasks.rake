@@ -1,7 +1,7 @@
 namespace :ray do
 
   def setup_install
-    rm "config/ray.setup"
+    system "rm config/ray.setup"
     mkdir_p "vendor/extensions/ray/config"
     system "touch vendor/extensions/ray/config/setup.txt"
     system "git --version" rescue nil
