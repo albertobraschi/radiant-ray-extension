@@ -77,8 +77,13 @@ namespace :ray do
     else
       ext_repo = "http://github.com/#{ENV['hub']}/"
     end
+    if ENV['fullname'].nil?
+      repo_name = "radiant-#{github_name}-extension"
+    else
+      repo_name = ENV['fullname']
+    end
 
-    github_url = URI.parse("#{ext_repo}radiant-#{github_name}-extension/tarball/master")
+    github_url = URI.parse("#{ext_repo}#{repo_name}/tarball/master")
     found = false
     until found
       host, port = github_url.host, github_url.port if github_url.host && github_url.port
@@ -95,17 +100,6 @@ namespace :ray do
     system "mv vendor/extensions/ray/tmp/* vendor/extensions/#{vendor_name}"
 
     rm_rf "vendor/extensions/ray/tmp"
-    post_install_extension
-  end
-  
-  def install_custom_extension_http
-    name = ENV['name']
-    vendor_name = name.gsub(/\-/, "_")
-    ext_repo = "http://github.com/#{ENV['hub']}/"
-    mkdir_p "vendor/extensions_tmp"
-    system "cd vendor/extensions_tmp; wget #{ext_repo}#{ENV['fullname']}/tarball/master; tar xzvf *#{ENV['fullname']}*.tar.gz; rm *.tar.gz"
-    system "mv vendor/extensions_tmp/* vendor/extensions/#{vendor_name}"
-    rm_rf "vendor/extensions_tmp"
     post_install_extension
   end
 
@@ -194,7 +188,7 @@ namespace :ray do
             if ENV['hub'].nil?
               puts "You have to tell me which github user to get the extension from. Try something like: rake ray:extension:install fullname=sweet-sauce-for-radiant hub=bob name=sweet-sauce"
             else
-              install_custom_extension_http
+              install_extension_http
               restart_server
             end
           
@@ -202,7 +196,7 @@ namespace :ray do
             if ENV['fullname'].nil?
               install_extension_http
             else
-              install_custom_extension_http
+              install_extension_http
             end
             restart_server
 
