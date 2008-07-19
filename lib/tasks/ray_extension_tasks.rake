@@ -25,7 +25,7 @@ namespace :ray do
 
   def restart_server
     if ENV['restart'].nil?
-      puts "You should restart your server now. Try adding RESTART=mongrel_cluster or RESTART=passenger next time."
+      puts "You should restart your server now. Try adding restart=mongrel_cluster or restart=passenger next time."
     else
       server = ENV['restart']
       if server == "mongrel_cluster"
@@ -109,7 +109,7 @@ namespace :ray do
       end
       task_check.close
     end
-    puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
+    puts "The #{vendor_name} extension has been installed or updated. Use the :disable command to disable it later."
   end
 
   namespace :setup do
@@ -130,12 +130,10 @@ namespace :ray do
       else
         name = ENV['name']
         puts "Not implemented."
-        # system "wget http://github.com/api/v1/yaml/search/radiant+extension+link --output-document=config/ray.cache"
-        # restart_server
       end
     end
 
-    desc "Install extension from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
+    desc "Install an extension from GitHub. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
     task :install do
       setup_check = File.new("vendor/extensions/ray/config/setup.txt", "r") rescue nil
       if setup_check == nil
