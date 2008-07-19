@@ -1,22 +1,23 @@
 namespace :ray do
 
   def setup_install
-    system "touch config/ray.setup"
+    mkdir_p "vendor/extensions/ray/config"
+    system "touch vendor/extensions/ray/config/setup.txt"
     system "git --version" rescue nil
     unless !$?.nil? && $?.success?
       puts "You don't have the `git` utilities installed and/or available in your path."
-      puts "I created a `config/ray.setup` file and set your preferred download method."
+      puts "I created a `vendor/extensions/ray/config/setup.txt` file and set your preferred download method."
       puts "For now I'll be using the slower, less efficient HTTP fetch method."
       puts "---"
       puts "If you install `git` later simply run `rake ray:setup:install`"
-      ray_setup = File.open("config/ray.setup", "w")
+      ray_setup = File.open("vendor/extensions/ray/config/setup.txt", "w")
       ray_setup.puts "http"
     else
-      system "rm config/ray.setup"
-      system "touch config/ray.setup"
-      ray_setup = File.open("config/ray.setup", "w")
+      system "rm vendor/extensions/ray/config/setup.txt"
+      system "touch vendor/extensions/ray/config/setup.txt"
+      ray_setup = File.open("vendor/extensions/ray/config/setup.txt", "w")
       ray_setup.puts "git"
-      puts "I created a `config/ray.setup` file and set your preferred download method to `git`"
+      puts "I created a `vendor/extensions/ray/config/setup.txt` file and set your preferred download method to `git`"
     end
     ray_setup.close
   end
@@ -135,7 +136,7 @@ namespace :ray do
 
     desc "Install extension from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
     task :install do
-      setup_check = File.new("config/ray.setup", "r") rescue nil
+      setup_check = File.new("vendor/extensions/ray/config/setup.txt", "r") rescue nil
       if setup_check == nil
         setup_install
       end
@@ -143,7 +144,7 @@ namespace :ray do
       if ENV['name'].nil?
         puts "You have to tell me which extension to install. Try something like: rake ray:extension:install name=extension_name"
       else
-        setup_file = File.new("config/ray.setup", "r")
+        setup_file = File.new("vendor/extensions/ray/config/setup.txt", "r")
         ray_setup = setup_file.gets
         setup_file.close
         mkdir_p "vendor/extensions"
@@ -240,7 +241,7 @@ namespace :ray do
           puts "I only know how to install mini_magick and rmagick. You'll need to install #{ENV['lib']} manually."
         end
       end
-      setup_file = File.new("config/ray.setup", "r")
+      setup_file = File.new("vendor/extensions/ray/config/setup.txt", "r")
       ray_setup = setup_file.gets
       setup_file.close
       mkdir_p "vendor/plugins"
@@ -264,7 +265,7 @@ namespace :ray do
 
     desc "Install RDiscount Markdown filter."
     task :markdown do
-      setup_file = File.new("config/ray.setup", "r")
+      setup_file = File.new("vendor/extensions/ray/config/setup.txt", "r")
       ray_setup = setup_file.gets
       setup_file.close
       mkdir_p "vendor/extensions"
@@ -283,7 +284,7 @@ namespace :ray do
 
     desc "Install the Help extension."
     task :help do
-      setup_file = File.new("config/ray.setup", "r")
+      setup_file = File.new("vendor/extensions/ray/config/setup.txt", "r")
       ray_setup = setup_file.gets
       setup_file.close
       mkdir_p "vendor/extensions"
