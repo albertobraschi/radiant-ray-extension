@@ -91,8 +91,12 @@ namespace :ray do
   def post_install_extension
     name = ENV['name']
     vendor_name = name.gsub(/\-/, "_")
-    system "rake radiant:extensions:#{vendor_name}:migrate"
-    system "rake radiant:extensions:#{vendor_name}:update"
+    task_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+    if task_check != nil
+      system "rake radiant:extensions:#{vendor_name}:migrate"
+      system "rake radiant:extensions:#{vendor_name}:update"
+    end
+    task_check.close
     puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
   end
 
@@ -106,7 +110,20 @@ namespace :ray do
 
   namespace :extension do
 
-    desc "Install extensions from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
+    desc "Search available extensions."
+    task  :search do
+      if ENV['name'].nil?
+        puts "You have to tell me which extension to search for. Try something like: rake ray:extension:search name=link"
+    
+      else
+        name = ENV['name']
+        puts "Not implemented."
+        # system "wget http://github.com/api/v1/yaml/search/radiant+extension+link --output-document=config/ray.cache"
+        # restart_server
+      end
+    end
+
+    desc "Install extension from github. `name=extension_name` is required; if you specify `fullname` you must also specify `hub=github_user_name`. You can also use `hub=user` with the `name` option to install from outside the Radiant repository."
     task :install do
       setup_check = File.new("config/ray.setup", "r") rescue nil
       if setup_check == nil
@@ -170,7 +187,7 @@ namespace :ray do
 
     end
 
-    desc "enable extensions"
+    desc "Enable extensions."
     task :enable do
       if ENV['name'].nil?
         puts "You have to tell me which extension to enable. Try something like: rake ray:extension:enable name=extension_name"
@@ -185,7 +202,7 @@ namespace :ray do
       end
     end
 
-    desc "disable extensions"
+    desc "Disable extensions."
     task :disable do
       if ENV['name'].nil?
         puts "You have to tell me which extension to disable. Try something like: rake ray:extension:disable name=extension_name"
@@ -200,6 +217,7 @@ namespace :ray do
       end
     end
 
+    desc "Install Page Attachments extension."
     task :page_attachments do
       if ENV['lib'].nil?
         puts "You didn't specify an image processing library, so I'm assuming you already have one installed and ready to use. If you don't have one installed try: rake ray:extension:page_attachments lib=mini_magick"
@@ -234,6 +252,7 @@ namespace :ray do
       restart_server
     end
 
+    desc "Install RDiscount Markdown filter."
     task :markdown do
       setup_file = File.new("config/ray.setup", "r")
       ray_setup = setup_file.gets
@@ -252,6 +271,7 @@ namespace :ray do
       restart_server
     end
 
+    desc "Install the Help extension."
     task :help do
       setup_file = File.new("config/ray.setup", "r")
       ray_setup = setup_file.gets
