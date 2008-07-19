@@ -93,10 +93,28 @@ namespace :ray do
     vendor_name = name.gsub(/\-/, "_")
     task_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
     if task_check != nil
-      system "rake radiant:extensions:#{vendor_name}:migrate"
-      system "rake radiant:extensions:#{vendor_name}:update"
+      counter = 1
+      while (line = task_check.gets)
+        task_search = line.include? ":migrate"
+        if task_search == true
+          puts "run migrate"
+          # system "rake radiant:extensions:#{vendor_name}:migrate"
+        end
+        counter = counter + 1
+      end
+      task_check.close
+      task_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+      counter = 1
+      while (line = task_check.gets)
+        task_search = line.include? "update"
+        if task_search == true
+          puts "run update"
+          # system "rake radiant:extensions:#{vendor_name}:update"
+        end
+        counter = counter + 1
+      end
+      task_check.close
     end
-    task_check.close
     puts "The #{vendor_name} extension has been installed. Use the :disable command to disable it later."
   end
 
