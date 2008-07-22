@@ -299,8 +299,15 @@ namespace :ray do
       mkdir_p "vendor/extensions"
       image_lib = ENV['lib']
       if ray_setup == "git\n"
-        system "git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
-        system "git clone git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+        git_check = File.new(".git/HEAD", "r") rescue nil
+        if git_check == nil
+          system "git clone git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
+          system "git clone git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+        else
+          system "git submodule add git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
+          system "git submodule add git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+        end
+        git_check.close
       else
         ENV['plugin_name'] = "attachment_fu"
         ENV['plugin_hub'] = "technoweenie"
