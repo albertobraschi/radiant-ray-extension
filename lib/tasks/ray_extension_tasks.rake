@@ -50,7 +50,12 @@ namespace :ray do
     else
       ext_repo = "git://github.com/#{ENV['hub']}/"
     end
-    system "git clone #{ext_repo}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
+    git_check = File.new(".git/HEAD", "r") rescue nil
+    if git_check == nil
+      system "git clone #{ext_repo}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
+    else
+      system "git submodule add #{ext_repo}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
+    end
     post_install_extension
   end
 
