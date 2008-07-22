@@ -244,7 +244,7 @@ namespace :ray do
             restart_server
           end
         end
-        
+
       end
 
     end
@@ -323,7 +323,13 @@ namespace :ray do
       puts "About to install the RDiscount gem you will need to enter you system administrator password."
       system "sudo gem install rdiscount"
       if ray_setup == "git\n"
-        system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+        git_check = File.new(".git/HEAD", "r") rescue nil
+        if git_check == nil
+          system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+        else
+          system "git submodule add git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+        end
+        git_check.close
       else
         ENV['name'] = "markdown"
         ENV['hub'] = "johnmuhl"
@@ -339,7 +345,13 @@ namespace :ray do
       setup_file.close
       mkdir_p "vendor/extensions"
       if ray_setup == "git\n"
-        system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+        git_check = File.new(".git/HEAD", "r") rescue nil
+        if git_check == nil
+          system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+        else
+          system "git submodule add git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+        end
+        git_check.close
       else
         ENV['name'] = "help"
         ENV['hub'] = "saturnflyer"
