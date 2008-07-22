@@ -13,14 +13,15 @@ namespace :ray do
       puts "If you install `git` later simply run `rake ray:setup:install`"
       ray_setup = File.open("vendor/extensions/ray/config/setup.txt", "w")
       ray_setup.puts "http"
+      ray_setup.close
     else
       system "rm vendor/extensions/ray/config/setup.txt"
       system "touch vendor/extensions/ray/config/setup.txt"
       ray_setup = File.open("vendor/extensions/ray/config/setup.txt", "w")
       ray_setup.puts "git"
       puts "I created a `vendor/extensions/ray/config/setup.txt` file and set your preferred download method to `git`"
+      ray_setup.close
     end
-    ray_setup.close
   end
 
   def restart_server
@@ -55,8 +56,8 @@ namespace :ray do
       system "git clone #{ext_repo}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
     else
       system "git submodule add #{ext_repo}radiant-#{github_name}-extension.git vendor/extensions/#{vendor_name}"
+      git_check.close
     end
-    git_check.close
     post_install_extension
   end
 
@@ -69,8 +70,8 @@ namespace :ray do
       system "git clone #{ext_repo}#{ENV['fullname']}.git vendor/extensions/#{vendor_name}"
     else
       system "git submodule add #{ext_repo}#{ENV['fullname']}.git vendor/extensions/#{vendor_name}"
+      git_check.close
     end
-    git_check.close
     post_install_extension
   end
 
@@ -149,17 +150,28 @@ namespace :ray do
     if task_check != nil
       counter = 1
       while (line = task_check.gets)
-        migrate_search = line.include? ":migrate"
-        update_search = line.include? ":update"
-        if migrate_search
-          system "rake radiant:extensions:#{vendor_name}:migrate"
-        end
-        if update_search
-          system "rake radiant:extensions:#{vendor_name}:update"
-        end
+        install_search = line.include? ":install"
+        break if install_search
         counter = counter + 1
       end
       task_check.close
+      if install_search
+        system "rake radiant:extensions:#{vendor_name}:install"
+      else
+        task_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+        while (line = task_check.gets)
+          migrate_search = line.include? ":migrate"
+          update_search = line.include? ":update"
+          if migrate_search
+            system "rake radiant:extensions:#{vendor_name}:migrate"
+          end
+          if update_search
+            system "rake radiant:extensions:#{vendor_name}:update"
+          end
+          counter = counter + 1
+        end
+        task_check.close
+      end
     end
     puts "The #{vendor_name} extension has been installed or updated. Use the :disable command to disable it later."
   end
@@ -306,8 +318,8 @@ namespace :ray do
         else
           system "git submodule add git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
           system "git submodule add git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+          git_check.close
         end
-        git_check.close
       else
         ENV['plugin_name'] = "attachment_fu"
         ENV['plugin_hub'] = "technoweenie"
@@ -335,8 +347,8 @@ namespace :ray do
           system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
         else
           system "git submodule add git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+          git_check.close
         end
-        git_check.close
       else
         ENV['name'] = "markdown"
         ENV['hub'] = "johnmuhl"
@@ -357,8 +369,8 @@ namespace :ray do
           system "git clone git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
         else
           system "git submodule add git://github.com/saturnflyer/radiant-help-extension.git vendor/extensions/help"
+          git_check.close
         end
-        git_check.close
       else
         ENV['name'] = "help"
         ENV['hub'] = "saturnflyer"
