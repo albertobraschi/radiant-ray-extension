@@ -184,6 +184,18 @@ namespace :ray do
 
   end
 
+  namespace :update do
+    desc "Efficiently update edge Radiant."
+    task :edge do
+      edge_check = File.new("vendor/radiant", "r") rescue nil
+      if edge_check == nil
+        puts "This command is only for updating an existing frozen edge. Try rake radiant:freeze:edge first, then later use this command."
+      else
+        system "cd vendor/radiant; git pull origin master"
+      end
+    end
+  end
+
   namespace :extension do
 
     desc "Search available extensions."
