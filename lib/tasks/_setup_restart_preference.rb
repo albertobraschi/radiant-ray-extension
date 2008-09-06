@@ -7,20 +7,20 @@ else
 end
 def set_server_preference
   ray_restart = File.open("vendor/extensions/ray/config/restart.txt", "w")
-  ray_restart.puts server
+  ray_restart.puts @server
   ray_restart.close
   puts "==="
-  puts "I've set your preferred server to #{server} in"
+  puts "I've set your preferred server to #{@server} in"
   puts "${RAILS_ROOT}/vendor/extensions/ray/config/restart.txt"
   puts "This means that anytime you ask Ray to do something that requires"
   puts "a restart. He'll just go ahead and restart things for you."
   puts "==="
 end
-server = ENV['server'] rescue nil
-if server
-  if server == "passenger\n"
+@server = ENV['server'] rescue nil
+if @server
+  if @server == "passenger"
     set_server_preference
-  elsif server == "mongrel\n"
+  elsif @server == "mongrel"
     set_server_preference
   else
     puts "==="
