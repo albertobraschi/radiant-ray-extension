@@ -7,6 +7,12 @@ namespace :ray do
     task :remove do
       require 'vendor/extensions/ray/lib/tasks/_extension_remove.rb'
     end
+    task :disable do
+      require 'vendor/extensions/ray/lib/tasks/_extension_disable.rb'
+    end
+    task :enable do
+      require 'vendor/extensions/ray/lib/tasks/_extension_enable.rb'
+    end
     task :paperclipped do
       require 'vendor/extensions/ray/lib/tasks/_extension_paperclipped.rb'
     end
