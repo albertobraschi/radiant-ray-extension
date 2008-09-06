@@ -27,3 +27,8 @@ task :setup => ["setup:initial"]
 
 desc "Have Ray set your download preference (HTTP/GIT)."
 task :git => ["setup:download"]
+
+desc "Restart your server."
+task :restart do
+  require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
+end
