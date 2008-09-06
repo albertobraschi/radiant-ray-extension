@@ -33,5 +33,8 @@ namespace :ray do
     task :download do
       require 'vendor/extensions/ray/lib/tasks/_setup_download_preference.rb'
     end
+    task :restart do
+      require 'vendor/extensions/ray/lib/tasks/_setup_restart_preference.rb'
+    end
   end
 end
