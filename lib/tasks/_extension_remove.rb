@@ -5,16 +5,18 @@ if ENV['name'].nil?
   puts "Try something like: rake ray:rm name=extension_name"
 else
   migration_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
-  counter = 1
-  while (line = migration_check.gets)
-    migrate_search = line.include? ":migrate"
-    if migrate_search
-      system "rake radiant:extensions:#{vendor_name}:migrate VERSION=0"
+  if migration_check
+    counter = 1
+    while (line = migration_check.gets)
+      migrate_search = line.include? ":migrate"
+      if migrate_search
+        system "rake radiant:extensions:#{vendor_name}:migrate VERSION=0"
+      end
+      counter = counter + 1
     end
-    counter = counter + 1
+    migration_check.close
+    puts "Migrations added by the #{vendor_name} extension have been removed."
   end
-  migration_check.close
-  puts "Migrations added by the #{vendor_name} extension have been removed."
   mkdir_p "vendor/extensions/ray/removed_extensions"
   system "mv vendor/extensions/#{vendor_name} vendor/extensions/ray/removed_extensions/#{vendor_name}"
   puts "The #{vendor_name} extension has been removed."
