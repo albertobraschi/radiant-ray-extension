@@ -9,9 +9,9 @@ end
 system "git --version" rescue nil
 
 unless !$?.nil? && $?.success?
-  ray_setup = File.open("vendor/extensions/ray/config/download.txt", "w")
-  ray_setup.puts "http"
-  ray_setup.close
+  ray_download = File.open("vendor/extensions/ray/config/download.txt", "w")
+  ray_download.puts "http"
+  ray_download.close
   puts ""
   puts "I can't seem to locate the `git` utilities."
   puts "So, I've set your preference to HTTP in"
@@ -22,9 +22,9 @@ unless !$?.nil? && $?.success?
   puts ""
 
 else
-  ray_setup = File.open("vendor/extensions/ray/config/download.txt", "w")
-  ray_setup.puts "git"
-  ray_setup.close
+  ray_download = File.open("vendor/extensions/ray/config/download.txt", "w")
+  ray_download.puts "git"
+  ray_download.close
   puts ""
   puts "I found git on your system and set it as your preference in"
   puts "${RAILS_ROOT}/vendor/extensions/ray/config/download.txt"
