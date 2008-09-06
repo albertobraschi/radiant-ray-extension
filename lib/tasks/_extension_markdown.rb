@@ -2,10 +2,10 @@ download_preference = File.new("vendor/extensions/ray/config/download.txt", "r")
 ray_download = download_preference.gets
 download_preference.close
 mkdir_p "vendor/extensions"
-puts ""
+puts "==="
 puts "About to install the RDiscount gem."
 puts "You will need to enter you system administrator password."
-puts ""
+puts "==="
 system "sudo gem install rdiscount"
 if ray_download == "git\n"
   git_check = File.new(".git/HEAD", "r") rescue nil

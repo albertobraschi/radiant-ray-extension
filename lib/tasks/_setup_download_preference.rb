@@ -12,21 +12,21 @@ unless !$?.nil? && $?.success?
   ray_download = File.open("vendor/extensions/ray/config/download.txt", "w")
   ray_download.puts "http"
   ray_download.close
-  puts ""
+  puts "==="
   puts "I can't seem to locate the `git` utilities."
   puts "So, I've set your preference to HTTP in"
   puts "${RAILS_ROOT}/vendor/extensions/ray/config/download.txt"
   puts ""
   puts "If you install `git` later simply run `rake ray:setup:install`"
   puts "and I'll update your preference file."
-  puts ""
+  puts "==="
 
 else
   ray_download = File.open("vendor/extensions/ray/config/download.txt", "w")
   ray_download.puts "git"
   ray_download.close
-  puts ""
+  puts "==="
   puts "I found git on your system and set it as your preference in"
   puts "${RAILS_ROOT}/vendor/extensions/ray/config/download.txt"
-  puts ""
+  puts "==="
 end

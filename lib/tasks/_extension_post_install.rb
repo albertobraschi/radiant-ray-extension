@@ -27,5 +27,7 @@ if task_check != nil
     task_check.close
   end
 end
+puts "==="
 puts "The #{vendor_name} extension has been installed or updated."
 puts "To disable it later Use: rake ray:dis name=#{vendor_name}"
+puts "==="

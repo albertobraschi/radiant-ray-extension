@@ -13,8 +13,10 @@ end
 
 name = ENV['name']
 if ENV['name'].nil?
+  puts "==="
   puts "You have to tell me which extension to install."
   puts "Try something like: rake ray:ext name=extension_name"
+  puts "==="
 else
   mkdir_p "vendor/extensions"
   download_preference = File.new("vendor/extensions/ray/config/download.txt", "r")
@@ -24,8 +26,10 @@ else
     case
     when ENV['fullname']
       if ENV['hub'].nil?
+        puts "==="
         puts "You have to tell me which github user to get the extension from."
         puts "Try something like: rake ray:ext fullname=sweet-sauce-for-radiant hub=bob name=sweet-sauce"
+        puts "==="
       else
         install_custom_extension
         restart
