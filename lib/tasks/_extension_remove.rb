@@ -39,3 +39,5 @@ if git_check
   puts "Staged the #{vendor_name} extension for deletion."
   puts "You'll need to `git commit` before it's actually deleted."
 end
+
+require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
