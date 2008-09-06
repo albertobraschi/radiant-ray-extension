@@ -2,7 +2,7 @@
 # require_dependency 'application'
 
 class RayExtension < Radiant::Extension
-  version "1.0"
+  version "1.1"
   description "Sunshine"
   url "http://johnmuhl.com/workbook/ray"
   
@@ -11,7 +11,7 @@ class RayExtension < Radiant::Extension
   # end
   
   def activate
-    # admin.tabs.add "Ray", "/admin/ray", :after => "Layouts", :visibility => [:all]
+    # admin.tabs.add "Ray", "/admin/ray", :after => "Layouts", :visibility => [:admin]
   end
   
   def deactivate
