@@ -128,3 +128,51 @@ Under normal circumstances Ray will guess and do all the install setup for you t
 
 	rake ray:setup:install
 
+---
+
+Install Ray
+===
+
+		git clone git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray
+		touch tmp/restart.txt
+
+Install an extension from the “official” Radiant repo
+===
+
+		rake ray:install mailer server=passenger
+
+Install a “regularly named” extension from any user's repo
+===
+
+		rake ray:install directory hub=lorenjohnson server=mongrel
+
+Install any extension from any user's repo
+===
+
+		rake ray:install hub=kbingman ext=paperclipped
+
+Disable an extension
+===
+
+		rake ray:disable:mailer
+
+Enable an extension
+===
+
+		rake ray:enable:mailer
+
+Uninstall an extension
+===
+
+		rake ray:remove:mailer
+
+The remove task will first attempt to locate an extension specific uninstall 
+task, then failing that will attempt to back out migrations and then disable 
+extension. To completely delete an extension you'll still need to run something
+like `rm -r vendor/extensions/ray/disabled/some_extension_name` (or the ray:cleanup
+task).
+
+Delete all inactive extensions
+===
+
+		rake ray:cleanup:extensions
