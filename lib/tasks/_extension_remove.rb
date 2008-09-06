@@ -4,7 +4,11 @@ if ENV['name'].nil?
   puts "You have to tell me which extension to remove."
   puts "Try something like: rake ray:rm name=extension_name"
 else
-  migration_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+  if name == "paperclipped"
+    migration_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/assets_extension_tasks.rake", "r") rescue nil
+  else
+    migration_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+  end
   if migration_check
     counter = 1
     while (line = migration_check.gets)
@@ -16,6 +20,8 @@ else
     end
     migration_check.close
     puts "Migrations added by the #{vendor_name} extension have been removed."
+  else
+    puts "The #{vendor_name} extension didn't have any migrations to remove."
   end
   mkdir_p "vendor/extensions/ray/removed_extensions"
   system "mv vendor/extensions/#{vendor_name} vendor/extensions/ray/removed_extensions/#{vendor_name}"
