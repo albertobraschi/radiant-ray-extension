@@ -20,6 +20,9 @@ Setup
 ###First time user
 
 	rake ray:setup
+	===
+	this command complete destroys any existing Ray preferences.
+	**DO NOT** use it for upgrading between versions.
 
 ###Upgrading user
 
@@ -161,3 +164,8 @@ And now every time you install, remove, disable or enable an extension your serv
 	or (if you didn't set a preference)
 	===
 	rake ray:restart server=passenger
+
+"Legacy" Information
+---
+
+Users of previous versions may notice that the commands have changed. While this appears to be the case it's not actually. All the same old commands are available, so if you got comfortable with `rake ray:extension:install name=mailer` and don't want to switch to `rake ray:ext name=mailer` you can keep right on using the long versions.
