@@ -25,6 +25,9 @@ task :markdown => ["extension:markdown"]
 desc "Run Ray's initial setup tasks."
 task :setup => ["setup:initial"]
 
+desc "Update to Ray 1.1"
+task :update => ["setup:update"]
+
 desc "Have Ray set your download preference (HTTP/GIT)."
 task :git => ["setup:download"]
 

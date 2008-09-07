@@ -30,6 +30,9 @@ namespace :ray do
     task :initial do
       require 'vendor/extensions/ray/lib/tasks/_setup.rb'
     end
+    task :update do
+      require 'vendor/extensions/ray/lib/tasks/_setup_update.rb'
+    end
     task :download do
       require 'vendor/extensions/ray/lib/tasks/_setup_download_preference.rb'
     end
