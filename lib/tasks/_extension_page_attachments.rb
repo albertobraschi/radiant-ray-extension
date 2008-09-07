@@ -36,8 +36,8 @@ if ray_download == "git\n"
   else
     system "git submodule add git://github.com/technoweenie/attachment_fu.git vendor/plugins/attachment_fu"
     system "git submodule add git://github.com/radiant/radiant-page-attachments-extension.git vendor/extensions/page_attachments"
+    git_check.close
   end
-  git_check.close
 else
   mkdir_p "vendor/extensions/ray/tmp"
   @plugin_name = "attachment_fu"
