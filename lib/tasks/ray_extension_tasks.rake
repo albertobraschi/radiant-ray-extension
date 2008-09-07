@@ -40,4 +40,19 @@ namespace :ray do
       require 'vendor/extensions/ray/lib/tasks/_setup_restart_preference.rb'
     end
   end
+  namespace :update do
+    task :edge do
+      require 'vendor/extensions/ray/lib/tasks/_update_edge.rb'
+    end
+    task :branch do
+      puts "==="
+      puts "Not implemented."
+      puts "==="
+    end
+    task :tag do
+      puts "==="
+      puts "Not implemented."
+      puts "==="
+    end
+  end
 end
