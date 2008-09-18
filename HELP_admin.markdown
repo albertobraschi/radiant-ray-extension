@@ -87,11 +87,13 @@ Some extensions are downright special and deserve special attention.
 
 ####Paperclipped
 
-If you want to install the Paperclipped Asset Manager extension run
+If you want to install the [Paperclipped Asset Manager][pc] extension run
 
 	rake ray:assets
 
 Due to Ray's dumbness and some peculiar practices in the Paperclipped extension you **cannot** use Ray to install Paperclipped as you would other extensions. So you have to install it using this special method.
+
+[pc]: http://github.com/kbingman/paperclipped/tree
 
 ####Page Attachments
 
