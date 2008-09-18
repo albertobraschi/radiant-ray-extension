@@ -6,6 +6,10 @@ Ray is not so much an extension to Radiant as it is a collection of `rake` tasks
 Installing Ray
 ---
 
+	./script/extension install ray
+	===
+	or
+	===
 	git clone git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray
 	===
 	or
@@ -21,7 +25,7 @@ Setup
 
 	rake ray:setup
 	===
-	this command complete destroys any existing Ray preferences.
+	this command completely destroys any existing Ray preferences.
 	**DO NOT** use it for upgrading between versions.
 
 ###Upgrading user
@@ -32,14 +36,14 @@ Setup
 
 	rake ray:setup:download
 
-###Resetting your server prefernce
+###Resetting your server preference
 
 	rake ray:setup:restart
 
 Installing extensions
 ---
 
-Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'll need `git` installed and in your `PATH` for Ray to use it. Additionally, if Ray notices that you're managing your Radiant application with `git` then he will decide to pull extensions in as submodules instead of a regular clone.
+Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'll need `git` installed and in your `PATH` for Ray to use it. Additionally, if Ray notices that you're managing your Radiant application with `git` then he'll decide to pull extensions in as submodules instead of as clones.
 
 ###Installation variables
 
@@ -89,7 +93,7 @@ If you want to install [Page Attachments][pa] then you would run
 
 By doing so Ray will grab the required `attachment_fu` plugin and install it to `vendor/plugins` before installing Page Attachments.
 
-The `page_attachments` command comes with an extra variable used to additionally install an image processing library. Without an image processing library Page Attachments won't be able to automatically generate thumbnails when you upload an image. Before you ask Ray to install an image library for you check to see if you already have one installed; often `rmagick` or `mini_magick` will be installed as part of a normal Rails setup. To check which gems you have installed run
+The `page_attachments` command comes with an extra variable used to additionally install an image processing library. Without an image processing library Page Attachments won't be able to automatically generate thumbnails when you upload an image. Before you ask Ray to install an image library for you check to see if you already have one installed; often `rmagick` or `mini_magick` will be installed as part of a normal Rails setup. To check which gems you have installed run. **If you choose to install an image processing library you'll be asked to enter a system administrator password.**
 
 	gem list
 
@@ -109,7 +113,7 @@ To install the RDiscount version of the Markdown filter run
 
 	rake ray:markdown
 
-This will install the RDiscount gem, then the new Markdown filter. If you have trouble getting the new Markdown filter to load in Radiant < 0.6.8 (you should see "(RDiscount)" in the extension description) check [the installation section on this page][tp]
+This will install the RDiscount gem, then the new Markdown filter. If you have trouble getting the new Markdown filter to load in Radiant < 0.6.8 check [the installation section on this page][tp] (you should see "(RDiscount)" in the extension description)
 
 [tp]: http://github.com/johnmuhl/radiant-markdown-extension/tree/master
 
@@ -132,7 +136,7 @@ Just like with installing, Ray doesn't mind if you prefer
 
 	rake ray:dis name=extension-name
 
-Disabled extensions will be moved to `vendor/disabled_extensions`.
+Disabled extensions will be moved to `vendor/ray/disabled_extensions`.
 
 Enabling extensions
 ---
@@ -140,6 +144,13 @@ Enabling extensions
 Enabling extensions is just as easy as disabling
 
 	rake ray:en name=extension_name
+
+Removing extensions
+---
+
+Removing an extension is a little different than disabling in that remove will try to revert any migrations the extension added. Removed extensions end up in `vendor/ray/removed_extensions`. To remove an extension run
+
+	rake ray:rm name=extension-name
 
 Restarting your application server
 ---
