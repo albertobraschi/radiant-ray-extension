@@ -10,9 +10,9 @@ system "sudo gem install rdiscount"
 if ray_download == "git\n"
   git_check = File.new(".git/HEAD", "r") rescue nil
   if git_check == nil
-    system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+    system "git clone git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown_filter"
   else
-    system "git submodule add git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown"
+    system "git submodule add git://github.com/johnmuhl/radiant-markdown-extension.git vendor/extensions/markdown_filter"
     git_check.close
   end
 else
