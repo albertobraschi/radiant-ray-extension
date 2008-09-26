@@ -6,4 +6,4 @@ puts "==="
 puts "The #{vendor_name} extension has been disabled."
 puts "To enable it use: rake ray:en name=#{vendor_name}"
 puts "==="
-require 'vendor/extensions/ray/lib/tasks/_restart_server.rb
+require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
