@@ -44,6 +44,9 @@ namespace :ray do
     task :edge do
       require 'vendor/extensions/ray/lib/tasks/_radiant_edge.rb'
     end
+    task :instance do
+      require 'vendor/extensions/ray/lib/tasks/_radiant_instance.rb'
+    end
     task :branch do
       puts "==="
       puts "Not implemented."
