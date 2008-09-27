@@ -200,6 +200,12 @@ To grab Edge Radiant with Ray you just run
 
 Ray will pull down the latest version or update your existing `vendor/radiant` to the latest. When using the HTTP method smart updates are not possible and Ray just grabs the latest version and replaces your current version (even if the two are the same).
 
+If you decide Edge is not for you and want to revert back to your gem instance version run
+
+	rake ray:instance
+
+If your `vendor/radiant` was a Git submodule you'll need to commit the submodule changes manually after this running the `ray:instance` command (Ray will do the `git rm --cached vendor/radiant` part but won't to push commits into your git repo).
+
 "Legacy" Information
 ---
 
