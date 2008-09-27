@@ -204,7 +204,7 @@ If you decide Edge is not for you and want to revert back to your gem instance v
 
 	rake ray:instance
 
-If your `vendor/radiant` was a Git submodule you'll need to commit the submodule changes manually after this running the `ray:instance` command (Ray will do the `git rm --cached vendor/radiant` part but won't to push commits into your git repo).
+If your `vendor/radiant` was a Git submodule you'll need to commit the submodule changes manually after running the `ray:instance` command (Ray will do the `git rm --cached vendor/radiant` part but won't push commits into your git repo).
 
 "Legacy" Information
 ---
