@@ -40,9 +40,9 @@ namespace :ray do
       require 'vendor/extensions/ray/lib/tasks/_setup_restart_preference.rb'
     end
   end
-  namespace :update do
+  namespace :radiant do
     task :edge do
-      require 'vendor/extensions/ray/lib/tasks/_update_edge.rb'
+      require 'vendor/extensions/ray/lib/tasks/_radiant_edge.rb'
     end
     task :branch do
       puts "==="

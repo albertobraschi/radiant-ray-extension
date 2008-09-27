@@ -186,6 +186,20 @@ And now every time you install, remove, disable or enable an extension your serv
 	===
 	rake ray:restart server=passenger
 
+Installing the edge Radiant
+---
+
+Ray differs slightly from the bundled `rake radiant:freeze:edge` in a couple of ways, most notably
+
+* Installs Edge Radiant as a Git submodule instead of clone
+* Can fallback on HTTP when Git is unavailable
+
+To grab Edge Radiant with Ray you just run
+
+	rake ray:edge
+
+Ray will pull down the latest version or update your existing `vendor/radiant` to the latest. When using the HTTP method smart updates are not possible and Ray just grabs the latest version and replaces your current version (even if the two are the same).
+
 "Legacy" Information
 ---
 

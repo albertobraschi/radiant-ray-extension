@@ -31,8 +31,8 @@ task :update => ["setup:update"]
 desc "Have Ray set your download preference (HTTP/GIT)."
 task :git => ["setup:download"]
 
-desc "Efficiently update an existing edge Radiant."
-task :edge => ["update:edge"]
+desc "Install the latest Edge Radiant."
+task :edge => ["radiant:edge"]
 
 desc "Restart your server."
 task :restart do
