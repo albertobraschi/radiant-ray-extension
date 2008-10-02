@@ -1,52 +1,77 @@
 def install_extension
-  require 'vendor/extensions/ray/lib/tasks/_extension_install_default.rb'
+  require "#{@task}/_extension_install_default.rb"
 end
 def install_extension_http
-  require 'vendor/extensions/ray/lib/tasks/_extension_install_http.rb'
+  require "#{@task}/_extension_install_http.rb"
 end
 def install_custom_extension
-  require 'vendor/extensions/ray/lib/tasks/_extension_install_custom.rb'
+  require "#{@task}/_extension_install_custom.rb"
 end
 def restart
-  require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
+  require "#{@task}/_restart_server.rb"
 end
 
-name = ENV['name']
+@path = 'vendor/extensions'
+if ENV['path']
+  @path = ENV['path']
+end
+
+@name = ENV['name']
 if ENV['name'].nil?
-  puts "==="
+  puts "=============================================================================="
   puts "You have to tell me which extension to install."
   puts "Try something like: rake ray:ext name=extension_name"
-  puts "==="
+  puts "=============================================================================="
 else
-  mkdir_p "vendor/extensions"
-  download_preference = File.new("vendor/extensions/ray/config/download.txt", "r")
-  ray_download = download_preference.gets
-  download_preference.close
-  if ray_download == "git\n"
-    case
-    when ENV['fullname']
-      if ENV['hub'].nil?
-        puts "==="
-        puts "You have to tell me which github user to get the extension from."
-        puts "Try something like: rake ray:ext fullname=sweet-sauce-for-radiant hub=bob name=sweet-sauce"
-        puts "==="
+  begin
+    Dir.open(@path)
+  rescue
+    puts "=============================================================================="
+    puts "For some reason you don't have a #{@path} directory."
+    puts "I'm going to make it for you so we can get on with installing extensions."
+    mkdir_p @path
+    puts "=============================================================================="
+  end
+  if File.exists?("#{@conf}/download.txt") == false
+    puts "=============================================================================="
+    puts "Looks like you haven't setup your preferred download method."
+    puts "Let's get that setup now..."
+    require "#{@task}/_setup_download_preference.rb"
+  else
+    download_conf = File.open("#{@conf}/download.txt", "r")
+    download_pref = download_conf.gets
+    download_conf.close
+    if download_pref == "git\n"
+      case
+      when ENV['fullname']
+        if ENV['hub']
+          install_custom_extension
+          restart
+        else
+          puts "=============================================================================="
+          puts "You have to tell which GitHub has the extension you want to install."
+          puts "Try something like: rake ray:ext name=nice-ext hub=bob fullname=extension-bob"
+          puts "=============================================================================="
+        end
+      when ENV['hub']
+        if ENV['fullname']
+          install_custom_extension
+        else
+          install_extension
+        end
+        restart
       else
-        install_custom_extension
+        install_extension
         restart
       end
-    when ENV['hub']
-      if ENV['fullname'].nil?
-        install_extension
-      else
-        install_custom_extension
-      end
+    elsif download_pref == "http\n"
+      install_extension_http
       restart
-    else
-      install_extension
-      restart
+    elsif download_pref != "git\n" || "http\n"
+      puts "=============================================================================="
+      puts "Your download preference is broken."
+      puts "Please run: rake ray:git"
+      puts "=============================================================================="
     end
-  elsif ray_download == "http\n"
-    install_extension_http
-    restart
   end
 end
