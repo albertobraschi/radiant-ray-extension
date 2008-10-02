@@ -1,32 +1,33 @@
-check = File.new("vendor/extensions/ray/config/download.txt", "r") rescue nil
-if check != nil
-  system "rm vendor/extensions/ray/config/download.txt"
-else
-  mkdir_p "vendor/extensions/ray/config"
-  system "touch vendor/extensions/ray/config/download.txt"
+# make sure we have a config directory
+begin
+  Dir.open(@conf)
+rescue
+  mkdir_p "#{@conf}"
 end
-
+# remove any existing download preference file
+if File.exist?("#{@conf}/download.txt")
+  rm "#{@conf}/download.txt"
+end
+# create a new download preference file
+system "touch #{@conf}/download.txt"
+# determine download preference
 system "git --version" rescue nil
-
+# if we can't get the git version set the preference to HTTP
 unless !$?.nil? && $?.success?
-  ray_download = File.open("vendor/extensions/ray/config/download.txt", "w")
-  ray_download.puts "http"
-  ray_download.close
-  puts "==="
-  puts "I can't seem to locate the `git` utilities."
-  puts "So, I've set your preference to HTTP in"
-  puts "${RAILS_ROOT}/vendor/extensions/ray/config/download.txt"
-  puts ""
-  puts "If you install `git` later simply run `rake ray:setup:install`"
-  puts "and I'll update your preference file."
-  puts "==="
-
+  download_conf = File.open("#{@conf}/download.txt", "w")
+  download_conf.puts "http"
+  download_conf.close
+  puts "=============================================================================="
+  puts "HTTP has been set as your preferred download method."
+  puts "If you install Git and would like to update your preferences run:"
+  puts "rake ray:git"
+  puts "=============================================================================="
+# if we find git set it as the preferred method
 else
-  ray_download = File.open("vendor/extensions/ray/config/download.txt", "w")
-  ray_download.puts "git"
-  ray_download.close
-  puts "==="
-  puts "I found git on your system and set it as your preference in"
-  puts "${RAILS_ROOT}/vendor/extensions/ray/config/download.txt"
-  puts "==="
+  download_conf = File.open("#{@conf}/download.txt", "w")
+  download_conf.puts "git"
+  download_conf.close
+  puts "=============================================================================="
+  puts "Git has been set as your preferred download method."
+  puts "=============================================================================="
 end
