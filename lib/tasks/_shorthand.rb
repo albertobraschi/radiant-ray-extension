@@ -1,6 +1,7 @@
 @ray  = "vendor/extensions/ray"
 @task = "#{@ray}/lib/tasks"
 @conf = "#{@ray}/config"
+@path = "vendor/extensions"
 
 desc "Install an extension from GitHub."
 task :ext => ["extension:install"]
