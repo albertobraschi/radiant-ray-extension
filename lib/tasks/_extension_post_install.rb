@@ -35,6 +35,7 @@ if tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension
   puts "The #{vendor_name} extension has been installed."
   puts "To disable it run: rake ray:dis name=#{vendor_name}"
   puts "=============================================================================="
+  require "#{@task}/_restart_server.rb"
 else
   puts "=============================================================================="
   puts "I couldn't find a tasks file for the #{vendor_name} extension."
