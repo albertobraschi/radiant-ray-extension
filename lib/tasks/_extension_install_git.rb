@@ -1,5 +1,9 @@
 github_name = @name.gsub(/\_/, "-")
-vendor_name = @name.gsub(/\-/, "_")
+if @vendor
+  vendor_name = @vendor
+else
+  vendor_name = @name.gsub(/\-/, "_")
+end
 master_repo = "git://github.com/radiant"
 if @hub
   repository = "git://github.com/#{@hub}"

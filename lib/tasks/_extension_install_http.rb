@@ -1,6 +1,10 @@
 require 'net/http'
 github_name = @name.gsub(/\_/, "-")
-vendor_name = @name.gsub(/\-/, "_")
+if @vendor
+  vendor_name = @vendor
+else
+  vendor_name = @name.gsub(/\-/, "_")
+end
 master_repo = "http://github.com/radiant"
 system "mkdir -p #{@ray}/tmp"
 if @hub
