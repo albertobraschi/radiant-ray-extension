@@ -1,20 +1,19 @@
 require 'net/http'
-name = ENV['name']
-github_name = name.gsub(/\_/, "-")
-vendor_name = name.gsub(/\-/, "_")
-radiant_git = "http://github.com/radiant/"
-mkdir_p "vendor/extensions/ray/tmp"
-if ENV['hub'].nil?
-  ext_repo = radiant_git
+github_name = @name.gsub(/\_/, "-")
+vendor_name = @name.gsub(/\-/, "_")
+master_repo = "http://github.com/radiant"
+system "mkdir -p #{@ray}/tmp"
+if @hub
+  repository = "http://github.com/#{@hub}"
 else
-  ext_repo = "http://github.com/#{ENV['hub']}/"
+  repository = master_repo
 end
-if ENV['fullname'].nil?
-  repo_name = "radiant-#{github_name}-extension"
+if @fullname
+  extension = @fullname
 else
-  repo_name = ENV['fullname']
+  extension = "radiant-#{github_name}-extension"
 end
-github_url = URI.parse("#{ext_repo}#{repo_name}/tarball/master")
+github_url = URI.parse("#{repository}/#{extension}/tarball/master")
 found = false
 until found
   host, port = github_url.host, github_url.port if github_url.host && github_url.port
@@ -23,10 +22,10 @@ until found
   github_response.header['location'] ? github_url = URI.parse(github_response.header['location']) :
 found = true
 end
-open("vendor/extensions/ray/tmp/#{vendor_name}.tar.gz", "wb") { |file|
+open("#{@ray}/tmp/#{vendor_name}.tar.gz", "wb") { |file|
   file.write(github_response.body)
 }
-system "cd vendor/extensions/ray/tmp; tar xzvf #{vendor_name}.tar.gz; rm *.tar.gz"
-system "mv vendor/extensions/ray/tmp/* vendor/extensions/#{vendor_name}"
-rm_rf "vendor/extensions/ray/tmp"
-require 'vendor/extensions/ray/lib/tasks/_extension_post_install.rb'
+system "cd #{@ray}/tmp; tar xzvf #{vendor_name}.tar.gz; rm *.tar.gz"
+system "mv #{@ray}/tmp/* #{@path}/#{vendor_name}"
+rm_rf "#{@ray}/tmp"
+require "#{@task}/_extension_post_install.rb"
