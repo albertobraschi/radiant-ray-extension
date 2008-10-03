@@ -14,7 +14,7 @@ if ENV['path']
 end
 
 @name = ENV['name']
-if ENV['name'].nil?
+if @name.nil?
   puts "=============================================================================="
   puts "You have to tell me which extension to install."
   puts "Try something like: rake ray:ext name=extension_name"
@@ -49,8 +49,8 @@ else
           install_extension
         else
           puts "=============================================================================="
-          puts "You have to tell which GitHub has the extension you want to install."
-          puts "Try something like: rake ray:ext name=nice-ext hub=bob fullname=extension-bob"
+          puts "You have to tell which GitHub user has the extension you want to install."
+          puts "Try something like: rake ray:ext name=nice-ext hub=bob fullname=bo-bo"
           puts "=============================================================================="
         end
       when ENV['hub']

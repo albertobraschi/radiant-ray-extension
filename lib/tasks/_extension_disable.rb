@@ -1,9 +1,13 @@
 name = ENV['name']
+path = 'vendor/extensions'
+if ENV['path']
+  path = ENV['path']
+end
 vendor_name = name.gsub(/\-/, "_")
-mkdir_p "vendor/extensions/ray/disabled_extensions"
-system "mv vendor/extensions/#{vendor_name} vendor/extensions/ray/disabled_extensions/#{vendor_name}"
-puts "==="
+system "mkdir -p #{@ray}/disabled_extensions"
+system "mv #{path}/#{vendor_name} #{@ray}/disabled_extensions/#{vendor_name}"
+puts "=============================================================================="
 puts "The #{vendor_name} extension has been disabled."
 puts "To enable it use: rake ray:en name=#{vendor_name}"
-puts "==="
-require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
+puts "=============================================================================="
+require "#{@task}/_restart_server.rb"
