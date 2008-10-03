@@ -1,5 +1,9 @@
-mkdir_p "tmp"
+puts "=============================================================================="
+begin
+  Dir.open("tmp")
+rescue
+  mkdir_p "tmp"
+end
 system "touch tmp/restart.txt"
-puts "==="
 puts "Your passengers have been restarted."
-puts "==="
+puts "=============================================================================="
