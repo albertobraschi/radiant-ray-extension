@@ -1,4 +1,4 @@
-def install_extension
+def install_extension_git
   require "#{@task}/_extension_install_git.rb"
 end
 def install_extension_http
@@ -43,7 +43,7 @@ else
         @fullname = ENV['fullname']
         if ENV['hub']
           @hub = ENV['hub']
-          install_extension
+          install_extension_git
         else
           puts "=============================================================================="
           puts "You have to tell which GitHub user has the extension you want to install."
@@ -54,17 +54,17 @@ else
         @hub = ENV['hub']
         if ENV['fullname']
           @fullname = ENV['fullname']
-          install_extension
+          install_extension_git
         else
-          install_extension
+          install_extension_git
         end
       else
-        install_extension
+        install_extension_git
       end
     elsif download_pref == "http\n"
       install_extension_http
       restart
-    elsif download_pref != "git\n" || "http\n"
+    else
       puts "=============================================================================="
       puts "Your download preference is broken."
       puts "Please run: rake ray:git"
