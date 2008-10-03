@@ -15,6 +15,9 @@ if @name.nil? && ENV['name'].nil?
   puts "Try something like: rake ray:ext name=extension_name"
   puts "=============================================================================="
 else
+  if ENV['name']
+    @name = ENV['name']
+  end
   begin
     Dir.open(@path)
   rescue
