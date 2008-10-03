@@ -20,4 +20,10 @@ if File.exist?(".git/HEAD")
 else
   system "git clone #{repository}/#{extension}.git #{@path}/#{vendor_name}"
 end
+if @plugin
+  require "#{@task}/_plugin_install_git.rb"
+end
+if @lib
+  require "#{@task}/_library_install.rb"
+end
 require "#{@task}/_extension_post_install.rb"
