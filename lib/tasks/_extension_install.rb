@@ -1,11 +1,8 @@
 def install_extension
-  require "#{@task}/_extension_install_default.rb"
+  require "#{@task}/_extension_install_git.rb"
 end
 def install_extension_http
   require "#{@task}/_extension_install_http.rb"
-end
-def install_custom_extension
-  require "#{@task}/_extension_install_custom.rb"
 end
 
 @path = 'vendor/extensions'
