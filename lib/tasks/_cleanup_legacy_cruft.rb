@@ -1,9 +1,7 @@
-legacy_check = File.new("config/ray.setup", "r") rescue nil
-if legacy_check != nil
+if File.exist?("config/ray.setup")
   system "rm config/ray.setup"
 end
 
-legacy_check = File.new("vendor/extensions/ray/config/setup.txt", "r") rescue nil
-if legacy_check != nil
+if File.exist?("vendor/extensions/ray/config/setup.txt")
   system "rm vendor/extensions/ray/config/setup.txt"
 end
