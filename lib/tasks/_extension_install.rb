@@ -63,8 +63,29 @@ else
         install_extension_git
       end
     elsif download_pref == "http\n"
-      install_extension_http
-      restart
+      case
+      when ENV['fullname']
+        @fullname = ENV['fullname']
+        if ENV['hub']
+          @hub = ENV['hub']
+          install_extension_http
+        else
+          puts "=============================================================================="
+          puts "You have to tell which GitHub user has the extension you want to install."
+          puts "Try something like: rake ray:ext name=nice-ext hub=bob fullname=bo-bo"
+          puts "=============================================================================="
+        end
+      when ENV['hub']
+        @hub = ENV['hub']
+        if ENV['fullname']
+          @fullname = ENV['fullname']
+          install_extension_http
+        else
+          install_extension_http
+        end
+      else
+        install_extension_http
+      end
     else
       puts "=============================================================================="
       puts "Your download preference is broken."
