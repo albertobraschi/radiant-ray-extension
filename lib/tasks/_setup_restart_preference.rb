@@ -1,21 +1,25 @@
-check = File.new("vendor/extensions/ray/config/restart.txt", "r") rescue nil
-if check != nil
+if File.exist?("vendor/extensions/ray/config/restart.txt")
   system "rm vendor/extensions/ray/config/restart.txt"
 else
-  mkdir_p "vendor/extensions/ray/config"
+  # make sure we have a config directory
+  begin
+    Dir.open(@conf)
+  rescue
+    mkdir_p "#{@conf}"
+  end
   system "touch vendor/extensions/ray/config/restart.txt"
 end
+
 def set_server_preference
-  ray_restart = File.open("vendor/extensions/ray/config/restart.txt", "w")
-  ray_restart.puts @server
-  ray_restart.close
-  puts "==="
-  puts "I've set your preferred server to #{@server} in"
-  puts "${RAILS_ROOT}/vendor/extensions/ray/config/restart.txt"
-  puts "This means that anytime you ask Ray to do something that requires"
-  puts "a restart. He'll just go ahead and restart things for you."
-  puts "==="
+  restart_conf = File.open("vendor/extensions/ray/config/restart.txt", "w")
+  restart_conf.puts @server
+  restart_conf.close
+  puts "=============================================================================="
+  puts "I've set your preferred server to #{@server}"
+  puts "So when you do something that requires a restart I'll do it automatically."
+  puts "=============================================================================="
 end
+
 @server = ENV['server'] rescue nil
 if @server
   if @server == "passenger"
@@ -23,15 +27,15 @@ if @server
   elsif @server == "mongrel"
     set_server_preference
   else
-    puts "==="
-    puts "I don't know how to restart #{server}."
-    puts "So I didn't bother writing that to your preference file."
-    puts "==="
+    puts "=============================================================================="
+    puts "I don't know how to restart #{@server}."
+    puts "So it wasn't saved to your preference file."
+    puts "=============================================================================="
   end
 else
-  puts "==="
-  puts "You have to tell me what kind of server to restart."
-  puts "For Mongrel (or mongrel_cluster): rake ray:setup:restart server=mongrel"
+  puts "=============================================================================="
+  puts "You didn't tell me what kind of server you'd like to restart."
+  puts "For Mongrel: rake ray:setup:restart server=mongrel"
   puts "For Passenger: rake ray:setup:restart server=passenger"
-  puts "==="
+  puts "=============================================================================="
 end
