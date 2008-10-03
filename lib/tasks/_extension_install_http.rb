@@ -31,5 +31,10 @@ open("#{@ray}/tmp/#{vendor_name}.tar.gz", "wb") { |file|
 }
 system "cd #{@ray}/tmp; tar xzvf #{vendor_name}.tar.gz; rm *.tar.gz"
 system "mv #{@ray}/tmp/* #{@path}/#{vendor_name}"
-rm_rf "#{@ray}/tmp"
+if @plugin
+  require "#{@task}/_plugin_install_http.rb"
+end
+if @lib
+  require "#{@task}/_library_install.rb"
+end
 require "#{@task}/_extension_post_install.rb"
