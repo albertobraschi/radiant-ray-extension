@@ -3,9 +3,13 @@ if @vendor
 else
   vendor_name = @name.gsub(/\-/, "_")
 end
-vendor_path = @name.gsub(/\-/, "_")
+if @rake
+  rake_file = @rake
+else
+  rake_file = vendor_name
+end
 # determine what tasks need to be run
-if tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+if tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{rake_file}_extension_tasks.rake", "r") rescue nil
   counter = 1
   # check for install task
   while (line = tasks.gets)
@@ -18,7 +22,7 @@ if tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension
   if install_task
     system "rake radiant:extensions:#{vendor_name}:install"
   else
-    tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r")
+    tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{rake_file}_extension_tasks.rake", "r")
     counter = 1
     # check for migrate and update tasks
     while (line = tasks.gets)
