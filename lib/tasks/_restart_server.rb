@@ -4,7 +4,7 @@ end
 def restart_mongrel
   require "#{@task}/_restart_mongrel.rb"
 end
-restart_conf = File.open("#{@conf}/restart.txt", "r")
+restart_conf = File.open("#{@conf}/restart.txt", "r") rescue nil
 if restart_conf
   restart_pref = restart_conf.gets
   if restart_pref == "passenger\n"
@@ -21,18 +21,16 @@ if restart_conf
 else
   if ENV['restart']
     server = ENV['restart']
-    if server == "passenger\n"
+    if server == "passenger"
       restart_passenger
-    elsif server == "mongrel\n"
+    elsif server == "mongrel"
       restart_mongrel
     else
-      puts "=============================================================================="
       puts "Sorry, I don't know how to restart #{server}."
       puts "`passenger` and `mongrel` are the only servers I can restart."
       puts "=============================================================================="
     end
   else
-    puts "=============================================================================="
     puts "You need to restart your server now."
     puts "Try adding `restart=passenger` or `restart=mongrel` next time."
     puts "Or better yet run: rake ray:setup:restart server=passenger and forget it."
