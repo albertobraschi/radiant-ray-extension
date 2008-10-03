@@ -1,11 +1,11 @@
-if @fullname
-  vendor_name = @fullname
+if @vendor
+  vendor_name = @vendor
 else
   vendor_name = @name.gsub(/\-/, "_")
 end
 vendor_path = @name.gsub(/\-/, "_")
 # determine what tasks need to be run
-if tasks = File.open("#{@path}/#{vendor_path}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+if tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
   counter = 1
   # check for install task
   while (line = tasks.gets)
