@@ -46,7 +46,7 @@ else
         @fullname = ENV['fullname']
         if ENV['hub']
           @hub = ENV['hub']
-          install_custom_extension
+          install_extension
         else
           puts "=============================================================================="
           puts "You have to tell which GitHub has the extension you want to install."
@@ -57,7 +57,7 @@ else
         @hub = ENV['hub']
         if ENV['fullname']
           @fullname = ENV['fullname']
-          install_custom_extension
+          install_extension
         else
           install_extension
         end
