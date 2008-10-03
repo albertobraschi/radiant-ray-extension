@@ -15,7 +15,7 @@ if restart_conf
     puts "=============================================================================="
     puts "Your restart preference is broken."
     puts "Please run: rake ray:setup:restart server=passenger"
-    puts "Obviously substituting mongrel for passenger if you use mongrels."
+    puts "Substitute `mongrel` for `passenger` if you use mongrels."
     puts "=============================================================================="
   end
 else
