@@ -1,41 +1,41 @@
-def passenger
-  require 'vendor/extensions/ray/lib/tasks/_restart_passenger.rb'
+def restart_passenger
+  require "#{@task}/_restart_passenger.rb"
 end
-def mongrel
-  require 'vendor/extensions/ray/lib/tasks/_restart_mongrel.rb'
+def restart_mongrel
+  require "#{@task}/_restart_mongrel.rb"
 end
-restart_preference = File.new("vendor/extensions/ray/config/restart.txt", "r") rescue nil
-if restart_preference
-  ray_restart = restart_preference.gets
-  restart_preference.close
-  if ray_restart == "passenger\n"
-    passenger
-  elsif ray_restart == "mongrel\n"
-    mongrel
-  else
-    puts "==="
-    puts "I don't know how to restart #{ray_restart}"
-    puts "I only know how to restart 'passenger' or 'mongrel'"
-    puts "==="
+restart_conf = File.open("#{@conf}/restart.txt", "r")
+if restart_conf
+  restart_pref = restart_conf.gets
+  if restart_pref == "passenger\n"
+    restart_passenger
+  elsif restart_pref == "mongrel\n"
+    restart_mongrel
+  elsif restart_pref != "passenger\n" || "mongrel\n"
+    puts "=============================================================================="
+    puts "Your restart preference is broken."
+    puts "Please run: rake ray:setup:restart server=passenger"
+    puts "Obviously substituting mongrel for passenger if you use mongrels."
+    puts "=============================================================================="
   end
 else
-  if ENV['restart'].nil?
-    puts "You should restart your server now."
-    puts "Try adding restart=mongrel or restart=passenger next time."
-  else
+  if ENV['restart']
     server = ENV['restart']
-    if server == "mongrel"
-      mongrel
-    elsif server == "passenger"
-      passenger
+    if server == "passenger\n"
+      restart_passenger
+    elsif server == "mongrel\n"
+      restart_mongrel
     else
-      puts "==="
-      puts "I don't know how to restart #{ENV['restart']}"
-      puts "I only know how to restart 'passenger' or 'mongrel'"
-      puts ""
-      puts "You should restart your server now."
-      puts "Try adding restart=mongrel or restart=passenger next time."
-      puts "==="
+      puts "=============================================================================="
+      puts "Sorry, I don't know how to restart #{server}."
+      puts "`passenger` and `mongrel` are the only servers I can restart."
+      puts "=============================================================================="
     end
+  else
+    puts "=============================================================================="
+    puts "You need to restart your server now."
+    puts "Try adding `restart=passenger` or `restart=mongrel` next time."
+    puts "Or better yet run: rake ray:setup:restart server=passenger and forget it."
+    puts "=============================================================================="
   end
 end
