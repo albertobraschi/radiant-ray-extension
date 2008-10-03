@@ -1,12 +1,11 @@
 vendor_name = @name.gsub(/\-/, "_")
 # determine what tasks need to be run
-begin
-  tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r")
+if tasks = File.open("#{@path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r")
   counter = 1
   # check for install task
   while (line = tasks.gets)
     install_task = line.include? ":install"
-    break if install_search
+    break if install_task
     counter = counter + 1
   end
   tasks.close
@@ -36,11 +35,10 @@ begin
   puts "The #{vendor_name} extension has been installed."
   puts "To disable it run: rake ray:dis name=#{vendor_name}"
   puts "=============================================================================="
-rescue
+else
   puts "=============================================================================="
-  puts "I couldn't find any tasks to run for the #{vendor_name} extension."
-  puts "So it's hard to tell weather it installed correctly."
-  puts "Please manually verify the installation."
+  puts "I couldn't find a tasks file for the #{vendor_name} extension."
+  puts "Please manually verify the installation and restart the server."
   puts "=============================================================================="
+  exit
 end
-require "#{@task}/_restart_server.rb"
