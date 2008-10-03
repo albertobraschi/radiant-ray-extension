@@ -5,7 +5,6 @@ def install_extension_http
   require "#{@task}/_extension_install_http.rb"
 end
 
-@path = 'vendor/extensions'
 if ENV['path']
   @path = ENV['path']
 end
