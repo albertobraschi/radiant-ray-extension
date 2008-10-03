@@ -9,8 +9,7 @@ if ENV['path']
   @path = ENV['path']
 end
 
-@name = ENV['name']
-if @name.nil?
+if @name.nil? && ENV['name'].nil?
   puts "=============================================================================="
   puts "You have to tell me which extension to install."
   puts "Try something like: rake ray:ext name=extension_name"
