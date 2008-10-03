@@ -1,52 +1,47 @@
 name = ENV['name']
+path = 'vendor/extensions'
+if ENV['path']
+  path = ENV['path']
+end
 vendor_name = name.gsub(/\-/, "_")
-if ENV['name'].nil?
-  puts "==="
+if name.nil?
+  puts "=============================================================================="
   puts "You have to tell me which extension to remove."
   puts "Try something like: rake ray:rm name=extension_name"
-  puts "==="
+  puts "=============================================================================="
 else
   if name == "paperclipped"
-    migration_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/assets_extension_tasks.rake", "r") rescue nil
+    tasks = File.open("#{path}/#{vendor_name}/lib/tasks/assets_extension_tasks.rake", "r") rescue nil
   else
-    migration_check = File.new("vendor/extensions/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
+    tasks = File.open("#{path}/#{vendor_name}/lib/tasks/#{vendor_name}_extension_tasks.rake", "r") rescue nil
   end
-  if migration_check
+  if tasks
     counter = 1
-    while (line = migration_check.gets)
-      migrate_search = line.include? ":migrate"
-      if migrate_search
+    while (line = tasks.gets)
+      migrate_task = line.include? ":migrate"
+      if migrate_task
         system "rake radiant:extensions:#{vendor_name}:migrate VERSION=0"
       end
       counter = counter + 1
     end
-    migration_check.close
-    puts "==="
-    puts "Migrations added by the #{vendor_name} extension have been removed."
-    puts "==="
+    tasks.close
+    puts "=============================================================================="
+    puts "Migrations added by the #{vendor_name} extension have been dropped."
   else
-    puts "==="
+    puts "=============================================================================="
     puts "The #{vendor_name} extension didn't have any migrations to remove."
-    puts "==="
   end
-  mkdir_p "vendor/extensions/ray/removed_extensions"
-  system "mv vendor/extensions/#{vendor_name} vendor/extensions/ray/removed_extensions/#{vendor_name}"
-  puts "==="
+  system "mkdir -p #{@ray}/removed_extensions"
+  system "mv #{path}/#{vendor_name} #{@ray}/removed_extensions/#{vendor_name}"
+  puts "If the #{vendor_name} extension put anything in your `/public` directory"
+  puts "it will still be there. Please remove these files by hand if necessary."
   puts "The #{vendor_name} extension has been removed."
-  puts ""
-  puts "If the #{vendor_name} extension put anything in your /public directory"
-  puts "it's been left there and you will need to remove it by hand."
-  puts "==="
+  puts "=============================================================================="
 end
-
-git_check = File.new(".git/HEAD", "r") rescue nil
-if git_check
-  system "git submodule rm --cached vendor/extensions/#{vendor_name}"
-  git_check.close
-  puts "==="
+if File.exist?(".gitmodules")
+  system "git submodule rm --cached #{path}/#{vendor_name}"
   puts "Staged the #{vendor_name} extension for deletion."
-  puts "You'll need to `git commit` before it's actually deleted."
-  puts "==="
+  puts "You'll need to `git commit` before it's removed from the index."
+  puts "=============================================================================="
 end
-
-require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
+require "#{@task}/_restart_server.rb"
