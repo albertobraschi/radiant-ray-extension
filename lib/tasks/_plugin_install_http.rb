@@ -1,10 +1,8 @@
 require 'net/http'
-name = @plugin_name
-vendor_name = name.gsub(/\-/, "_")
-hub = @plugin_hub
-ext_repo = "http://github.com/#{hub}/"
-mkdir_p "vendor/extensions/ray/tmp"
-github_url = URI.parse("#{ext_repo}#{name}/tarball/master")
+unless @plugin_path
+  @plugin_path = @plugin
+end
+github_url = URI.parse("http://github.com/#{@plugin_repository}/#{@plugin}/tarball/master")
 found = false
 until found
   host, port = github_url.host, github_url.port if github_url.host && github_url.port
@@ -13,9 +11,8 @@ until found
   github_response.header['location'] ? github_url = URI.parse(github_response.header['location']) :
 found = true
 end
-open("vendor/extensions/ray/tmp/#{vendor_name}.tar.gz", "wb") { |file|
+open("#{@ray}/tmp/#{@plugin}.tar.gz", "wb") { |file|
   file.write(github_response.body)
 }
-system "cd vendor/extensions/ray/tmp; tar xzvf #{vendor_name}.tar.gz; rm *.tar.gz"
-system "mv vendor/extensions/ray/tmp/* vendor/plugins/#{vendor_name}"
-rm_rf "vendor/extensions/ray/tmp"
+system "cd #{@ray}/tmp; tar xzvf #{@plugin}.tar.gz; rm *.tar.gz"
+system "mv #{@ray}/tmp/* vendor/plugins/#{@plugin_path}"
