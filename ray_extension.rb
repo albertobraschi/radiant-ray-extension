@@ -2,8 +2,8 @@
 # require_dependency 'application'
 
 class RayExtension < Radiant::Extension
-  version "1.1"
-  description "Sunshine"
+  version "1.2"
+  description "Special Friend"
   url "http://johnmuhl.com/workbook/ray"
   
   # define_routes do |map|
