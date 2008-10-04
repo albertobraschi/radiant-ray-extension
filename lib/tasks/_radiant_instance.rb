@@ -1,29 +1,27 @@
-submodule_check = File.new(".gitmodules", "r") rescue nil
-if submodule_check
+if File.exist?(".gitmodules")
+  submodules = File.open(".gitmodules", "r")
   counter = 1
-  while (line = submodule_check.gets)
-    radiant_search = line.include? "\[submodule\ \"vendor\/radiant\"\]"
-    break if radiant_search
+  while (line = submodules.gets)
+    radiant_submodule = line.include? "\[submodule\ \"vendor\/radiant\"\]"
+    break if radiant_submodule
     counter = counter + 1
   end
-  submodule_check.close
-  if radiant_search
+  submodules.close
+  if radiant_submodule
+    puts "=============================================================================="
     system "git rm --cached vendor/radiant"
-    puts "==="
     puts "Radiant has been locked to your latest Radiant gem version."
-    puts "Don't forget to run"
-    puts "git commit -am 'lock to latest Radiant gem version'"
-    puts "to make sure this is reflected in your Git index."
-    puts "==="
+    puts "Your previous Radiant submodule has been staged for deletion"
+    puts "=============================================================================="
   else
-    rm_r "vendor/radiant"
-    puts "==="
+    puts "=============================================================================="
+    system "rm -r vendor/radiant"
     puts "Radiant has been locked to your latest Radiant gem version."
-    puts "==="
+    puts "=============================================================================="
   end
 else
-  rm_r "vendor/radiant"
-  puts "==="
+  puts "=============================================================================="
+  system "rm -r vendor/radiant"
   puts "Radiant has been locked to your latest Radiant gem version."
-  puts "==="
+  puts "=============================================================================="
 end
