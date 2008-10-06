@@ -6,14 +6,10 @@ Ray is not so much an extension to Radiant as it is a collection of `rake` tasks
 Installing Ray
 ---
 
+	pick one
+	========
 	./script/extension install ray
-	===
-	or
-	===
 	git clone git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray
-	===
-	or
-	===
 	wget http://github.com/johnmuhl/radiant-ray-extension/tarball/master
 
 Then restart your server.
@@ -24,7 +20,7 @@ Setup
 ###First time user
 
 	rake ray:setup
-	===
+	==============
 	this command completely destroys any existing Ray preferences.
 	**DO NOT** use it for upgrading between versions.
 
@@ -38,7 +34,10 @@ Setup
 
 ###Resetting your server preference
 
-	rake ray:setup:restart
+	pick one
+	========
+	rake ray:setup:restart server=passenger
+	rake ray:setup:restart server=mongrel
 
 Installing extensions
 ---
@@ -80,6 +79,28 @@ Finally, you can supply the `name`, `fullname` and `hub` variables to get any ex
 You still need to supply the `name` variable so Ray can install the extension into the proper directory.
 
 [cm]: http://github.com/pilu/radiant-copy-move
+
+###Bulk install extensions from a YAML file
+
+You can create a simple YAML file called `extensions.yml` in your Radiant application's `config` directory and then use
+
+	rake ray:bundle
+
+to install all of those extensions at once. Here is what the `extensions.yml` file would look like to install the Aggregation, Help, Link Roll, Markdown and Page Attachments extensions.
+
+	---
+	- name: aggregation
+	- name: link-roll
+	- name: help
+	  hub: saturnflyer
+	- name: markdown
+	  hub: johnmuhl
+	  lib: rdiscount
+	  vendor: markdown_filter
+	- name: page_attachments
+	  plugin: attachment_fu
+	  plugin_repository: technoweenie
+	  lib: mini_magick
 
 ###Special extensions
 
@@ -191,7 +212,7 @@ Installing the edge Radiant
 
 Ray differs slightly from the bundled `rake radiant:freeze:edge` in a couple of ways, most notably
 
-* Installs Edge Radiant as a Git submodule instead of clone
+* Installs Edge Radiant as a Git submodule or clone (just like extensions)
 * Can fallback on HTTP when Git is unavailable
 
 To grab Edge Radiant with Ray you just run
