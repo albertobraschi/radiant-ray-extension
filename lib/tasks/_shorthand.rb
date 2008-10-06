@@ -42,6 +42,9 @@ task :edge => ["radiant:edge"]
 desc "Revert from Edge Radiant to your latest gem version."
 task :instance => ["radiant:instance"]
 
+# desc "Install an extension bundle."
+task :bundle => ["extension:bundle_install"]
+
 desc "Restart your server."
 task :restart do
   require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'
