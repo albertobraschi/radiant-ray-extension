@@ -11,7 +11,7 @@ if restart_conf
     restart_passenger
   elsif restart_pref == "mongrel\n"
     restart_mongrel
-  elsif restart_pref != "passenger\n" || "mongrel\n"
+  else
     puts "=============================================================================="
     puts "Your restart preference is broken."
     puts "Please run: rake ray:setup:restart server=passenger"
