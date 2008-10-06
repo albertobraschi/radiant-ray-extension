@@ -42,7 +42,7 @@ task :edge => ["radiant:edge"]
 desc "Revert from Edge Radiant to your latest gem version."
 task :instance => ["radiant:instance"]
 
-# desc "Install an extension bundle."
+desc "Install an extension bundle."
 task :bundle => ["extension:bundle_install"]
 
 desc "Search extensions by keyword."
