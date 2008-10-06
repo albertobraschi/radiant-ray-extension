@@ -2,3 +2,4 @@
 config/
 disabled_extensions/
 removed_extensions/
+tmp/
