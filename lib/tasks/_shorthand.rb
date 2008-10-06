@@ -45,6 +45,9 @@ task :instance => ["radiant:instance"]
 # desc "Install an extension bundle."
 task :bundle => ["extension:bundle_install"]
 
+desc "Search extensions by keyword."
+task :search => ["extension:search"]
+
 desc "Restart your server."
 task :restart do
   require 'vendor/extensions/ray/lib/tasks/_restart_server.rb'

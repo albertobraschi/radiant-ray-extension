@@ -1,0 +1,930 @@
+# sadly github features a broken search api
+# in so much as you can only get the first
+# page of results. so this file has to be
+# built by hand. updated: 2008/10/06
+--- 
+repositories: 
+- name: radiant-extension-registry
+  watchers: 13
+  private: false
+  url: http://github.com/radiant/radiant-extension-registry
+  forks: 1
+  description: A web service to support the distribution and installation of extensions for Radiant CMS.
+  owner: radiant
+- name: radiant-extensions
+  watchers: 12
+  private: false
+  url: http://github.com/freels/radiant-extensions
+  forks: 1
+  description: Various and sundry extensions written for Radiant CMS (http://radiantcms.org)
+  homepage: http://matt.freels.name
+  owner: freels
+- name: radiant_extensions
+  watchers: 4
+  private: false
+  url: http://github.com/divineflame/radiant_extensions
+  forks: 0
+  description: Extensions for Radiant CMS
+  owner: divineflame
+- name: radiant-share-layouts-extension
+  watchers: 9
+  private: false
+  url: http://github.com/radiant/radiant-share-layouts-extension
+  forks: 0
+  description: An extension for Radiant CMS that allows controllers to render their views within Radiant layouts.
+  owner: radiant
+- name: radiant-aggregation-extension
+  watchers: 9
+  private: false
+  url: http://github.com/radiant/radiant-aggregation-extension
+  forks: 2
+  description: An extension for Radiant CMS to collect the children of unrelated pages for iteration with <r:children:each>.
+  owner: radiant
+- name: radiant-import-export-extension
+  watchers: 10
+  private: false
+  url: http://github.com/radiant/radiant-import-export-extension
+  forks: 2
+  description: An extension for Radiant CMS to support importing and exporting data between the database and YAML.
+  owner: radiant
+- name: radiant-page-attachments-extension
+  watchers: 22
+  private: false
+  url: http://github.com/radiant/radiant-page-attachments-extension
+  forks: 7
+  description: An extension for Radiant CMS to support file uploads modeled as attachments to pages.
+  owner: radiant
+- name: radiant-search-extension
+  watchers: 9
+  private: false
+  url: http://github.com/radiant/radiant-search-extension
+  forks: 1
+  description: An extension for Radiant CMS to support searching pages.
+  owner: radiant
+- name: radiant-event-calendar-extension
+  watchers: 7
+  private: false
+  url: http://github.com/radiant/radiant-event-calendar-extension
+  forks: 2
+  description: An extension for Radiant CMS that integrates with iCal feeds and lets you display them in pages.
+  owner: radiant
+- name: radiant-ldap-extension
+  watchers: 2
+  private: false
+  url: http://github.com/radiant/radiant-ldap-extension
+  forks: 0
+  description: An extension for Radiant CMS to support access to LDAP directories.
+  owner: radiant
+- name: radiant-related-content-extension
+  watchers: 5
+  private: false
+  url: http://github.com/radiant/radiant-related-content-extension
+  forks: 1
+  description: An extension for Radiant CMS to support relating pages to one another arbitrarily.
+  owner: radiant
+- name: radiant-link-roll-extension
+  watchers: 2
+  private: false
+  url: http://github.com/radiant/radiant-link-roll-extension
+  forks: 0
+  description: An extension for Radiant CMS that lets you create link rolls, or lists of favorite links.
+  owner: radiant
+- name: radiant-reorder-extension
+  watchers: 11
+  private: false
+  url: http://github.com/radiant/radiant-reorder-extension
+  forks: 2
+  description: An extension for Radiant CMS that allows you to specify and change the order of child pages within their parent page.
+  owner: radiant
+- name: radiant-mailer-extension
+  watchers: 13
+  private: false
+  url: http://github.com/radiant/radiant-mailer-extension
+  forks: 5
+  description: An extension for Radiant CMS that allows you to create 'contact us' and other mail-bound forms.
+  owner: radiant
+- name: radiant-sass-filter-extension
+  watchers: 4
+  private: false
+  url: http://github.com/radiant/radiant-sass-filter-extension
+  forks: 0
+  description: An extension for Radiant CMS that adds a Sass filter to page parts.
+  owner: radiant
+- name: radiant-multi-site-extension
+  watchers: 15
+  private: false
+  url: http://github.com/radiant/radiant-multi-site-extension
+  forks: 5
+  description: An extension for Radiant CMS that lets you serve multiple sites (domains) from a single instance.
+  owner: radiant
+- name: radiant-scheduler-extension
+  watchers: 6
+  private: false
+  url: http://github.com/radiant/radiant-scheduler-extension
+  forks: 0
+  description: An extension for Radiant CMS that lets you specify date/times for pages to appear and expire (disappear).
+  owner: radiant
+- name: radiant-metaweblog-extension
+  watchers: 2
+  private: false
+  url: http://github.com/skrat/radiant-metaweblog-extension
+  forks: 0
+  description: Radiant extension to allow publishing/adding pages via MetaWeblog API (Google Docs, ScribeFire, ...)
+  owner: skrat
+- name: radiant-comments-extension
+  watchers: 5
+  private: false
+  url: http://github.com/tricycle/radiant-comments-extension
+  forks: 1
+  description: from http://svn.artofmission.com/svn/plugins/radiant/extensions/comments
+  homepage: http://svn.artofmission.com/svn/plugins/radiant/extensions/comments/README
+  owner: tricycle
+- name: radiant-translator-extension
+  watchers: 1
+  private: false
+  url: http://github.com/cradle/radiant-translator-extension
+  forks: 0
+  description: Radiant extension that allows for different page parts to be rendered depending on the user's Accept-Language header.
+  homepage: http://dev.philburrows.com/svn/radiant-extensions/translator/trunk/README
+  owner: cradle
+- name: radiant-banner-rotator-extension
+  watchers: 3
+  private: false
+  url: http://github.com/seancribbs/radiant-banner-rotator-extension
+  forks: 0
+  description: A simple Radiant extension that supports randomly rotating banners on pages.
+  owner: seancribbs
+- name: radiant-page-event
+  watchers: 9
+  private: false
+  url: http://github.com/mghaught/radiant-page-event
+  forks: 2
+  description: Radiant extension for page-based event calendar for associating time-based events with your Radiant pages
+  owner: mghaught
+- name: radiant-import-mephisto
+  watchers: 4
+  private: false
+  url: http://github.com/martinbtt/radiant-import-mephisto
+  forks: 0
+  description: Radiant extension that aids in the process of migrating from the Mephisto blogging engine to Radiant CMS
+  owner: martinbtt
+- name: radiant-multi-site-hacks-extension
+  watchers: 4
+  private: false
+  url: http://github.com/tricycle/radiant-multi-site-hacks-extension
+  forks: 0
+  description: " \t Alpha: Custom extensions to the RadiantCMS core MultiSite extension: http://dev.radiantcms.org/svn/radiant/trunk/extensions/multi_site/"
+  owner: tricycle
+- name: radiant-help_use_cases-extension
+  watchers: 2
+  private: false
+  url: http://github.com/saturnflyer/radiant-help_use_cases-extension
+  forks: 0
+  description: Adds additional information to the Help extension (radiant-help-extension)
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-directory-extension
+  watchers: 8
+  private: false
+  url: http://github.com/lorenjohnson/radiant-directory-extension
+  forks: 0
+  description: An extension for managing a directory of items (stores, churches, etc.) in Radiant CMS
+  homepage: http://www.hellovenado.com
+  owner: lorenjohnson
+- name: radiant-quiz-extension
+  watchers: 3
+  private: false
+  url: http://github.com/ntalbott/radiant-quiz-extension
+  forks: 0
+  description: Radiant Quiz Extension
+  homepage: http://terralien.com/
+  owner: ntalbott
+- name: radiant-reorder-extension
+  watchers: 3
+  private: false
+  url: http://github.com/ntalbott/radiant-reorder-extension
+  forks: 0
+  description: Radiant Reorder Extension
+  owner: ntalbott
+- name: radiant-markdown-extension
+  watchers: 1
+  private: false
+  url: http://github.com/johnmuhl/radiant-markdown-extension
+  forks: 0
+  description: A clone of the Radiant Markdown extension using RDiscount.
+  homepage: http://johnmuhl.com/workbook/radiant-markdown-extension
+  owner: johnmuhl
+- name: radiant-dynamic-image-extension
+  watchers: 3
+  private: false
+  url: http://github.com/narced133/radiant-dynamic-image-extension
+  forks: 0
+  description: An extension for radiant to allow dynamic image generation through RMagick
+  owner: narced133
+--- 
+repositories: 
+- name: radiant-help-extension
+  watchers: 10
+  private: false
+  url: http://github.com/saturnflyer/radiant-help-extension
+  forks: 1
+  description: Help documentation extension for radiant cms
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-nested-layouts-extension
+  watchers: 4
+  private: false
+  url: http://github.com/moklett/radiant-nested-layouts-extension
+  forks: 1
+  description: "An extension for Radiant CMS which provides tags for creating nested layouts. "
+  homepage: http://webadvocate.com/radiant-nested-layouts-extension
+  owner: moklett
+- name: radiant-rss-feed-extension
+  watchers: 1
+  private: false
+  url: http://github.com/danielegozzi/radiant-rss-feed-extension
+  forks: 0
+  description: An extension that serves RSS feeds from Radiant pages without having to write a custom layout. Also, it supports keyword-based extraction of pages for producing RSS feeds.
+  owner: danielegozzi
+- name: radiant-exception-notification-extension
+  watchers: 9
+  private: false
+  url: http://github.com/digitalpulp/radiant-exception-notification-extension
+  forks: 3
+  description: Email notification and managed error templates for Radiant and other extensions
+  homepage: http://digitalpulp.com
+  owner: digitalpulp
+- name: radiant-simple-password-extension
+  watchers: 1
+  private: false
+  url: http://github.com/yoon/radiant-simple-password-extension
+  forks: 0
+  description: A Radiant CMS extension for authenticating access to a single page with a HTTP Basic password
+  owner: yoon
+- name: radiant-default-page-parts-extension
+  watchers: 2
+  private: false
+  url: http://github.com/santry/radiant-default-page-parts-extension
+  forks: 0
+  description: A new Default Page Parts extension for the Radiant CMS
+  owner: santry
+- name: radiant-mail-to-extension
+  watchers: 3
+  private: false
+  url: http://github.com/yoon/radiant-mail-to-extension
+  forks: 1
+  description: MailTo is a Radiant CMS extension that hides e-mails from robots. It is a simple wrapper for the Rails mail_to tag with :encode => :javascript.
+  owner: yoon
+- name: radiant-templates-extension
+  watchers: 8
+  private: false
+  url: http://github.com/seancribbs/radiant-templates-extension
+  forks: 0
+  description: An extension for Radiant CMS to create page "templates" or "inner layouts" that constrain the structure and editing UI of a page.
+  owner: seancribbs
+- name: radiant-file-browser-extension
+  watchers: 1
+  private: false
+  url: http://github.com/ssvfhp21/radiant-file-browser-extension
+  forks: 0
+  description: radiant-file-browser-extension
+  owner: ssvfhp21
+- name: radiant-linksmanager-extension
+  watchers: 1
+  private: false
+  url: http://github.com/lacostej/radiant-linksmanager-extension
+  forks: 0
+  description: Small Radiant (CMS) extension for managing link redirections
+  owner: lacostej
+- name: radiant-smer-extension
+  watchers: 2
+  private: false
+  url: http://github.com/henryhamon/radiant-smer-extension
+  forks: 0
+  description: Simple Mailer Extension for Radiant
+  owner: henryhamon
+- name: radiant-copy-move
+  watchers: 17
+  private: false
+  url: http://github.com/pilu/radiant-copy-move
+  forks: 5
+  description: It's an extension for Radiant CMS. It allows for a page to be copied (or moved) under a new parent.
+  homepage: http://gravityblast.com/projects/radiant-copymove-extension/
+  owner: pilu
+- name: radiant-language-switch
+  watchers: 4
+  private: false
+  url: http://github.com/lorenjohnson/radiant-language-switch
+  forks: 1
+  description: A basic internationalization extension for Radiant CMS which allows simple template switching based upon language.
+  homepage: http://www.hellovenado.com
+  owner: lorenjohnson
+- name: radiant-utility-tags
+  watchers: 3
+  private: false
+  url: http://github.com/lorenjohnson/radiant-utility-tags
+  forks: 0
+  description: "Mostly proprietary Radiant CMS extension utility Radius tag library. "
+  homepage: http://www.hellovenado.com
+  owner: lorenjohnson
+- name: radiant-tags-extension
+  watchers: 7
+  private: false
+  url: http://github.com/jomz/radiant-tags-extension
+  forks: 3
+  description: Extends Radiant CMS with tagging capabilities. Tagging as in "2.0" and tagclouds.
+  homepage: http://gorilla-webdesign.be
+  owner: jomz
+- name: radiant-trike-tags-extension
+  watchers: 7
+  private: false
+  url: http://github.com/tricycle/radiant-trike-tags-extension
+  forks: 1
+  description: "Beta: A handfull of Radiant tags that we've found generally useful."
+  owner: tricycle
+- name: radiant-portfolio
+  watchers: 5
+  private: false
+  url: http://github.com/saturnflyer/radiant-portfolio
+  forks: 0
+  description: client portfolio extension for radiant cms
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-fragment-cacher
+  watchers: 4
+  private: false
+  url: http://github.com/mokisystems/radiant-fragment-cacher
+  forks: 0
+  description: Extension adds tags for fragment caching in Radiant CMS
+  homepage: http://www.mokisystems.com
+  owner: mokisystems
+- name: radiant-ratings-extension
+  watchers: 3
+  private: false
+  url: http://github.com/mikehale/radiant-ratings-extension
+  forks: 1
+  description: Ratings for radiant pages
+  homepage: http://terralien.com
+  owner: mikehale
+- name: radiant-settings
+  watchers: 15
+  private: false
+  url: http://github.com/Squeegy/radiant-settings
+  forks: 3
+  description: A global setting editor extension for Radiant
+  owner: Squeegy
+- name: radiant-paginate-extension
+  watchers: 2
+  private: false
+  url: http://github.com/ihoka/radiant-paginate-extension
+  forks: 0
+  description: Pagination for Radiant with will_paginate
+  owner: ihoka
+- name: radiant-header_authorize-extension
+  watchers: 2
+  private: false
+  url: http://github.com/saturnflyer/radiant-header_authorize-extension
+  forks: 0
+  description: Overrides the Radiant authentication to login by HTTP header
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-sphinx-search-extension
+  watchers: 9
+  private: false
+  url: http://github.com/digitalpulp/radiant-sphinx-search-extension
+  forks: 1
+  description: Adds Thinking Sphinx support to Radiant pages
+  homepage: http://digitalpulp.com
+  owner: digitalpulp
+- name: radiant-file-system-extension
+  watchers: 9
+  private: false
+  url: http://github.com/nelstrom/radiant-file-system-extension
+  forks: 1
+  description: Save a Radiant site to the file system for easy editing and/or version control. Load from file system back into the database
+  owner: nelstrom
+- name: radiant-sectionalize-extension
+  watchers: 3
+  private: false
+  url: http://github.com/djcp/radiant-sectionalize-extension
+  forks: 0
+  description: A set of radius tags designed to make splitting Radiant sites into "sections" easier for more flexible CSS layouts.
+  owner: djcp
+- name: radiant-dav-extension
+  watchers: 1
+  private: false
+  url: http://github.com/willcodeforfoo/radiant-dav-extension
+  forks: 0
+  description: Access Radiant through WebDAV
+  owner: willcodeforfoo
+- name: radiant-redcloth4-extension
+  watchers: 2
+  private: false
+  url: http://github.com/jgarber/radiant-redcloth4-extension
+  forks: 0
+  description: Overrides Radiant's packaged RedCloth version so you can use a newer RedCloth gem.
+  owner: jgarber
+- name: radiant-wordpress_link_saver-extension
+  watchers: 2
+  private: false
+  url: http://github.com/saturnflyer/radiant-wordpress_link_saver-extension
+  forks: 0
+  description: Maintains the links within imported content from Wordpress to Radiant
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-help_inline-extension
+  watchers: 2
+  private: false
+  url: http://github.com/saturnflyer/radiant-help_inline-extension
+  forks: 0
+  description: Adds help information directly into the Radiant interface (rather than in a separate tab)
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-application_theme-extension
+  watchers: 2
+  private: false
+  url: http://github.com/saturnflyer/radiant-application_theme-extension
+  forks: 0
+  description: Provides the ability to alter the default Radiant interface without changing the underlying layout.
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+--- 
+repositories: 
+- name: radiant-jump-page-extension
+  watchers: 2
+  private: false
+  url: http://github.com/mikehale/radiant-jump-page-extension
+  forks: 0
+  description: Provides a 'jump page' for all external links from your radiant site.
+  owner: mikehale
+- name: radiant-file_based_layout-extension
+  watchers: 2
+  private: false
+  url: http://github.com/RSpace/radiant-file_based_layout-extension
+  forks: 1
+  description: Allows pages served by Radiant to share a standard file-based Rails layout with Rails-generated pages
+  homepage: http://ext.radiantcms.org/extensions/14-file-based-layout
+  owner: RSpace
+- name: radiant-members-extension
+  watchers: 3
+  private: false
+  url: http://github.com/farra/radiant-members-extension
+  forks: 1
+  description: Extends the Radiant user model to support site members
+  homepage: http://www.cubiclemuses.com/cm
+  owner: farra
+- name: radiant-site_watcher-extension
+  watchers: 3
+  private: false
+  url: http://github.com/saturnflyer/radiant-site_watcher-extension
+  forks: 0
+  description: Records popular pages in Radiant by counting the number of times the cache has been created for each url
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-jargon-extension
+  watchers: 1
+  private: false
+  url: http://github.com/kbingman/radiant-jargon-extension
+  forks: 0
+  description: Translation of the Radiant Admin interface using Gibberish
+  owner: kbingman
+- name: radiant-super-export-extension
+  watchers: 3
+  private: false
+  url: http://github.com/ihoka/radiant-super-export-extension
+  forks: 0
+  description: Import/export for Radiant databases with source control friendlyness.
+  homepage: http://github.com/ihoka/radiant-super-export-extension
+  owner: ihoka
+- name: radiant-featured_pages-extension
+  watchers: 3
+  private: false
+  url: http://github.com/saturnflyer/radiant-featured_pages-extension
+  forks: 0
+  description: Adds the ability to feature pages in Radiant and list them without regard to their place in the page hierarchy
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-conferences-extensions
+  watchers: 4
+  private: false
+  url: http://github.com/farra/radiant-conferences-extensions
+  forks: 1
+  description: Manage conferences with speakers, sessions and sponsors with Radiant CMS
+  homepage: http://www.apachecon.com
+  owner: farra
+- name: radiant-user_home-extension
+  watchers: 1
+  private: false
+  url: http://github.com/saturnflyer/radiant-user_home-extension
+  forks: 0
+  description: Allows user configurable home screen location for Radiant CMS
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-upload-manager
+  watchers: 2
+  private: false
+  url: http://github.com/haitham/radiant-upload-manager
+  forks: 0
+  description: An extension for Radiant CMS for uploading multiple files at once
+  homepage: http://e-haitham.blogspot.com/2008/09/upload-manager-radiant-cms-extension.html
+  owner: haitham
+- name: assets_extension
+  watchers: 11
+  private: false
+  url: http://github.com/kbingman/assets_extension
+  forks: 1
+  description: Radiant Image and Assets Extension
+  homepage: http://github.com/kbingman/assets_extension/wikis
+  owner: kbingman
+- name: radiant_page_preview_extension
+  watchers: 6
+  private: false
+  url: http://github.com/vigetlabs/radiant_page_preview_extension
+  forks: 1
+  description: This extension allows you to view previews of pages, even if they are not in "published" mode.
+  owner: vigetlabs
+- name: radiant-ray-extension
+  watchers: 10
+  private: false
+  url: http://github.com/johnmuhl/radiant-ray-extension
+  forks: 0
+  description: Ray makes installing extensions a breeze. Uses git or http.
+  homepage: http://johnmuhl.com/workbook/ray
+  owner: johnmuhl
+- name: radiant-concurrent_draft-extension
+  watchers: 5
+  private: false
+  url: http://github.com/avonderluft/radiant-concurrent_draft-extension
+  forks: 0
+  description: RadiantCMS extensions for concurrent drafts
+  owner: avonderluft
+- name: radiant-location-extension
+  watchers: 6
+  private: false
+  url: http://github.com/adsmart/radiant-location-extension
+  forks: 0
+  description: Implements a simple locator extension
+  homepage: http://starkravingcoder.blogspot.com
+  owner: adsmart
+- name: rerender_text
+  watchers: 3
+  private: false
+  url: http://github.com/AndrewO/rerender_text
+  forks: 0
+  description: A simple Radiant extension that provides a method to easily re-render text within a Radius tag
+  owner: AndrewO
+- name: site_language
+  watchers: 6
+  private: false
+  url: http://github.com/DefV/site_language
+  forks: 1
+  description: Radiant Extension for multiple language support
+  owner: DefV
+- name: navigation_tags
+  watchers: 8
+  private: false
+  url: http://github.com/derencius/navigation_tags
+  forks: 1
+  description: Radiant Extension - navigation_tags
+  owner: derencius
+- name: fast_snippet
+  watchers: 1
+  private: false
+  url: http://github.com/AndrewO/fast_snippet
+  forks: 0
+  description: A Radiant extension that can speed up <r:snippet/> (in some cases)
+  owner: AndrewO
+- name: paperclipped
+  watchers: 24
+  private: false
+  url: http://github.com/kbingman/paperclipped
+  forks: 3
+  description: Radiant extension for managing assets and images with the Paperclip plugin
+  owner: kbingman
+- name: radiant-compress-css-filter-extension
+  watchers: 5
+  private: false
+  url: http://github.com/tricycle/radiant-compress-css-filter-extension
+  forks: 1
+  description: "Beta: reduce white space and noise in stylesheets"
+  owner: tricycle
+- name: radiant-redirecting-fnf-page-extension
+  watchers: 5
+  private: false
+  url: http://github.com/tricycle/radiant-redirecting-fnf-page-extension
+  forks: 1
+  description: "Beta: FileNotFound page that supports 301 and 302 redirects in addition to 404"
+  owner: tricycle
+- name: radiant-greedy-page-extension
+  watchers: 5
+  private: false
+  url: http://github.com/tricycle/radiant-greedy-page-extension
+  forks: 1
+  description: "Beta: A page that will return for any url that implies a child page"
+  owner: tricycle
+- name: radiant-shopping-trike-extension
+  watchers: 6
+  private: false
+  url: http://github.com/tricycle/radiant-shopping-trike-extension
+  forks: 0
+  description: "Alpha: A simple shopping cart for RadiantCMS"
+  owner: tricycle
+- name: radiant-static-caching-extension
+  watchers: 9
+  private: false
+  url: http://github.com/tricycle/radiant-static-caching-extension
+  forks: 0
+  description: "Beta: Monkeypatch caching to write #{path}.html files so url rewrites can be used to serve cached content"
+  owner: tricycle
+- name: radiant-subscriber-lists-extension
+  watchers: 1
+  private: false
+  url: http://github.com/nelstrom/radiant-subscriber-lists-extension
+  forks: 0
+  description: Allows you to create one or more lists to which your site's visitors may subscribe, by submitting their email address.
+  owner: nelstrom
+- name: radiant-file-browser-extension
+  watchers: 9
+  private: false
+  url: http://github.com/tricycle/radiant-file-browser-extension
+  forks: 1
+  description: "Alpha: Lists the contents of a server-side directory, and allows uploading of files to it"
+  owner: tricycle
+- name: find_fu
+  watchers: 1
+  private: false
+  url: http://github.com/inz/find_fu
+  forks: 0
+  description: Radiant extension to add some advanced find functionality.
+  owner: inz
+- name: radiant-email-page-extension
+  watchers: 8
+  private: false
+  url: http://github.com/mikehale/radiant-email-page-extension
+  forks: 0
+  description: Email pages, and keep track of how many times each page was emailed.
+  homepage: http://terralien.com
+  owner: mikehale
+- name: radiant-page-group-permissions-extension
+  watchers: 4
+  private: false
+  url: http://github.com/MrGossett/radiant-page-group-permissions-extension
+  forks: 0
+  description: Organize your users into groups and divide up site-editing privileges accordingly
+  homepage: http://mrgossett
+  owner: MrGossett
+--- 
+repositories: 
+- name: radiant_page_meta_extension
+  watchers: 1
+  private: false
+  url: http://github.com/MrGossett/radiant_page_meta_extension
+  forks: 0
+  description: page meta
+  owner: MrGossett
+- name: radiant_validator_extension
+  watchers: 1
+  private: false
+  url: http://github.com/MrGossett/radiant_validator_extension
+  forks: 0
+  description: validator
+  owner: MrGossett
+- name: radiant_sns_sass_filter_extension
+  watchers: 2
+  private: false
+  url: http://github.com/MrGossett/radiant_sns_sass_filter_extension
+  forks: 0
+  description: Adds Sass filtering to your SnS stylesheets
+  homepage: https://secure.svnrepository.com/s_swanki/open/radiant/extensions/sns_sass_filter/tags/latest/README
+  owner: MrGossett
+- name: radiant_sns_minifier_extension
+  watchers: 1
+  private: false
+  url: http://github.com/MrGossett/radiant_sns_minifier_extension
+  forks: 0
+  description: Adds the ability to minify CSS and JS files. This way, you can keep your code the way you like it in the editor but serve up minified files.
+  homepage: https://secure.svnrepository.com/s_swanki/open/radiant/extensions/sns_minifier/tags/latest/README
+  owner: MrGossett
+- name: radiant_sns_extension
+  watchers: 3
+  private: false
+  url: http://github.com/MrGossett/radiant_sns_extension
+  forks: 0
+  description: "A means of separating javascripts &amp; stylesheets from other site content stored in pages. "
+  homepage: https://secure.svnrepository.com/s_swanki/open/radiant/extensions/styles_n_scripts/tags/latest/
+  owner: MrGossett
+- name: ba
+  watchers: 11
+  private: false
+  url: http://github.com/aslakhellesoy/ba
+  forks: 3
+  description: Ba is a Radiant extension for conference and event management
+  owner: aslakhellesoy
+- name: radiant-wmd-filter-extension
+  watchers: 4
+  private: false
+  url: http://github.com/MrGossett/radiant-wmd-filter-extension
+  forks: 0
+  description: Use WMD to write Markdown in a WYSIWYM editor
+  homepage: http://mrgossett.com
+  owner: MrGossett
+- name: radiant-wrappits-extension
+  watchers: 3
+  private: false
+  url: http://github.com/nelstrom/radiant-wrappits-extension
+  forks: 0
+  description: Allows you to create double tag snippets (<r:snippet></r:snippet>), whose content can be inserted in the snippet with <r:yield/>.
+  owner: nelstrom
+- name: radiant-drafts-extension
+  watchers: 1
+  private: false
+  url: http://github.com/saturnflyer/radiant-drafts-extension
+  forks: 0
+  description: Provides the ability to manage drafts of Page Parts.
+  owner: saturnflyer
+- name: radiant-mailer-logger-extension
+  watchers: 6
+  private: false
+  url: http://github.com/tricycle/radiant-mailer-logger-extension
+  forks: 0
+  description: "Alpha: Extends mailer with database logging functionality"
+  homepage: http://github.com/tricycle/radiant-mailer-logger-extension/
+  owner: tricycle
+- name: radiant-admin_breadcrumbs-extension
+  watchers: 3
+  private: false
+  url: http://github.com/saturnflyer/radiant-admin_breadcrumbs-extension
+  forks: 0
+  description: Adds breadcrumb links to the page edit interface for ancestors of the current page.
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-vapor-extension
+  watchers: 5
+  private: false
+  url: http://github.com/saturnflyer/radiant-vapor-extension
+  forks: 0
+  description: Creates an interface to manage the redirection of URLs
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-rbac-base-extension
+  watchers: 3
+  private: false
+  url: http://github.com/saturnflyer/radiant-rbac-base-extension
+  forks: 0
+  description: Role Based Access Control
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-page_list_view-extension
+  watchers: 3
+  private: false
+  url: http://github.com/avonderluft/radiant-page_list_view-extension
+  forks: 0
+  description: Enables viewing site pages in a list view sortable by attibute
+  owner: avonderluft
+- name: radiant-paperclipped_multisite-extension
+  watchers: 2
+  private: false
+  url: http://github.com/kbingman/radiant-paperclipped_multisite-extension
+  forks: 0
+  description: Adds multisite support to paperclipped, showing assets only for the current site if the user is not an admin
+  owner: kbingman
+- name: radiant-seo_help-extension
+  watchers: 4
+  private: false
+  url: http://github.com/saturnflyer/radiant-seo_help-extension
+  forks: 0
+  description: Provides extra tags for page meta information.
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-sibling-tags-extension
+  watchers: 2
+  private: false
+  url: http://github.com/nelstrom/radiant-sibling-tags-extension
+  forks: 0
+  description: Allows you to refer to the current page's previous/next sibling.
+  owner: nelstrom
+- name: radiant-blog-extension
+  watchers: 3
+  private: false
+  url: http://github.com/saturnflyer/radiant-blog-extension
+  forks: 0
+  description: Adds features for blogging
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-can-haz-error-extension
+  watchers: 2
+  private: false
+  url: http://github.com/cradle/radiant-can-haz-error-extension
+  forks: 1
+  description: Simple page that will throw an error. For testing how your site handles errors.
+  owner: cradle
+- name: legacy_path_handler
+  watchers: 1
+  private: false
+  url: http://github.com/intinig/legacy_path_handler
+  forks: 0
+  description: Radiant Extension for 301 redirection of old URLs
+  homepage: http://tempe.st/legacy_path_handler
+  owner: intinig
+- name: radiant-dashboard-extension
+  watchers: 8
+  private: false
+  url: http://github.com/saturnflyer/radiant-dashboard-extension
+  forks: 0
+  description: Provides an area to view (and extend) recent activity in Radiant.
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-textile_editor-extension
+  watchers: 5
+  private: false
+  url: http://github.com/jgarber/radiant-textile_editor-extension
+  forks: 0
+  description: Adds a toolbar to make editing pages and snippets written in Textile easier.
+  owner: jgarber
+- name: radiant-movies-extension
+  watchers: 2
+  private: false
+  url: http://github.com/nelstrom/radiant-movies-extension
+  forks: 0
+  description: Allows you to manage embedded movied from youTube, vimeo etc.
+  owner: nelstrom
+- name: reg-exp-urls
+  watchers: 1
+  private: false
+  url: http://github.com/peburrows/reg-exp-urls
+  forks: 0
+  description: Radiant extension to provide for regular expression URL tags
+  homepage: http://blog.philburrows.com/articles/2008/02/21/and-were-back/
+  owner: peburrows
+- name: translator
+  watchers: 2
+  private: false
+  url: http://github.com/peburrows/translator
+  forks: 0
+  description: Radiant extension for simple, elegant language localization
+  homepage: http://blog.philburrows.com/articles/2008/02/21/and-were-back/
+  owner: peburrows
+- name: database_form
+  watchers: 13
+  private: false
+  url: http://github.com/zapnap/database_form
+  forks: 4
+  description: Database Form Page Extension for Radiant CMS
+  owner: zapnap
+- name: page_attachments
+  watchers: 6
+  private: false
+  url: http://github.com/AndrewO/page_attachments
+  forks: 1
+  description: A clone of Radiant's page_attachments extension with a bugfix
+  homepage: http://wiki.radiantcms.org/Installing_Extension_-_Page_Attachments
+  owner: AndrewO
+- name: blogtags
+  watchers: 4
+  private: false
+  url: http://github.com/santry/blogtags
+  forks: 0
+  description: An extension that provides some useful blogging tags for the Radiant CMS
+  homepage: http://seansantry.com/projects/blogtags/
+  owner: santry
+- name: flickrtags
+  watchers: 5
+  private: false
+  url: http://github.com/santry/flickrtags
+  forks: 0
+  description: An extension for the Radiant CMS that provides tags for embedding Flickr slideshows
+  homepage: http://seansantry.com/projects/flickrtags/
+  owner: santry
+- name: enkodertags
+  watchers: 5
+  private: false
+  url: http://github.com/santry/enkodertags
+  forks: 0
+  description: An extension for the Radiant CMS with tags for hiding web content from robots using Dan Benjamin's enkoder
+  homepage: http://seansantry.com/projects/enkodertags/
+  owner: santry
+--- 
+repositories: 
+- name: page_redirect
+  watchers: 5
+  private: false
+  url: http://github.com/randomutterings/page_redirect
+  forks: 2
+  description: This is an extension for Radiant CMS which allows you to redirect pages with http status codes.
+  homepage: http://www.randomutterings.com/projects/page_redirect
+  owner: randomutterings
+- name: admin_tree_structure
+  watchers: 5
+  private: false
+  url: http://github.com/kbingman/admin_tree_structure
+  forks: 0
+  description: Extension for Radiant CMS that sorts children of ArchivePages by year and by month on the backend
+  homepage: http://kbingman.com
+  owner: kbingman
+- name: roleaid
+  watchers: 2
+  private: false
+  url: http://github.com/vigetlabs/roleaid
+  forks: 0
+  description: An extension for the Radiant CMS to easily create new roles.
+  owner: vigetlabs

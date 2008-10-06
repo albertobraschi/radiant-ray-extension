@@ -28,6 +28,9 @@ namespace :ray do
     task :bundle_install do
       require "#{@task}/_extension_install_bundle.rb"
     end
+    task :search do
+      require "#{@task}/_extension_search.rb"
+    end
   end
   namespace :setup do
     task :initial do
