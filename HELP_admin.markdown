@@ -50,6 +50,23 @@ Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'l
 * `hub` [github user name -- optional]
 * `fullname` [non-standard-extension_name -- requires `hub`]
 
+###Searching for extensions
+
+If you're just curious what extensions are available you can easily search directly from Ray. Ray can only handle single term searches like,
+
+	rake ray:search term=blog
+
+This is will output the necessary information for installation and a short description of the extensions found. For instance the above search would output something including
+
+	name: import-mephisto
+	fullname: radiant-import-mephisto
+	hub: martinbtt
+	Radiant extension that aids in the process of migrating from the Mephisto...
+
+So to install this extension you would use the command
+
+	rake ray:ext name=import-mephisto fullname=radiant-import-mephisto hub=martinbtt
+
 ###Install an extension from the official Radiant repository
 
 The easiest sort of installation is of extensions in the [official Radiant repository][rr]. If you wanted to install the Link Roll extension you would simply run
