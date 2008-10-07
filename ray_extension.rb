@@ -2,7 +2,7 @@
 # require_dependency 'application'
 
 class RayExtension < Radiant::Extension
-  version "1.2"
+  version "1.3"
   description "Special Friend"
   url "http://johnmuhl.com/workbook/ray"
   
