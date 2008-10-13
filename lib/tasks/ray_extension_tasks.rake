@@ -65,3 +65,16 @@ namespace :ray do
     end
   end
 end
+
+namespace :radiant do
+  namespace :extensions do
+    namespace :ray do
+      task :migrate do
+        puts "No migrations necessary."
+      end
+      task :update do
+        puts "No updates necessary."
+      end
+    end
+  end
+end
