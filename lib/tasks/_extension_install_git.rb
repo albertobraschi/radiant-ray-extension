@@ -26,4 +26,7 @@ end
 if @lib
   require "#{@task}/_library_install.rb"
 end
+if @fork
+  require "#{@task}/_extension_fork_remote.rb"
+end
 require "#{@task}/_extension_post_install.rb"

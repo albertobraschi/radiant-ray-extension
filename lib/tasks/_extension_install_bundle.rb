@@ -20,6 +20,10 @@ File.open("config/extensions.yml") do |bundle|
         lib = extension[count]['lib']
         installer.puts "\@lib\ \=\ \"#{lib}\""
       end
+      if extension[count]['lib']
+        fork = extension[count]['fork']
+        installer.puts "\@fork\ \=\ \"#{fork}\""
+      end
       if extension[count]['plugin']
         plugin = extension[count]['plugin']
         installer.puts "\@plugin\ \=\ \"#{plugin}\""
