@@ -49,6 +49,7 @@ Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'l
 * `name` [extension_name -- required]
 * `hub` [github user name -- optional]
 * `fullname` [non-standard-extension_name -- requires `hub`]
+* `fork` [add git fork as remote -- requires `git` as installation method]
 
 ###Searching for extensions
 
@@ -97,6 +98,14 @@ You still need to supply the `name` variable so Ray can install the extension in
 
 [cm]: http://github.com/pilu/radiant-copy-move
 
+###Add git fork as remote
+
+If you use `git` as installation method and want to easily merge changes, you can add the git fork as remote named 'fork' to the submodule by supplying the `fork` variable. This enables you to use
+
+    git pull fork master
+
+to merge changes from the fork into the submodule.
+
 ###Bulk install extensions from a YAML file
 
 You can create a simple YAML file called `extensions.yml` in your Radiant application's `config` directory and then use
@@ -118,6 +127,9 @@ to install all of those extensions at once. Here is what the `extensions.yml` fi
 	  plugin: attachment_fu
 	  plugin_repository: technoweenie
 	  lib: mini_magick
+    - name: blog
+      hub: netzpirat
+      fork: saturnflyer/radiant-blog-extension
 
 ###Special extensions
 
