@@ -14,6 +14,7 @@ if File.exist?("#{@path}/#{@vendor_name}/.git/HEAD")
     end
     puts "The repository 'git://github.com/#{@remote}'"
     puts "has been added to the submodule '#{@vendor_name}' as remote '#{remote_hub}'."
+    puts "To pull it run: rake ray:pull name=#{@vendor_name}"
     puts "=============================================================================="
   end
 end

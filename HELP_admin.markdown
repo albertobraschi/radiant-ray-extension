@@ -106,7 +106,7 @@ If you use `git` as installation method and want to merge changes from another g
 
 from within the submodule directory to merge changes from the remote repository, whereas `remotehub` is the name of the github user where the repository is located at. The format of the `remote` variable must match `remotehub/repository`.
 
-This option is considered to use for extension development and thus uses your clone url `git@github.com:username/repository.git` instead of `git://github.com/username/repository.git, so that you can push changes back to the repository.
+This option is considered to use for extension development and thus uses your clone url `git@github.com:username/repository.git` instead of `git://github.com/username/repository.git`, so that you can push changes back to the repository.
 
 ###Bulk install extensions from a YAML file
 
@@ -213,6 +213,13 @@ Removing extensions
 Removing an extension is a little different than disabling in that remove will try to revert any migrations the extension added. Removed extensions end up in `vendor/ray/removed_extensions`. To remove an extension run
 
 	rake ray:rm name=extension-name
+
+Merge extension remotes
+---
+
+If you've added a github repository as remote to an extension by providing the `remote` variable on extension installation, you can merge changes from the repository into the submodule by running
+
+	rake ray:pull name=extension-name
 
 Restarting your application server
 ---

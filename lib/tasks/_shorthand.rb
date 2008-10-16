@@ -15,6 +15,9 @@ task :dis => ["extension:disable"]
 desc "Enable an extension."
 task :en => ["extension:enable"]
 
+desc "Merge all remotes of an extension."
+task :pull => ["extension:pull"]
+
 desc "Install the Paperclipped Asset Manager."
 task :assets => ["extension:paperclipped"]
 
