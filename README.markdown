@@ -1,1 +1,1 @@
-For Help refer to [the help file](http://github.com/johnmuhl/radiant-ray-extension/tree/master/HELP_admin.markdown)
+For Help refer to [the help file](HELP_admin.markdown)

@@ -39,8 +39,8 @@ else
     download_pref = download_conf.gets
     download_conf.close
     if download_pref == "git\n"
-      if ENV['fork']
-        @fork = ENV['fork']
+      if ENV['remote']
+        @remote = ENV['remote']
       end
       case
       when ENV['fullname']

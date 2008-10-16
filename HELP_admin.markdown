@@ -49,7 +49,7 @@ Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'l
 * `name` [extension_name -- required]
 * `hub` [github user name -- optional]
 * `fullname` [non-standard-extension_name -- requires `hub`]
-* `fork` [add git fork as remote -- requires `git` as installation method]
+* `remote` [add github repository as git remote -- requires `git` as installation method]
 
 ###Searching for extensions
 
@@ -98,13 +98,15 @@ You still need to supply the `name` variable so Ray can install the extension in
 
 [cm]: http://github.com/pilu/radiant-copy-move
 
-###Add git fork as remote
+###Add github repository as git remote
 
-If you use `git` as installation method and want to easily merge changes, you can add the git fork as remote named 'fork' to the submodule by supplying the `fork` variable. This enables you to use
+If you use `git` as installation method and want to merge changes from another github repository, you can add the github repository as git remote to the submodule by supplying the `remote` variable. This enables you to use
 
-    git pull fork master
+    git pull `remotehub` master
 
-to merge changes from the fork into the submodule.
+from within the submodule directory to merge changes from the remote repository, whereas `remotehub` is the name of the github user where the repository is located at. The format of the `remote` variable must match `remotehub/repository`.
+
+This option is considered to use for extension development and thus uses your clone url `git@github.com:username/repository.git` instead of `git://github.com/username/repository.git, so that you can push changes back to the repository.
 
 ###Bulk install extensions from a YAML file
 
@@ -117,7 +119,7 @@ to install all of those extensions at once. Here is what the `extensions.yml` fi
 	---
 	- name: aggregation
 	- name: link-roll
-	- name: help
+	- name: help`
 	  hub: saturnflyer
 	- name: markdown
 	  hub: johnmuhl
@@ -129,7 +131,7 @@ to install all of those extensions at once. Here is what the `extensions.yml` fi
 	  lib: mini_magick
     - name: blog
       hub: netzpirat
-      fork: saturnflyer/radiant-blog-extension
+      remote: saturnflyer/radiant-blog-extension
 
 ###Special extensions
 

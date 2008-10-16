@@ -20,9 +20,9 @@ File.open("config/extensions.yml") do |bundle|
         lib = extension[count]['lib']
         installer.puts "\@lib\ \=\ \"#{lib}\""
       end
-      if extension[count]['fork']
-        fork = extension[count]['fork']
-        installer.puts "\@fork\ \=\ \"#{fork}\""
+      if extension[count]['remote']
+        remote = extension[count]['remote']
+        installer.puts "\remote\ \=\ \"#{remote}\""
       end
       if extension[count]['plugin']
         plugin = extension[count]['plugin']
