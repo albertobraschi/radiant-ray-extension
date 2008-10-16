@@ -119,7 +119,7 @@ to install all of those extensions at once. Here is what the `extensions.yml` fi
 	---
 	- name: aggregation
 	- name: link-roll
-	- name: help`
+	- name: help
 	  hub: saturnflyer
 	- name: markdown
 	  hub: johnmuhl
