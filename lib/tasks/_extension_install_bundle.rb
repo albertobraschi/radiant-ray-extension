@@ -52,7 +52,8 @@ File.open("config/extensions.yml") do |bundle|
       generic_install = File.read("#{@task}/_extension_install.rb")
       installer.puts generic_install
       installer.close
-      system "ruby #{@ray}/tmp/#{name}_extension_install.rb"
+      system "ruby #{@ray}/tmp/#{name}_extension_install.rb && rm #{@ray}/tmp/#{name}_extension_install.rb"
     end
   end
+  system "rm -r #{@ray}/tmp"
 end
