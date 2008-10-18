@@ -49,7 +49,7 @@ Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'l
 * `name` [extension_name -- required]
 * `hub` [github user name -- optional]
 * `fullname` [non-standard-extension_name -- requires `hub`]
-* `remote` [add github repository as git remote -- requires `git` as installation method]
+* `remote` [add GitHub repository as git remote -- requires `git` as installation method]
 
 ###Searching for extensions
 
@@ -98,15 +98,15 @@ You still need to supply the `name` variable so Ray can install the extension in
 
 [cm]: http://github.com/pilu/radiant-copy-move
 
-###Add github repository as git remote
+###Add GitHub repository as git remote
 
-If you use `git` as installation method and want to merge changes from another github repository, you can add the github repository as git remote to the submodule by supplying the `remote` variable. This enables you to use
+If you use `git` as your installation method and want to merge changes from another GitHub repository, you can add the repository as a `git remote` to the submodule by supplying the `remote` variable. This enables you to use
 
-    git pull `remotehub` master
+	git pull 'remotehub' master
 
-from within the submodule directory to merge changes from the remote repository, whereas `remotehub` is the name of the github user where the repository is located at. The format of the `remote` variable must match `remotehub/repository`.
+from within the submodule directory to merge changes from the remote repository. `remotehub` is the name of the GitHub user where the repository is located at. The format of the `remote` variable must match `remotehub/repository`.
 
-This option is considered to use for extension development and thus uses your clone url `git@github.com:username/repository.git` instead of `git://github.com/username/repository.git`, so that you can push changes back to the repository.
+This option is most useful for extension development and thus uses your clone url, i.e. `git@github.com:username/repository.git` instead of `git://github.com/username/repository.git`, so that you can push changes back to the repository.
 
 ###Bulk install extensions from a YAML file
 
@@ -129,9 +129,9 @@ to install all of those extensions at once. Here is what the `extensions.yml` fi
 	  plugin: attachment_fu
 	  plugin_repository: technoweenie
 	  lib: mini_magick
-    - name: blog
-      hub: netzpirat
-      remote: saturnflyer/radiant-blog-extension
+	- name: blog
+	  hub: netzpirat
+	  remote: saturnflyer/radiant-blog-extension
 
 ###Special extensions
 
@@ -217,7 +217,7 @@ Removing an extension is a little different than disabling in that remove will t
 Merge extension remotes
 ---
 
-If you've added a github repository as remote to an extension by providing the `remote` variable on extension installation, you can merge changes from the repository into the submodule by running
+If you've added a GitHub repository as remote to an extension by providing the `remote` variable on extension installation, you can merge changes from the repository into the submodule by running
 
 	rake ray:pull name=extension-name
 
