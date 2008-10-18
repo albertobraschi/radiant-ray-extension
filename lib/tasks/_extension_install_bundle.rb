@@ -22,7 +22,7 @@ File.open("config/extensions.yml") do |bundle|
       end
       if extension[count]['remote']
         remote = extension[count]['remote']
-        installer.puts "\remote\ \=\ \"#{remote}\""
+        installer.puts "\@remote\ \=\ \"#{remote}\""
       end
       if extension[count]['plugin']
         plugin = extension[count]['plugin']
