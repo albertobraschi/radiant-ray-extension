@@ -18,7 +18,13 @@ if @fullname
 else
   extension = "radiant-#{github_name}-extension"
 end
-if File.exist?(".git/HEAD")
+if @path != "vendor/extensions"
+  if File.exist?("#{@path}/.git/HEAD")
+    system "git submodule add #{repository}/#{extension}.git #{@path}/#{@vendor_name}"
+  else
+    system "git clone #{repository}/#{extension}.git #{@path}/#{@vendor_name}"
+  end
+elsif File.exist?(".git/HEAD")
   system "git submodule add #{repository}/#{extension}.git #{@path}/#{@vendor_name}"
 else
   system "git clone #{repository}/#{extension}.git #{@path}/#{@vendor_name}"
