@@ -1,5 +1,5 @@
 namespace :ray do
-  require "vendor/extensions/ray/lib/tasks/_shorthand.rb"
+  require File.expand_path( File.dirname( __FILE__ ) + '/../shorthand' )
   namespace :extension do
     task :install do
       require File.expand_path( File.dirname( __FILE__ ) + '/../install' )
