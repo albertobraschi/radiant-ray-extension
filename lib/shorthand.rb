@@ -21,9 +21,6 @@ task :pull => ["extension:pull"]
 desc "Install the Page Attachments extension."
 task :attachments => ["extension:page_attachments"]
 
-desc "Install the Help documentation extension."
-task :help => ["extension:help"]
-
 desc "Install the RDiscount Markdown filter."
 task :markdown => ["extension:markdown"]
 

@@ -19,9 +19,6 @@ namespace :ray do
     task :page_attachments do
       require "#{@task}/_extension_page_attachments.rb"
     end
-    task :help do
-      require "#{@task}/_extension_help.rb"
-    end
     task :markdown do
       require "#{@task}/_extension_markdown.rb"
     end
