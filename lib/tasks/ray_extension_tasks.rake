@@ -2,7 +2,7 @@ namespace :ray do
   require "vendor/extensions/ray/lib/tasks/_shorthand.rb"
   namespace :extension do
     task :install do
-      require "#{@task}/_extension_install.rb"
+      require File.expand_path( File.dirname( __FILE__ ) + '/../install' )
     end
     task :remove do
       require "#{@task}/_extension_remove.rb"
