@@ -18,9 +18,6 @@ task :en => ["extension:enable"]
 desc "Merge all remotes of an extension."
 task :pull => ["extension:pull"]
 
-desc "Install the Paperclipped Asset Manager."
-task :assets => ["extension:paperclipped"]
-
 desc "Install the Page Attachments extension."
 task :attachments => ["extension:page_attachments"]
 

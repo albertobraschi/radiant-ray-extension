@@ -16,9 +16,6 @@ namespace :ray do
     task :pull do
       require "#{@task}/_extension_pull.rb"
     end
-    task :paperclipped do
-      require "#{@task}/_extension_paperclipped.rb"
-    end
     task :page_attachments do
       require "#{@task}/_extension_page_attachments.rb"
     end
