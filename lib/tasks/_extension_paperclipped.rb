@@ -1,5 +1,0 @@
-@name = "paperclipped"
-@fullname = "paperclipped"
-@hub  = "kbingman"
-@rake = "assets"
-require "#{@task}/_extension_install.rb"
