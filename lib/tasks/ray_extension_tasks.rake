@@ -16,12 +16,6 @@ namespace :ray do
     task :pull do
       require "#{@task}/_extension_pull.rb"
     end
-    task :page_attachments do
-      require "#{@task}/_extension_page_attachments.rb"
-    end
-    task :markdown do
-      require "#{@task}/_extension_markdown.rb"
-    end
     task :bundle_install do
       require "#{@task}/_extension_install_bundle.rb"
     end

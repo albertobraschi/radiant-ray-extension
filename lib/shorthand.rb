@@ -18,12 +18,6 @@ task :en => ["extension:enable"]
 desc "Merge all remotes of an extension."
 task :pull => ["extension:pull"]
 
-desc "Install the Page Attachments extension."
-task :attachments => ["extension:page_attachments"]
-
-desc "Install the RDiscount Markdown filter."
-task :markdown => ["extension:markdown"]
-
 desc "Run Ray's initial setup tasks."
 task :setup => ["setup:initial"]
 

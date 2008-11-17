@@ -1,5 +1,0 @@
-@vendor = "markdown_filter"
-@name   = "markdown"
-@hub    = "johnmuhl"
-@lib    = "rdiscount"
-require "#{@task}/_extension_install.rb"
