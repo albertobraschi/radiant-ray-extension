@@ -374,24 +374,6 @@ namespace :ray do
   #     require "#{@task}/_setup_restart_preference.rb"
   #   end
   # end
-  # namespace :radiant do
-  #   task :edge do
-  #     require "#{@task}/_radiant_edge.rb"
-  #   end
-  #   task :instance do
-  #     require "#{@task}/_radiant_instance.rb"
-  #   end
-  #   task :branch do
-  #     puts "==="
-  #     puts "Not implemented."
-  #     puts "==="
-  #   end
-  #   task :tag do
-  #     puts "==="
-  #     puts "Not implemented."
-  #     puts "==="
-  #   end
-  # end
 end
 
 # supress faulty error messages
