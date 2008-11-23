@@ -1,17 +1,28 @@
 namespace :ray do
-  @ray  = "vendor/extensions/ray"
+  @ray  = 'vendor/extensions/ray'
   @conf = "#{ @ray }/config"
-  @path = "vendor/extensions"
+  @path = 'vendor/extensions'
 
   namespace :extension do
     task :install do
+      @message = 'You have to tell me which extension to install, e.g.'
+      @example = 'rake ray:ext name=extension_name'
+      check_command_input
       check_download_preference
-      pre_extension_installation
       extension_installation
       post_extension_installation
     end
     task :search do
-      extension_installation_setup
+      @message = 'You have to give me a term to search for, e.g.'
+      @example = 'rake ray:search term=xyz'
+      check_command_input
+      search_extensions
+    end
+    task :disable do
+      @message = 'You have to tell me which extension to disable, e.g.'
+      @example = 'rake ray:dis name=extension_name'
+      check_command_input
+      disable_extension
     end
   end
 
@@ -24,24 +35,95 @@ namespace :ray do
     end
   end
 
+  def check_command_input
+    if ENV[ 'term' ]
+      @term = ENV[ 'term' ]
+    elsif ENV[ 'name' ]
+      @name = ENV[ 'name' ].gsub( /_/, '-' )
+      @dir = @name.gsub( /-/, '_' )
+    else
+      puts "=============================================================================="
+      print "#{ @message }\n#{ @example }\n"
+      puts "=============================================================================="
+      exit
+    end
+  end
+
+  def search_extensions
+    if File.exist?( "#{ @ray }/search.yml" )
+      if ENV[ 'term' ]
+        @term = ENV[ 'term' ].downcase
+        search_cache
+        show_search_results
+      else
+        @term = @name
+        search_cache
+        setup_extension_installation
+      end
+    else
+      search_online
+    end
+  end
+  def search_cache
+    require 'yaml'
+    @extension = []
+    @source = []
+    @http_url = []
+    @description = []
+    File.open( "#{ @ray }/search.yml" ) do |repositories|
+      YAML.load_documents( repositories ) do |repository|
+        total = repository[ 'repositories' ].length
+        for i in 0...total
+          found = false
+          repo = repository[ 'repositories' ][i][ 'name' ]
+          if repo.include?( @term )
+            @extension << repo
+            owner = repository[ 'repositories' ][i][ 'owner' ]
+            @source << owner
+            location = repository[ 'repositories' ][i][ 'url' ].gsub( /http/, 'git' )
+            @http_url << location
+            desc = repository[ 'repositories' ][i][ 'description' ]
+            @description << desc
+          end
+        end
+      end
+    end
+  end
+  def search_online
+    puts "=============================================================================="
+    puts "Online searching is not yet implemented."
+    puts "It's waiting on GitHub to have a useful (search) API."
+    puts "=============================================================================="
+  end
+  def show_search_results
+    puts "=============================================================================="
+    if @extension.length == 0
+      puts "Your search - #{ @term } - did not match any extensions."
+      puts "=============================================================================="
+      exit
+    end
+    i = 0
+    while i < @extension.length
+      ext_name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
+      puts "  extension: #{ ext_name }"
+      puts "     source: " + @source[i]
+      puts "description: " + @description[i]
+      puts "    install: rake ray:ext name=#{ ext_name }"
+      puts "=============================================================================="
+      i += 1
+    end
+  end
+
+
+  def disable_extension
+    puts "disable"
+  end
+
   def check_download_preference
     if File.exist?( "#{ @conf }/download.txt" )
       get_download_preference
     else
       setup_download_preference
-    end
-  end
-
-  def pre_extension_installation
-    if ENV[ "name" ]
-      @name = ENV[ "name" ].gsub( /_/, "-" )
-      @dir = @name.gsub( /-/, "_" )
-    else
-      puts "=============================================================================="
-      puts "You have to tell me which extension you want to install."
-      puts "Try: rake ray:ext name=extension_name"
-      puts "=============================================================================="
-      exit
     end
   end
 
@@ -125,45 +207,6 @@ namespace :ray do
     setup_download_preference
   end
 
-  def cached_search
-    @extension = []
-    @source = []
-    @http_url = []
-    @description = []
-    File.open( "#{ @ray }/search.yml" ) do |repositories|
-      YAML.load_documents( repositories ) do |repository|
-        total = repository[ 'repositories' ].length
-        for i in 0...total
-          found = false
-          repo = repository[ 'repositories' ][ i ][ 'name' ]
-          if repo.include?( @term )
-            @extension << repo
-            owner = repository[ 'repositories' ][ i ][ 'owner' ]
-            @source << owner
-            location = repository[ 'repositories' ][ i ][ 'url' ].gsub( /http/, "git" )
-            @http_url << location
-            desc = repository[ 'repositories' ][ i ][ 'description' ]
-            @description << desc
-          end
-        end
-      end
-    end
-  end
-
-  def show_search_results
-    puts "=============================================================================="
-    i = 0
-    while i < @extension.length
-      ext_name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
-      puts "  extension: #{ ext_name }"
-      puts "     source: " + @source[i]
-      puts "description: " + @description[i]
-      puts "    install: rake ray:ext name=#{ ext_name }"
-      puts "=============================================================================="
-      i += 1
-    end
-  end
-
   def find_the_extension_to_install
     if @extension.length == 0
       puts "=============================================================================="
@@ -187,19 +230,6 @@ namespace :ray do
         puts "rake ray:ext name=" + nice_name
       end
       exit
-    end
-  end
-
-  def extension_installation_setup
-    require "yaml"
-    if ENV[ 'term' ]
-      @term = ENV[ 'term' ].downcase
-      cached_search
-      show_search_results
-    else
-      @term = @name
-      cached_search
-      find_the_extension_to_install
     end
   end
 
@@ -363,6 +393,8 @@ namespace :ray do
   desc "Search available extensions."
   task :search => ["extension:search"]
 
+  desc "Disable an extension."
+  task :dis => ["extension:disable"]
   # namespace :extension do
   #   task :remove do
   #     require "#{@task}/_extension_remove.rb"
