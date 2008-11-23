@@ -268,7 +268,7 @@ namespace :ray do
         for i in 0...total
           found = false
           extension = repository[ 'repositories' ][i][ 'name' ]
-          if extension.include?( @term )
+          if extension.include?( @term ) or extension.include?( @name )
             @extension << extension
             source = repository[ 'repositories' ][i][ 'owner' ]
             @source << source
@@ -296,9 +296,10 @@ namespace :ray do
     end
     i = 0
     while i < @extension.length
-      ext_name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
+      ext_name = @extension[ i ].gsub( /radiant-/, '' ).gsub( /-extension/, '' )
       puts "  extension: #{ ext_name }"
-      puts 'description: ' + @description[i]
+      puts '     author: ' + @source[ i ]
+      puts 'description: ' + @description[ i ]
       puts "    command: rake ray:ext name=#{ ext_name }"
       puts '=============================================================================='
       i += 1
