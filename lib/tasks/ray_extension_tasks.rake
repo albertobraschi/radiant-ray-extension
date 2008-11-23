@@ -10,6 +10,9 @@ namespace :ray do
       extension_installation
       post_extension_installation
     end
+    task :search do
+      extension_installation_setup
+    end
   end
 
   namespace :setup do
@@ -126,6 +129,7 @@ namespace :ray do
     @extension = []
     @source = []
     @http_url = []
+    @description = []
     File.open( "#{ @ray }/search.yml" ) do |repositories|
       YAML.load_documents( repositories ) do |repository|
         total = repository[ 'repositories' ].length
@@ -138,9 +142,25 @@ namespace :ray do
             @source << owner
             location = repository[ 'repositories' ][ i ][ 'url' ].gsub( /http/, "git" )
             @http_url << location
+            desc = repository[ 'repositories' ][ i ][ 'description' ]
+            @description << desc
           end
         end
       end
+    end
+  end
+
+  def show_search_results
+    puts "=============================================================================="
+    i = 0
+    while i < @extension.length
+      ext_name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
+      puts "  extension: #{ ext_name }"
+      puts "     source: " + @source[i]
+      puts "description: " + @description[i]
+      puts "    install: rake ray:ext name=#{ ext_name }"
+      puts "=============================================================================="
+      i += 1
     end
   end
 
@@ -340,6 +360,9 @@ namespace :ray do
   desc "Install an extension."
   task :ext => ["extension:install"]
 
+  desc "Search available extensions."
+  task :search => ["extension:search"]
+
   # namespace :extension do
   #   task :remove do
   #     require "#{@task}/_extension_remove.rb"
@@ -355,9 +378,6 @@ namespace :ray do
   #   end
   #   task :bundle_install do
   #     require "#{@task}/_extension_install_bundle.rb"
-  #   end
-  #   task :search do
-  #     require "#{@task}/_extension_search.rb"
   #   end
   # end
   # namespace :setup do
