@@ -367,12 +367,6 @@ namespace :ray do
   #   task :update do
   #     require "#{@task}/_setup_update.rb"
   #   end
-  #   task :download do
-  #     require "#{@task}/_setup_download_preference.rb"
-  #   end
-  #   task :restart do
-  #     require "#{@task}/_setup_restart_preference.rb"
-  #   end
   # end
 end
 
