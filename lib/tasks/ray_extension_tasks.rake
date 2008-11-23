@@ -391,7 +391,7 @@ namespace :ray do
   # end
 end
 
-# supress faulty error messages caused by `./script/extension install ray`
+# supress faulty error messages
 namespace :radiant do
   namespace :extensions do
     namespace :ray do
