@@ -16,6 +16,9 @@ namespace :ray do
     task :restart do
       setup_restart_preference
     end
+    task :download do
+      setup_download_preference
+    end
   end
 
   def check_download_preference
