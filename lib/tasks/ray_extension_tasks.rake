@@ -38,6 +38,12 @@ namespace :ray do
       check_command_input
       extension_uninstall
     end
+    task :pull do
+      @message = 'You have to tell me which extension to pull, e.g.'
+      @example = 'rake ray:pull name=extension_name'
+      check_command_input
+      extension_pull
+    end
   end
 
   namespace :setup do
@@ -346,6 +352,22 @@ namespace :ray do
       end
     end
   end
+  def extension_pull
+    Dir.chdir("#{ @path }/#{ @dir }") do
+      config = File.open( '.git/config', 'r' )
+      while ( line = config.gets )
+        if line =~ /remote \"([a-zA-Z0-9]+)\"/
+          unless $1 == 'origin'
+            system "git checkout master"
+            system "git pull #{ $1 } master"
+            puts "=============================================================================="
+            puts "The changes from hub #{ $1 } have been pulled into the #{ @dir } extension"
+            puts "=============================================================================="
+          end
+        end
+      end
+    end
+  end
 
   def search_extensions
     if File.exist?( "#{ @ray }/search.yml" )
@@ -483,10 +505,10 @@ namespace :ray do
 
   desc "Uninstall an extension."
   task :rm => ["extension:remove"]
+
+  desc "Merge all remotes of an extension."
+  task :pull => ["extension:pull"]
   # namespace :extension do
-  #   task :pull do
-  #     require "#{@task}/_extension_pull.rb"
-  #   end
   #   task :bundle_install do
   #     require "#{@task}/_extension_install_bundle.rb"
   #   end
