@@ -24,6 +24,12 @@ namespace :ray do
       check_command_input
       extension_disable
     end
+    task :enable do
+      @message = 'You have to tell me which extension to enable, e.g.'
+      @example = 'rake ray:en name=extension_name'
+      check_command_input
+      extension_enable
+    end
   end
 
   namespace :setup do
@@ -256,8 +262,25 @@ namespace :ray do
     end
     system "mv #{ @path }/#{ @dir } #{ @ray }/disabled_extensions/#{ @dir }"
     puts '=============================================================================='
-    puts "The #{ @name } extension has been disabled. Enable it again later by running"
+    puts "The #{ @name } extension has been disabled. You can enable it by running"
     puts "rake ray:en name=#{ @dir }"
+    puts '=============================================================================='
+    restart_server
+  end
+  def extension_enable
+    extension = Dir.open( "#{ @ray }/disabled_extensions/#{ @dir }" ) rescue nil
+    unless extension
+      puts '=============================================================================='
+      puts "The #{ @name } extension is not available for enabling."
+      puts "If you'd like to install it instead, use the following command,"
+      puts "rake ray:ext name=#{ @name }"
+      puts '=============================================================================='
+      exit
+    end
+    system "mv #{ @ray }/disabled_extensions/#{ @dir } #{ @path }/#{ @dir }"
+    puts '=============================================================================='
+    puts "The #{ @name } extension has been enabled. You can disable it by running"
+    puts "rake ray:dis name=#{ @dir }"
     puts '=============================================================================='
     restart_server
   end
@@ -392,15 +415,12 @@ namespace :ray do
 
   desc "Disable an extension."
   task :dis => ["extension:disable"]
+
+  desc "Enable an extension."
+  task :en => ["extension:enable"]
   # namespace :extension do
   #   task :remove do
   #     require "#{@task}/_extension_remove.rb"
-  #   end
-  #   task :disable do
-  #     require "#{@task}/_extension_disable.rb"
-  #   end
-  #   task :enable do
-  #     require "#{@task}/_extension_enable.rb"
   #   end
   #   task :pull do
   #     require "#{@task}/_extension_pull.rb"
