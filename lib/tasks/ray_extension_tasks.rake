@@ -266,18 +266,13 @@ namespace :ray do
       if @tasks.include? 'uninstall'
         system "rake radiant:extensions:#{ @proper_dir }:uninstall"
         return
-      elsif @tasks.include? 'migrate'
+      end
+      if @tasks.include? 'migrate'
         system "rake radiant:extensions:#{ @proper_dir }:migrate VERSION=0"
-      elsif @tasks.include? 'update'
+      end
+      if @tasks.include? 'update'
         extension_remove_assets
       end
-      # @tasks.each do |task|
-      #   system "rake radiant:extensions:#{ @proper_dir }:#{ task }"
-      # end
-      # puts '=============================================================================='
-      # puts "The #{ extension } extension has been installed."
-      # puts "To disable it run: rake ray:dis name=#{ extension }"
-      # puts '=============================================================================='
     end
   end
   def extension_disable
@@ -337,6 +332,19 @@ namespace :ray do
     puts "rake ray:ext name=#{ @proper_dir }"
     puts '=============================================================================='
     restart_server
+  end
+  def extension_remove_assets
+    require 'find'
+    files = []
+    Find.find( "#{ @path }/#{ @proper_dir }/public" ) { |file| files << file }
+    files.each do |f|
+      if f.include?( '.' )
+        unless f.include?( '.DS_Store' )
+          file = f.gsub( /#{ @path }\/#{ @proper_dir }\/public/, 'public' )
+          rm "#{ file }"
+        end
+      end
+    end
   end
 
   def search_extensions
