@@ -341,7 +341,7 @@ namespace :ray do
       if f.include?( '.' )
         unless f.include?( '.DS_Store' )
           file = f.gsub( /#{ @path }\/#{ @proper_dir }\/public/, 'public' )
-          rm "#{ file }"
+          rm "#{ file }" rescue nil
         end
       end
     end
@@ -484,9 +484,6 @@ namespace :ray do
   desc "Uninstall an extension."
   task :rm => ["extension:remove"]
   # namespace :extension do
-  #   task :remove do
-  #     require "#{@task}/_extension_remove.rb"
-  #   end
   #   task :pull do
   #     require "#{@task}/_extension_pull.rb"
   #   end
