@@ -10,7 +10,7 @@ namespace :ray do
       check_command_input
       check_download_preference
       extension_installation
-      post_extension_installation
+      # post_extension_installation
     end
     task :search do
       @message = 'You have to give me a term to search for, e.g.'
@@ -39,13 +39,149 @@ namespace :ray do
     if ENV[ 'term' ]
       @term = ENV[ 'term' ]
     elsif ENV[ 'name' ]
-      @name = ENV[ 'name' ].gsub( /_/, '-' )
-      @dir = @name.gsub( /-/, '_' )
+      @term = ENV[ 'name' ]
+      @name = @term.gsub( /_/, '-' )
+      @dir  = @name.gsub( /-/, '_' )
     else
-      puts "=============================================================================="
+      puts '=============================================================================='
       print "#{ @message }\n#{ @example }\n"
-      puts "=============================================================================="
+      puts '=============================================================================='
       exit
+    end
+  end
+  def check_download_preference
+    if File.exist?( "#{ @conf }/download.txt" )
+      download_preference_read
+    else
+      download_preference_setup
+    end
+  end
+  def check_extension_directory
+    unless File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
+      @path_regexp = Regexp.escape( @path )
+      @proper_dir = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ @path_regexp }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
+      system "mv #{ @path }/#{ @dir } #{ @path }/#{ @proper_dir }"
+      if File.exist?( ".gitmodules" )
+        File.open( ".gitmodules", "r+" ) do |f|
+          dir = f.read.gsub( "#{ @path }/#{ @dir }", "#{ @path }/#{ @proper_dir }" )
+          f.rewind
+          f.puts( dir )
+        end
+        system "git reset HEAD #{ @path }/#{ @dir }"
+        system "git add #{ @path }/#{ @proper_dir }"
+      end
+    end
+  end
+  def check_extension_submodules
+    if @proper_dir
+      ext = @proper_dir
+    elsif @dir
+      ext = @dir
+    end
+    if File.exist?( "#{ @path }/#{ ext }/.gitmodules")
+      submodules = []
+      paths = []
+      f = File.readlines( "#{ @path }/#{ ext }/.gitmodules" ).map do |l|
+        line = l.rstrip
+        if line.include? 'url'
+          sub_url = line.gsub(/\turl\ =\ /, '')
+          submodules << sub_url
+        end
+        if line.include? 'path'
+          sub_path = line.gsub(/\tpath\ =\ /, '')
+          paths << sub_path
+        end
+      end
+      i = 0
+      while i < submodules.length
+        if File.exist?( '.gitmodules' )
+          system "git submodule add #{ submodules[i] } #{ paths[i] }"
+        else
+          system "git clone #{ submodules[i] } #{ paths[i] }"
+        end
+        i =+ 1
+      end
+    end
+  end
+  def check_extension_dependencies
+    if @proper_dir
+      ext = @proper_dir
+    elsif @dir
+      ext = @dir
+    end
+    if File.exist?( "#{ @path }/#{ ext }/dependency.yml")
+      puts "not yet implemented."
+    end
+  end
+
+  def download_preference_read
+    File.open( "#{ @conf }/download.txt", 'r' ) do |p|
+      @download = p.gets
+    end
+  end
+  def download_preference_setup
+    require 'ftools'
+    puts '=============================================================================='
+    git = system 'git --version'
+    if git
+      pref = 'git'
+    else
+      pref = 'http'
+    end
+    File.makedirs( "#{ @conf }" )
+    File.open( "#{ @conf }/download.txt", 'w' ) do |p|
+      p.puts pref
+    end
+    puts "Your download preference has been set to #{ pref }"
+    puts '=============================================================================='
+    download_preference_read
+  end
+  def download_preference_repair
+    puts '=============================================================================='
+    puts 'Your download preference is broken.'
+    system "rm #{ @conf }/download.txt"
+    puts 'The broken preference file has been deleted.'
+    download_preference_setup
+  end
+
+  def extension_installation
+    if @download == "git\n"
+      extension_install_git
+    elsif @download == "http\n"
+      extension_install_http
+    else
+      download_preference_repair
+      puts 'Automatically retrying that installation again...'
+      puts '=============================================================================='
+      extension_installation
+    end
+    check_extension_submodules
+    check_extension_dependencies
+  end
+  def extension_install_git
+    search_extensions
+    extension_install_setup
+    @url = @url.gsub( /http/, 'git' )
+    if File.exist?( '.git/HEAD' )
+      system "git submodule -q add #{ @url }.git #{ @path }/#{ @dir }"
+    else
+      system "git clone -q #{ @url }.git #{ @path }/#{ @dir }"
+    end
+    check_extension_directory
+  end
+  def extension_install_http
+    # extension_install_setup
+    puts 'not yet implemented, http_extension_installation'
+    # check_extension_directory
+  end
+  def extension_install_setup
+    if @extension.length == 1
+      @url = @http_url[0]
+    else
+      puts '=============================================================================='
+      puts "No extension exactly matched - #{ @name } - be more specific."
+      puts "Use the command listed to install the extension you want."
+      search_results
     end
   end
 
@@ -54,11 +190,9 @@ namespace :ray do
       if ENV[ 'term' ]
         @term = ENV[ 'term' ].downcase
         search_cache
-        show_search_results
+        search_results
       else
-        @term = @name
         search_cache
-        setup_extension_installation
       end
     else
       search_online
@@ -75,71 +209,46 @@ namespace :ray do
         total = repository[ 'repositories' ].length
         for i in 0...total
           found = false
-          repo = repository[ 'repositories' ][i][ 'name' ]
-          if repo.include?( @term )
-            @extension << repo
-            owner = repository[ 'repositories' ][i][ 'owner' ]
-            @source << owner
-            location = repository[ 'repositories' ][i][ 'url' ].gsub( /http/, 'git' )
-            @http_url << location
-            desc = repository[ 'repositories' ][i][ 'description' ]
-            @description << desc
+          extension = repository[ 'repositories' ][i][ 'name' ]
+          if extension.include?( @term )
+            @extension << extension
+            source = repository[ 'repositories' ][i][ 'owner' ]
+            @source << source
+            http_url = repository[ 'repositories' ][i][ 'url' ]
+            @http_url << http_url
+            description = repository[ 'repositories' ][i][ 'description' ]
+            @description << description
           end
         end
       end
     end
   end
   def search_online
-    puts "=============================================================================="
+    puts '=============================================================================='
     puts "Online searching is not yet implemented."
     puts "It's waiting on GitHub to have a useful (search) API."
-    puts "=============================================================================="
+    puts '=============================================================================='
   end
-  def show_search_results
-    puts "=============================================================================="
+  def search_results
+    puts '=============================================================================='
     if @extension.length == 0
       puts "Your search - #{ @term } - did not match any extensions."
-      puts "=============================================================================="
+      puts '=============================================================================='
       exit
     end
     i = 0
     while i < @extension.length
       ext_name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
       puts "  extension: #{ ext_name }"
-      puts "     source: " + @source[i]
-      puts "description: " + @description[i]
+      puts 'description: ' + @description[i]
       puts "    install: rake ray:ext name=#{ ext_name }"
-      puts "=============================================================================="
+      puts '=============================================================================='
       i += 1
     end
   end
 
-
   def disable_extension
     puts "disable"
-  end
-
-  def check_download_preference
-    if File.exist?( "#{ @conf }/download.txt" )
-      get_download_preference
-    else
-      setup_download_preference
-    end
-  end
-
-  def extension_installation
-    if @download_preference == "git\n"
-      git_extension_installation
-    elsif @download_preference == "http\n"
-      http_extension_installation
-    else
-      fix_download_preference
-      puts "I'm trying that installation again..."
-      puts "=============================================================================="
-      extension_installation
-    end
-    check_extension_for_submodules
-    check_extension_for_dependencies
   end
 
   def post_extension_installation
@@ -155,7 +264,7 @@ namespace :ray do
 
   def setup_download_preference
     require "ftools"
-    puts "=============================================================================="
+    puts '=============================================================================='
     git = system "git --version"
     if git
       download_preference = "git"
@@ -167,7 +276,7 @@ namespace :ray do
       preference_file.puts download_preference
     end
     puts "Your download preference has been set to #{ download_preference }"
-    puts "=============================================================================="
+    puts '=============================================================================='
     get_download_preference
   end
 
@@ -185,33 +294,25 @@ namespace :ray do
       File.open( "#{ @conf }/restart.txt", "w" ) do |preference_file|
         preference_file.puts restart_preference
       end
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "Your restart preference has been set to #{ restart_preference }"
-      puts "=============================================================================="
+      puts '=============================================================================='
       get_download_preference
     else
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "You have to tell what kind of server you'd like to restart, e.g."
       puts "rake ray:setup:restart server=mongrel"
       puts "rake ray:setup:restart server=passenger"
-      puts "=============================================================================="
+      puts '=============================================================================='
       exit
     end
   end
 
-  def fix_download_preference
-    puts "=============================================================================="
-    puts "Your download preference is broken."
-    system "rm #{ @conf }/download.txt"
-    puts "The broken preference file has been removed."
-    setup_download_preference
-  end
-
   def find_the_extension_to_install
     if @extension.length == 0
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "I couldn't find any extension matching '#{ @name }'"
-      puts "=============================================================================="
+      puts '=============================================================================='
       exit
     elsif @extension.length == 1
       @url = @http_url[ 0 ]
@@ -222,7 +323,7 @@ namespace :ray do
         break if nice_name == @name
       end
     else
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "There are more than one extensions that match #{ @name }"
       puts "Run the command appropriate to the extension you want to install."
       for j in 0...@extension.length
@@ -231,40 +332,6 @@ namespace :ray do
       end
       exit
     end
-  end
-
-  def ensure_proper_directory
-    unless File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
-      @proper_dir = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /vendor\/extensions\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
-      system "mv #{ @path }/#{ @dir } #{ @path }/#{ @proper_dir }"
-      if File.exist?( ".gitmodules" )
-        File.open( ".gitmodules", "r+" ) do |f|
-          dir = f.read.gsub( "#{ @path }/#{ @dir }", "#{ @path }/#{ @proper_dir }" )
-          f.rewind
-          f.puts( dir )
-        end
-        system "git reset HEAD #{ @path }/#{ @dir }"
-        system "git add #{ @path }/#{ @proper_dir }"
-      end
-    end
-  end
-
-  def git_extension_installation
-    extension_installation_setup
-    if File.exist?( ".git/HEAD" )
-      system "git submodule add #{ @url }.git #{ @path }/#{ @dir }"
-    else
-      system "git clone -q #{ @url }.git #{ @path }/#{ @dir }"
-    end
-    ensure_proper_directory
-  end
-
-  def http_extension_installation
-    puts "extension_installation_setup"
-    puts "http_extension_installation"
-    puts @dir
-    puts "ensure_proper_directory"
-    puts "=============================================================================="
   end
 
   def check_extension_for_submodules
@@ -346,15 +413,15 @@ namespace :ray do
         end
         tasks.close
       end
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "The #{ extension } extension has been installed."
       puts "To disable it run: rake ray:dis name=#{ extension }"
-      puts "=============================================================================="
+      puts '=============================================================================='
     else
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "I couldn't find a tasks file for the #{ extension } extension."
       puts "Please manually verify the installation and restart the server."
-      puts "=============================================================================="
+      puts '=============================================================================='
       exit
     end
   end
@@ -367,7 +434,7 @@ namespace :ray do
       puts "If you want me to auto-restart the server you need to set your preference."
       puts "Try: rake ray:setup:restart server=passenger"
       puts "Or:  rake ray:setup:restart server=mongrel"
-      puts "=============================================================================="
+      puts '=============================================================================='
       exit
     end
     if @restart_preference == "passenger\n"
@@ -379,10 +446,10 @@ namespace :ray do
     elsif @restart_preference == "mongrel\n"
       puts "mongrel_rails cluster::restart"
     else
-      puts "=============================================================================="
+      puts '=============================================================================='
       puts "I don't know how to restart #{ @restart_preference }."
       puts "You'll have to restart it manually."
-      puts "=============================================================================="
+      puts '=============================================================================='
     end
   end
 
