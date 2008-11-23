@@ -1,7 +1,9 @@
 namespace :ray do
   @ray  = 'vendor/extensions/ray'
   @conf = "#{ @ray }/config"
-  @path = 'vendor/extensions'
+  unless ENV[ 'path' ]
+    @path = 'vendor/extensions'
+  end
 
   namespace :extension do
     task :install do
@@ -29,6 +31,12 @@ namespace :ray do
       @example = 'rake ray:en name=extension_name'
       check_command_input
       extension_enable
+    end
+    task :remove do
+      @message = 'You have to tell me which extension to uninstall, e.g.'
+      @example = 'rake ray:rm name=extension_name'
+      check_command_input
+      extension_uninstall
     end
   end
 
@@ -63,7 +71,9 @@ namespace :ray do
     end
   end
   def check_extension_directory
-    unless File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
+    if File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
+      @proper_dir = @dir
+    else
       @path_regexp = Regexp.escape( @path )
       @proper_dir = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ @path_regexp }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
       system "mv #{ @path }/#{ @dir } #{ @path }/#{ @proper_dir }"
@@ -120,49 +130,28 @@ namespace :ray do
     end
   end
   def check_extension_tasks
-    if @proper_dir
-      rake_file = `ls #{ @path }/#{ @proper_dir }/lib/tasks/*_extension_tasks.rake`.gsub( /\n/, "")
-      extension = @proper_dir
+    if File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
+      @proper_dir = @dir
     else
-      rake_file = `ls #{ @path }/#{ @dir }/lib/tasks/*_extension_tasks.rake`.gsub( /\n/, "")
-      extension = @dir
+      @path_regexp = Regexp.escape( @path )
+      @proper_dir = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ @path_regexp }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
     end
-    if tasks = File.open( "#{ rake_file }", "r" ) rescue nil
-      counter = 1
-      while ( line = tasks.gets )
-        install_task = line.include? ":install"
-        break if install_task
-        counter = counter + 1
+    rake_file = `ls #{ @path }/#{ @proper_dir }/lib/tasks/*_extension_tasks.rake`.gsub( /\n/, "")
+    @tasks = []
+    f = File.readlines( "#{ rake_file }" ).map do |l|
+      line = l.rstrip
+      if line.include? ':install'
+        @tasks << 'install'
       end
-      tasks.close
-      if install_task
-        system "rake radiant:extensions:#{ extension }:install"
-      else
-        tasks = File.open( "#{ rake_file }", "r")
-        counter = 1
-        while ( line = tasks.gets )
-          migrate_task = line.include? ":migrate"
-          update_task = line.include? ":update"
-          if migrate_task
-            system "rake radiant:extensions:#{ extension }:migrate"
-          end
-          if update_task
-            system "rake radiant:extensions:#{ extension }:update"
-          end
-          counter = counter + 1
-        end
-        tasks.close
+      if line.include? ':uninstall'
+        @tasks << 'uninstall'
       end
-      puts '=============================================================================='
-      puts "The #{ extension } extension has been installed."
-      puts "To disable it run: rake ray:dis name=#{ extension }"
-      puts '=============================================================================='
-    else
-      puts '=============================================================================='
-      puts "I couldn't find a tasks file for the #{ extension } extension."
-      puts "Please manually verify the installation and restart the server."
-      puts '=============================================================================='
-      exit
+      if line.include? ':migrate'
+        @tasks << 'migrate'
+      end
+      if line.include? ':update'
+        @tasks << 'update'
+      end
     end
   end
 
@@ -246,7 +235,50 @@ namespace :ray do
   end
   def extension_post_install
     check_extension_tasks
+    extension_run_tasks
     restart_server
+  end
+  def extension_run_tasks
+    if @tasks.length == 0
+      puts '=============================================================================='
+      puts "I couldn't find a tasks file for the #{ extension } extension."
+      puts 'Please manually verify the installation and restart the server.'
+      puts '=============================================================================='
+      exit
+    else
+      @tasks.each do |task|
+        system "rake radiant:extensions:#{ @proper_dir }:#{ task }"
+      end
+      puts '=============================================================================='
+      puts "The #{ @proper_dir } extension has been installed."
+      puts "To disable it run: rake ray:dis name=#{ @proper_dir }"
+      puts '=============================================================================='
+    end
+  end
+  def extension_run_tasks_uninstall
+    if @tasks.length == 0
+      puts '=============================================================================='
+      puts "I couldn't find a tasks file for the #{ extension } extension."
+      puts 'Please manually uninstall the extension and restart the server.'
+      puts '=============================================================================='
+      exit
+    else
+      if @tasks.include? 'uninstall'
+        system "rake radiant:extensions:#{ @proper_dir }:uninstall"
+        return
+      elsif @tasks.include? 'migrate'
+        system "rake radiant:extensions:#{ @proper_dir }:migrate VERSION=0"
+      elsif @tasks.include? 'update'
+        extension_remove_assets
+      end
+      # @tasks.each do |task|
+      #   system "rake radiant:extensions:#{ @proper_dir }:#{ task }"
+      # end
+      # puts '=============================================================================='
+      # puts "The #{ extension } extension has been installed."
+      # puts "To disable it run: rake ray:dis name=#{ extension }"
+      # puts '=============================================================================='
+    end
   end
   def extension_disable
     extension = Dir.open( "#{ @path }/#{ @dir }" ) rescue nil
@@ -281,6 +313,28 @@ namespace :ray do
     puts '=============================================================================='
     puts "The #{ @name } extension has been enabled. You can disable it by running"
     puts "rake ray:dis name=#{ @dir }"
+    puts '=============================================================================='
+    restart_server
+  end
+  def extension_uninstall
+    extension = Dir.open( "#{ @path }/#{ @dir }" ) rescue nil
+    unless extension
+      puts '=============================================================================='
+      puts "The #{ @name } extension does not appear to be installed."
+      puts '=============================================================================='
+      exit
+    end
+    removed = Dir.open( "#{ @ray }/removed_extensions" ) rescue nil
+    unless removed
+      system "mkdir #{ @ray }/removed_extensions"
+    end
+    check_extension_tasks
+    extension_run_tasks_uninstall
+    system "mv #{ @path }/#{ @proper_dir } #{ @ray }/removed_extensions/#{ @proper_dir }"
+    rm_r "#{ @ray }/removed_extensions/#{ @proper_dir }"
+    puts '=============================================================================='
+    puts "The #{ @name } extension has been uninstalled. You can install it by running"
+    puts "rake ray:ext name=#{ @proper_dir }"
     puts '=============================================================================='
     restart_server
   end
@@ -418,6 +472,9 @@ namespace :ray do
 
   desc "Enable an extension."
   task :en => ["extension:enable"]
+
+  desc "Uninstall an extension."
+  task :rm => ["extension:remove"]
   # namespace :extension do
   #   task :remove do
   #     require "#{@task}/_extension_remove.rb"
