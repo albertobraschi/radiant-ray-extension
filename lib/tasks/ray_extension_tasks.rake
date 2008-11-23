@@ -22,7 +22,7 @@ namespace :ray do
       @message = 'You have to tell me which extension to disable, e.g.'
       @example = 'rake ray:dis name=extension_name'
       check_command_input
-      disable_extension
+      extension_disable
     end
   end
 
@@ -110,7 +110,7 @@ namespace :ray do
       ext = @dir
     end
     if File.exist?( "#{ @path }/#{ ext }/dependency.yml")
-      puts "not yet implemented."
+      puts "dependency handling is not yet implemented."
     end
   end
   def check_extension_tasks
@@ -242,6 +242,25 @@ namespace :ray do
     check_extension_tasks
     restart_server
   end
+  def extension_disable
+    extension = Dir.open( "#{ @path }/#{ @dir }" ) rescue nil
+    unless extension
+      puts '=============================================================================='
+      puts "The #{ @name } extension does not appear to be installed."
+      puts '=============================================================================='
+      exit
+    end
+    disabled = Dir.open( "#{ @ray }/disabled_extensions" ) rescue nil
+    unless disabled
+      system "mkdir #{ @ray }/disabled_extensions"
+    end
+    system "mv #{ @path }/#{ @dir } #{ @ray }/disabled_extensions/#{ @dir }"
+    puts '=============================================================================='
+    puts "The #{ @name } extension has been disabled. Enable it again later by running"
+    puts "rake ray:en name=#{ @dir }"
+    puts '=============================================================================='
+    restart_server
+  end
 
   def search_extensions
     if File.exist?( "#{ @ray }/search.yml" )
@@ -268,6 +287,7 @@ namespace :ray do
         for i in 0...total
           found = false
           extension = repository[ 'repositories' ][i][ 'name' ]
+          unless @name; @name = @term; end
           if extension.include?( @term ) or extension.include?( @name )
             @extension << extension
             source = repository[ 'repositories' ][i][ 'owner' ]
