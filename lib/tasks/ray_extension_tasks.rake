@@ -336,6 +336,7 @@ namespace :ray do
     restart_server
   end
   def extension_uninstall
+    @proper_dir = @dir
     extension = Dir.open( "#{ @path }/#{ @dir }" ) rescue nil
     unless extension
       puts '=============================================================================='
@@ -352,8 +353,10 @@ namespace :ray do
     system "mv #{ @path }/#{ @proper_dir } #{ @ray }/removed_extensions/#{ @proper_dir }"
     rm_r "#{ @ray }/removed_extensions/#{ @proper_dir }"
     puts '=============================================================================='
-    puts "The #{ @name } extension has been uninstalled. You can install it by running"
-    puts "rake ray:ext name=#{ @proper_dir }"
+    puts "The #{ @proper_dir } extension has been uninstalled."
+    puts "I tried to delete static assets associated with the #{ @proper_dir } extension,"
+    puts 'but may have missed something in an effort not to catch too much.'
+    puts 'You may want manually clean up your public directory after an uninstall.'
     puts '=============================================================================='
     restart_server
   end
@@ -487,8 +490,9 @@ namespace :ray do
         for i in 0...total
           found = false
           extension = repository[ 'repositories' ][i][ 'name' ]
+          extension_description = repository[ 'repositories' ][i][ 'description' ]
           unless @name; @name = @term; end
-          if extension.include?( @term ) or extension.include?( @name )
+          if extension.include?( @term ) or extension.include?( @name ) or extension_description.include?( @term ) or extension_description.include?( @name )
             @extension << extension
             source = repository[ 'repositories' ][i][ 'owner' ]
             @source << source
