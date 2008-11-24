@@ -218,4 +218,4 @@ The `dependency.yml` file has an extremely basic format.
     - gem: gem_name
     - extension: extension_name
 
-You can list multiple gems or extensions (or mix'em up) in a single `dependency.yml` file. Gems are expected to declare their own dependencies and be dealt with in the RubyGems system. Extensions are passed into Ray and subject to same dependency check that your extension is so if your extension dependencies have dependencies they'll be installed as well.
+You can list multiple gems or extensions (or mix'em up) in a single `dependency.yml` file. Gems are expected to declare their own dependencies and be dealt with in the RubyGems system. Extensions are passed into Ray and subject to same dependency check that your extension is so if your extension dependencies has dependencies they'll be installed as well.
