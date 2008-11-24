@@ -460,43 +460,43 @@ namespace :ray do
     if File.exist?( "#{ @conf }/restart.txt" )
       restart_preference_read
     else
-      puts "You need to restart your server."
-      puts "If you want me to auto-restart the server you need to set your preference."
-      puts "Try: rake ray:setup:restart server=passenger"
-      puts "Or:  rake ray:setup:restart server=mongrel"
+      puts 'You need to restart your server.'
+      puts 'If you want me to auto-restart the server you need to set your preference.'
+      puts 'Try: rake ray:setup:restart server=passenger'
+      puts 'Or:  rake ray:setup:restart server=mongrel'
       puts '=============================================================================='
       exit
     end
     if @restart == "passenger\n"
-      tmp = Dir.open( "tmp" ) rescue nil
+      tmp = Dir.open( 'tmp' ) rescue nil
       unless tmp
-        system "mkdir tmp"
+        system 'mkdir tmp'
       end
-      system "touch tmp/restart.txt"
-      puts "Passenger has been restarted."
+      system 'touch tmp/restart.txt'
+      puts 'Passenger has been restarted.'
       puts '=============================================================================='
     elsif @restart == "mongrel\n"
-      system "mongrel_rails cluster::restart"
-      puts "Mongrel has been restarted."
+      system 'mongrel_rails cluster::restart'
+      puts 'Mongrel has been restarted.'
       puts '=============================================================================='
     else
       puts '=============================================================================='
       puts "I don't know how to restart #{ @restart }."
       puts "You'll have to restart it manually."
       puts '=============================================================================='
-    end    
+    end
   end
   def restart_preference_read
-    File.open( "#{ @conf }/restart.txt", "r" ) do |p|
+    File.open( "#{ @conf }/restart.txt", 'r' ) do |p|
       @restart = p.gets
     end
   end
   def restart_preference_setup
-    require "ftools"
-    if ENV[ "server" ]
-      pref = ENV[ "server" ]
+    require 'ftools'
+    if ENV[ 'server' ]
+      pref = ENV[ 'server' ]
       File.makedirs( "#{ @conf }" )
-      File.open( "#{ @conf }/restart.txt", "w" ) do |p|
+      File.open( "#{ @conf }/restart.txt", 'w' ) do |p|
         p.puts pref
       end
       puts '=============================================================================='
@@ -505,34 +505,34 @@ namespace :ray do
     else
       puts '=============================================================================='
       puts "You have to tell what kind of server you'd like to restart, e.g."
-      puts "rake ray:setup:restart server=mongrel"
-      puts "rake ray:setup:restart server=passenger"
+      puts 'rake ray:setup:restart server=mongrel'
+      puts 'rake ray:setup:restart server=passenger'
       puts '=============================================================================='
       exit
     end
   end
 
   # shorthand
-  desc "Install an extension."
-  task :ext => ["extension:install"]
+  desc 'Install an extension.'
+  task :ext => ['extension:install']
 
-  desc "Search available extensions."
-  task :search => ["extension:search"]
+  desc 'Search available extensions.'
+  task :search => ['extension:search']
 
-  desc "Disable an extension."
-  task :dis => ["extension:disable"]
+  desc 'Disable an extension.'
+  task :dis => ['extension:disable']
 
-  desc "Enable an extension."
-  task :en => ["extension:enable"]
+  desc 'Enable an extension.'
+  task :en => ['extension:enable']
 
-  desc "Uninstall an extension."
-  task :rm => ["extension:remove"]
+  desc 'Uninstall an extension.'
+  task :rm => ['extension:remove']
 
-  desc "Merge all remotes of an extension."
-  task :pull => ["extension:pull"]
+  desc 'Merge all remotes of an extension.'
+  task :pull => ['extension:pull']
 
-  desc "Install a bundle of extensions."
-  task :bundle => ["extension:bundle"]
+  desc 'Install a bundle of extensions.'
+  task :bundle => ['extension:bundle']
 end
 
 # supress faulty error messages
