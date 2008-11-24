@@ -195,7 +195,7 @@ Enabling extensions is just as easy as disabling
 Uninstalling extensions
 -----------------------
 
-Uninstalling an extension is a little different than disabling in that it will try to revert any migrations the extension added and to some extent track down and remove static files (file removal is very conservative which makes it likely to miss some files). All files associated with an uninstalled extensions are then completely deleted.
+Uninstalling an extension is a little different than disabling in that it will try to revert any migrations the extension added and to some extent track down and remove static files (file removal is very conservative which makes it likely to miss some files). All files associated with an uninstalled extension are then completely deleted.
 
     rake ray:rm name=extension-name
 
@@ -203,3 +203,19 @@ Uninstalling an extension is a little different than disabling in that it will t
 --------------------
 
 Users of previous versions may notice that the commands have changed. While this appears to be the case it's not actually. All the same old commands are available, so if you got comfortable with `rake ray:extension:install name=mailer` and don't want to switch to `rake ray:ext name=mailer` you can keep right on using the long versions.
+
+Declaring dependencies in your extensions
+-----------------------------------------
+
+This section only pertains to extension authors, and then only to those authors whose extensions rely on other bits of code, like RubyGems, Rails plugins or even other extensions.
+
+* **RubyGem**: declare it in `dependency.yml`
+* **Plugin**: declare it as submodule to your extension
+* **Extension**: declare it in `dependency.yml`
+
+The `dependency.yml` file has an extremely basic format.
+
+    - gem: gem_name
+    - extension: extension_name
+
+You can list multiple gems or extensions (or mix'em up) in a single `dependency.yml` file. Gems are expected to declare their own dependencies and be dealt with in the RubyGems system. Extensions are passed into Ray and subject to same dependency check that your extension is so if your extension dependencies have dependencies they'll be installed as well.
