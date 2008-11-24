@@ -533,19 +533,6 @@ namespace :ray do
 
   desc "Install a bundle of extensions."
   task :bundle => ["extension:bundle"]
-  # namespace :extension do
-  #   task :bundle_install do
-  #     require "#{@task}/_extension_install_bundle.rb"
-  #   end
-  # end
-  # namespace :setup do
-  #   task :initial do
-  #     require "#{@task}/_setup.rb"
-  #   end
-  #   task :update do
-  #     require "#{@task}/_setup_update.rb"
-  #   end
-  # end
 end
 
 # supress faulty error messages
