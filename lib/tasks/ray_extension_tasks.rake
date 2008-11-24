@@ -45,7 +45,7 @@ namespace :ray do
       extension_pull
     end
     task :bundle do
-      puts "Bundle installation not yet implemented."
+      extension_bundle_install
     end
   end
 
@@ -145,23 +145,19 @@ namespace :ray do
               system "sudo gem install #{ dependency[count]['gem'] }"
             end
             if dependency[count].include? 'plugin'
-              system "./script/plugin install #{ dependency[count]['plugin'] }"
+              puts "TODO: Install plugin dependencies"
             end
           end
         end
       end
     end
-    puts dependencies
-    exit
   end
   def check_extension_tasks
-    if File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
-      @proper_dir = @dir
-    else
+    unless File.exist?( "#{ @path }/#{ @proper_dir }/#{ @proper_dir }_extension.rb" )
       @path_regexp = Regexp.escape( @path )
-      @proper_dir = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ @path_regexp }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
+      @proper_dir = `ls #{ @path }/#{ @proper_dir }/*_extension.rb`.gsub( /#{ @path_regexp }\/#{ @proper_dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
     end
-    rake_file = `ls #{ @path }/#{ @proper_dir }/lib/tasks/*_extension_tasks.rake`.gsub( /\n/, "")
+    rake_file = `ls #{ @path }/#{ @proper_dir }/lib/tasks/*_tasks.rake`.gsub( /\n/, "")
     @tasks = []
     f = File.readlines( "#{ rake_file }" ).map do |l|
       line = l.rstrip
@@ -266,7 +262,10 @@ namespace :ray do
   def extension_run_tasks
     if @tasks.length == 0
       puts '=============================================================================='
-      puts "I couldn't find a tasks file for the #{ extension } extension."
+      puts "The installation of the #{ @proper_dir } extension was successful."
+      puts "However, I couldn't find tasks for the #{ @proper_dir } extension."
+      puts "This could mean the extension doesn't have any tasks,"
+      puts "or that I'm just not smart enough to track them down."
       puts 'Please manually verify the installation and restart the server.'
       puts '=============================================================================='
       exit
@@ -388,7 +387,79 @@ namespace :ray do
     end
   end
   def extension_bundle_install
-    puts "bundle install"
+    require 'yaml'
+    unless File.exist?( 'config/extensions.yml' )
+      puts '=============================================================================='
+      puts "You don't seem to have a bundle file available."
+      puts 'Refer to the documentation for more information on extension bundles.'
+      puts 'http://johnmuhl.com/workbook/ray#bundle'
+      puts '=============================================================================='
+      exit
+    end
+    system "mkdir -p #{ @ray }/tmp"
+    File.open( 'config/extensions.yml' ) do |bundle|
+      YAML.load_documents( bundle ) do |extension|
+        total = extension.length - 1
+        for i in 0..total do
+          
+        end
+        # for count in 0..total do
+        #   name = extension[ count ][ 'name' ]
+        #   installer = File.open( "#{ @ray }/tmp/#{ name }_extension_install.rb", 'a' )
+        #   installer.puts "\@name\ \=\ \"#{ name }\""
+        #   if extension[ count ][ 'fullname' ]
+        #     fullname = extension[ count ][ 'fullname' ]
+        #     installer.puts "\@fullname\ \=\ \"#{ fullname }\""
+        #   end
+        #   if extension[ count ][ 'hub' ]
+        #     hub = extension[ count ][ 'hub' ]
+        #     installer.puts "\@hub\ \=\ \"#{ hub }\""
+        #   end
+        #   if extension[ count ][ 'lib' ]
+        #     lib = extension[ count ][ 'lib' ]
+        #     installer.puts "\@lib\ \=\ \"#{ lib }\""
+        #   end
+        #   if extension[ count ][ 'remote' ]
+        #     remote = extension[ count ][ 'remote' ]
+        #     installer.puts "\@remote\ \=\ \"#{ remote }\""
+        #   end
+        #   if extension[ count ][ 'plugin' ]
+        #     plugin = extension[ count ][ 'plugin' ]
+        #     installer.puts "\@plugin\ \=\ \"#{ plugin }\""
+        #   end
+        #   if extension[ count ][ 'plugin_path' ]
+        #     plugin_path = extension[ count ][ 'plugin_path' ]
+        #     installer.puts "\@plugin_path\ \=\ \"#{ plugin_path }\""
+        #   end
+        #   if extension[ count ][ 'plugin_repository' ]
+        #     plugin_repository = extension[ count][ 'plugin_repository' ]
+        #     installer.puts "\@plugin_repository\ \=\ \"#{ plugin_repository }\""
+        #   end
+        #   if extension[ count ][ 'rake' ]
+        #     rake = extension[ count ][ 'rake' ]
+        #     installer.puts "\@rake\ \=\ \"#{ rake }\""
+        #   end
+        #   if extension[ count ][ 'vendor' ]
+        #     vendor = extension[ count ][ 'vendor' ]
+        #     installer.puts "\@vendor\ \=\ \"#{ vendor }\""
+        #   end
+        #   if extension[ count ][ 'path' ]
+        #     path = extension[ count ][ 'path' ]
+        #     installer.puts "\@path\ \=\ \"#{ path }\""
+        #   else
+        #     installer.puts "\@path\ \=\ \"vendor\/extensions\""
+        #   end
+        #   installer.puts "\@ray\ \=\ \"vendor\/extensions\/ray\""
+        #   installer.puts "\@task\ \=\ \"\#\{ \@ray \}\/lib\/tasks\""
+        #   installer.puts "\@conf\ \=\ \"\#\{ \@ray \}\/config\""
+          # generic_install = File.read("#{@task}/_extension_install.rb")
+          # installer.puts generic_install
+          # installer.close
+          # system "ruby #{@ray}/tmp/#{name}_extension_install.rb && rm #{@ray}/tmp/#{name}_extension_install.rb"
+        # end
+      end
+      # system "rm -r #{@ray}/tmp"
+    end
   end
 
   def search_extensions
