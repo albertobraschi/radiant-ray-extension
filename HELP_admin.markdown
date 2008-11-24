@@ -74,7 +74,7 @@ In the past Ray (often) required an unseemly number of command line options in o
     Please manually verify the installation and restart the server.
     ==============================================================================
 
-See how Ray just decided that the extension should be installed as `blog_tags` despite the extension being name "**blogtags**". Ray even lets you know when no tasks belonging to the extension were found. Here are some examples without the output to give you an idea for the simple pattern used.
+See how Ray just decided that the extension should be installed as `blog_tags` despite the extension being name "**blogtags**". Ray even lets you know when no tasks belonging to the extension were found. Here are some examples to give you an idea of the simple pattern used (output has been removed for clarity).
 
     rake ray:ext name=link_roll
     rake ray:ext name=help
@@ -110,7 +110,7 @@ Find which extension is "*that* Textile extension" you wanted, copy, paste and i
 Searching extensions
 --------------------
 
-Currently there over 100 Radiant extensions on GitHub (origins not forks!) and you don't even have to leave the command line to do it.
+Currently there over 100 Radiant extensions on GitHub (origins not forks!) and you don't even need to leave the command line to browse them all.
 
     rake ray:search term=blog
     ==============================================================================
@@ -149,7 +149,7 @@ Once you've setup your remotes you can use
 Bulk install extensions from a YAML file
 ----------------------------------------
 
-You can create a simple YAML file called `extensions.yml` in your Radiant application's `config` directory and then use
+You can create a simple YAML file called `extensions.yml` in your Radiant project's `config` directory and then use
 
     rake ray:bundle
 
@@ -179,7 +179,7 @@ In the past Ray had a few *special* extensions due to inadequacies in Ray. Ray i
 Disabling extensions
 --------------------
 
-With Ray you can disabling any installed extension by running
+With Ray you can disable any installed extension by running
 
     rake ray:dis name=extension_name
 
