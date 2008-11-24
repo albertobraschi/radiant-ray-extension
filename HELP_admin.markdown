@@ -1,48 +1,105 @@
 Hello, my name is Ray.
----
+----------------------
 
-Ray is not so much an extension to Radiant as it is a collection of `rake` tasks meant to simplify common tasks (or at least reduce typing). Currently, Ray just handles installing and managing extensions.
+Ray is a collection of `rake` tasks meant to simplify extension management.
 
 Installing Ray
----
+--------------
 
-	pick one
-	========
-	./script/extension install ray
-	git clone git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray
-	wget http://github.com/johnmuhl/radiant-ray-extension/tarball/master
+Ray can be installed as a regular Radiant extension directly into your project and used with `rake`, or installed globally and used with `sake`. Using Ray with `sake` is particularly handy on a development machine where you manage extensions in a number of different Radiant projects and don't want to bother installing Ray over and over again.
 
-Then restart your server.
+    Regular Radiant extension (Git)
+    ===============================
+    -- pick one --
+    ./script/extension install ray
+    git clone git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray
+    git submodule add git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray
 
-Setup
----
+    Regular Radiant extension (HTTP)
+    ================================
+    cd vendor/extensions
+    wget -O ray.tar.gz http://github.com/johnmuhl/radiant-ray-extension/tarball/master
+    tar xzvf ray.tar.gz
+    mv johnmuhl-radiant-ray-extension-* ray
 
-###First time user
+    Global Sake tasks
+    =================
+    sake -i http://is.gd/8PIg
 
-	rake ray:setup
-	==============
-	this command completely destroys any existing Ray preferences.
-	**DO NOT** use it for upgrading between versions.
+The "is.gd" link points to [this Gist][gist].
 
-###Upgrading user
+[gist]: http://gist.github.com/raw/28574/47b7e610b50ccf595479bda66fe284bd9535f650
 
-	rake ray:update
+Upgrading from Ray 1.x
+----------------------
 
-###Resetting your download preference
+If you used Git to install Ray (or `script/extension install ray`) the easiest way to get up to date is:
 
-	rake ray:setup:download
+    cd vendor/extensions/ray
+    git pull origin master
 
-###Resetting your server preference
+If you installed Ray by downloading an archive file and manually unpacking it, deleting your existing version and repeating those steps is the easiest way to get up to date.
 
-	pick one
-	========
-	rake ray:setup:restart server=passenger
-	rake ray:setup:restart server=mongrel
+Auto-restarting your server
+---------------------------
+
+When managing your extensions Ray attempts to restart your server whenever it's necessary, if you haven't told Ray what kind of server to restart you'll get a reminder to manually restart your server whenever it's needed. Currently Ray only supports auto-restart for Passenger and Mongrel clusters, to set your preference run the appropriate command:
+
+    rake ray:setup:restart server=mongrel
+    rake ray:setup:restart server=passenger
+
+Changing your download preference from HTTP to Git
+--------------------------------------------------
+
+The first time you run Ray your download preference will be guessed based on whether or not `git` can be found in your `$PATH`. If you installed Ray and didn't have `git` available at that time, but now you do and want to let Ray know about it run:
+
+    rake ray:setup:download
 
 Installing extensions
----
+---------------------
 
-Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'll need `git` installed and in your `PATH` for Ray to use it. Additionally, if Ray notices that you're managing your Radiant application with `git` then he'll decide to pull extensions in as submodules instead of as clones.
+**If you've used Ray 1.x you may want to re-read this section.**
+
+Ray uses `git` or the Ruby HTTP library to install extensions from GitHub. You'll need `git` installed and in your `PATH` for Ray to use it. Additionally, if Ray notices that you're managing your Radiant project with `git` then extensions will be pulled in as *submodules* instead of *clones*.
+
+In the past Ray (often) required an unseemly number of command line options in order to install extensions, fortunately these options are no longer necessary. Let's look at some examples of Ray's new install magic at work.
+
+    rake ray:ext name=blogtags
+    ...(install happened here)...
+    ==============================================================================
+    The installation of the blog_tags extension was successful.
+    However, I couldn't find tasks for the blog_tags extension.
+    This could mean the extension doesn't have any tasks,
+    or that I'm just not smart enough to track them down.
+    Please manually verify the installation and restart the server.
+    ==============================================================================
+
+See how Ray just decided that the extension should be installed as `blog_tags` despite the extension being name "**blogtags**". Ray even lets you know when no tasks belonging to the extension were found.
+
+Let's say I wanted to install "that" Textile extension...
+
+    rake ray:ext name=textile
+    ==============================================================================
+    No extension exactly matched - textile - be more specific.
+    Use the command listed to install the extension you want.
+    ==============================================================================
+      extension: textile_editor
+         author: jgarber
+    description: Adds a toolbar to make editing pages and snippets written in Textile easier.
+        command: rake ray:ext name=textile_editor
+    ==============================================================================
+      extension: textile-auto-fragment-ids
+         author: tricycle
+    description: Add random, autogenerated ids to common block level textile elements.
+        command: rake ray:ext name=textile-auto-fragment-ids
+    ==============================================================================
+      extension: textile-toolbar
+         author: pelargir
+    description: Adds toolbars to Textile-enabled text areas in the admin.
+        command: rake ray:ext name=textile-toolbar
+    ==============================================================================
+
+
 
 ###Installation variables
 
