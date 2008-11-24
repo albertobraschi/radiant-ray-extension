@@ -47,6 +47,9 @@ namespace :ray do
     task :bundle do
       extension_bundle_install
     end
+    task :all do
+      show_all_extensions
+    end
   end
 
   namespace :setup do
@@ -249,8 +252,9 @@ namespace :ray do
       end
     else
       puts '=============================================================================='
-      puts "No extension exactly matched - #{ @name } - be more specific."
-      puts "Use the command listed to install the extension you want."
+      puts "I couldn't find an extension named '#{ @name }'."
+      puts "The following is a list of extensions that might be related."
+      puts 'Use the command listed to install the appropriate extension.'
       search_results
     end
   end
@@ -529,6 +533,32 @@ namespace :ray do
       i += 1
     end
     exit
+  end
+
+  def show_all_extensions
+    require 'yaml'
+    @extension = []
+    @source = []
+    @http_url = []
+    @description = []
+    File.open( "#{ @ray }/search.yml" ) do |repositories|
+      YAML.load_documents( repositories ) do |repository|
+        total = repository[ 'repositories' ].length
+        for i in 0...total
+          # found = false
+          extension = repository[ 'repositories' ][i][ 'name' ]
+          # extension_description = repository[ 'repositories' ][i][ 'description' ]
+          @extension << extension
+          source = repository[ 'repositories' ][i][ 'owner' ]
+          @source << source
+          http_url = repository[ 'repositories' ][i][ 'url' ]
+          @http_url << http_url
+          description = repository[ 'repositories' ][i][ 'description' ]
+          @description << description
+        end
+      end
+    end
+    search_results
   end
 
   def restart_server
