@@ -44,6 +44,9 @@ namespace :ray do
       check_command_input
       extension_pull
     end
+    task :bundle do
+      puts "Bundle installation not yet implemented."
+    end
   end
 
   namespace :setup do
@@ -126,14 +129,30 @@ namespace :ray do
     end
   end
   def check_extension_dependencies
-    if @proper_dir
-      ext = @proper_dir
-    elsif @dir
-      ext = @dir
+    dependencies = []
+    if File.exist?( "#{ @path }/#{ @proper_dir }/dependency.yml" )
+      File.open( "#{ @path }/#{ @proper_dir }/dependency.yml" ) do |dependence|
+        YAML.load_documents( dependence ) do |dependency|
+          total = dependency.length - 1
+          for count in 0..total do
+            if dependency[count].include? 'extension'
+              system "rake ray:ext name=#{ dependency[count]['extension'] }"
+            end
+            if dependency[count].include? 'gem'
+              puts "=============================================================================="
+              puts "The #{ @proper_dir } extension requires the #{ dependency[count]['gem'] } gem."
+              puts "You may be prompted to enter your system administrator password."
+              system "sudo gem install #{ dependency[count]['gem'] }"
+            end
+            if dependency[count].include? 'plugin'
+              system "./script/plugin install #{ dependency[count]['plugin'] }"
+            end
+          end
+        end
+      end
     end
-    if File.exist?( "#{ @path }/#{ ext }/dependency.yml")
-      puts "dependency handling is not yet implemented."
-    end
+    puts dependencies
+    exit
   end
   def check_extension_tasks
     if File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
@@ -368,6 +387,9 @@ namespace :ray do
       end
     end
   end
+  def extension_bundle_install
+    puts "bundle install"
+  end
 
   def search_extensions
     if File.exist?( "#{ @ray }/search.yml" )
@@ -508,6 +530,9 @@ namespace :ray do
 
   desc "Merge all remotes of an extension."
   task :pull => ["extension:pull"]
+
+  desc "Install a bundle of extensions."
+  task :bundle => ["extension:bundle"]
   # namespace :extension do
   #   task :bundle_install do
   #     require "#{@task}/_extension_install_bundle.rb"
