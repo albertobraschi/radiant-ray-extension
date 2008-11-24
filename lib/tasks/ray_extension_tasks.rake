@@ -161,16 +161,16 @@ namespace :ray do
     @tasks = []
     f = File.readlines( "#{ rake_file }" ).map do |l|
       line = l.rstrip
-      if line.include? ':install'
+      if line.include? 'task :install =>'
         @tasks << 'install'
       end
-      if line.include? ':uninstall'
+      if line.include? 'task :uninstall =>'
         @tasks << 'uninstall'
       end
-      if line.include? ':migrate'
+      if line.include? 'task :migrate =>'
         @tasks << 'migrate'
       end
-      if line.include? ':update'
+      if line.include? 'task :update =>'
         @tasks << 'update'
       end
     end
