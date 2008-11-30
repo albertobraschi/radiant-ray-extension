@@ -24,15 +24,13 @@ namespace :ray do
       @message = 'You have to tell me which extension to disable, e.g.'
       @example = 'rake ray:dis name=extension_name'
       validate_command_input
-      validate_extension_directory
       disable_extension
     end
     task :enable do
       @message = 'You have to tell me which extension to enable, e.g.'
       @example = 'rake ray:en name=extension_name'
       validate_command_input
-      validate_extension_directory
-      enable_extension
+      extension_enable
     end
     task :remove do
       @message = 'You have to tell me which extension to uninstall, e.g.'
@@ -262,7 +260,7 @@ end
 def validate_extension_directory
   unless File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
     path = Regexp.escape( @path )
-    @vendor_name = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ @path_regexp }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
+    @vendor_name = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ path }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
     relocate_extension_to_proper_dir
   end
   @vendor_name = @dir
@@ -343,13 +341,13 @@ def get_extension_dependencies
   end
 end
 def install_extension_dependency
-  if @depend_ext > 0
+  if @depend_ext.length > 0
     install_extension_extension_dependency
   end
-  if @depend_gem > 0
+  if @depend_gem.length > 0
     install_extension_gem_dependency
   end
-  if @depend_plug > 0
+  if @depend_plug.length > 0
     install_extension_plugin_dependency
   end
 end
@@ -478,13 +476,12 @@ def attempt_server_restart
   get_restart_preference
 end
 def get_restart_preference
-  File.new( "#{ @conf }/restart.txt", 'r' ) { |r| @restart = r.gets }
+  File.open( "#{ @conf }/restart.txt", 'r' ) { |r| @restart = r.gets }
   if @restart == "mongrel\n"
     restart_mongrel
   elsif @restart == "passenger\n"
     restart_passenger
   else
-    puts '=============================================================================='
     puts "I don't know how to restart #{ @restart }."
     puts "You'll have to restart it manually."
     puts '=============================================================================='
@@ -505,35 +502,35 @@ def restart_passenger
   puts '=============================================================================='
 end
 def disable_extension
-  unless Dir.open( "#{ @path }/#{ @vendor_name }" )
+  unless Dir.open( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
-    puts "The #{ @vendor_name } extension does not appear to be installed."
+    puts "The #{ @dir } extension does not appear to be installed."
     puts '=============================================================================='
     exit
   end
-  unless Dir.open( "#{ @ray }/disabled_extensions" )
-    Dir.new( "#{ @ray }/disabled_extensions" )
+  unless File.exist?( "#{ @ray }/disabled_extensions" )
+    Dir.mkdir( "#{ @ray }/disabled_extensions" )
   end
-  move( "#{ @path }/#{ @vendor_name }", "#{ @ray }/disabled_extensions/#{ @vendor_name }" )
+  system "mv #{ @path }/#{ @dir } #{ @ray }/disabled_extensions/#{ @dir }"
   puts '=============================================================================='
-  puts "The #{ @name } extension has been disabled. You can enable it by running"
-  puts "rake ray:en name=#{ @vendor_name }"
+  puts "The #{ @dir } extension has been disabled. You can enable it by running"
+  puts "rake ray:en name=#{ @dir }"
   puts '=============================================================================='
   attempt_server_restart
 end
 def extension_enable
-  unless Dir.open( "#{ @ray }/disabled_extensions/#{ @vendor_name }" )
+  unless Dir.open( "#{ @ray }/disabled_extensions/#{ @dir }" )
     puts '=============================================================================='
-    puts "I've never disabled the #{ @vendor_name } extension."
-    puts "If you'd like to install use the following command,"
-    puts "rake ray:ext name=#{ @name }"
+    puts "I've never disabled the #{ @dir } extension."
+    puts "If you'd like to install it use the following command,"
+    puts "rake ray:ext name=#{ @dir }"
     puts '=============================================================================='
     exit
   end
-  move( "#{ @ray }/disabled_extensions/#{ @vendor_name }", "#{ @path }/#{ @vendor_name }" )
+  system "mv #{ @ray }/disabled_extensions/#{ @dir } #{ @path }/#{ @dir }"
   puts '=============================================================================='
-  puts "The #{ @vendor_name } extension has been enabled. You can disable it by running"
-  puts "rake ray:dis name=#{ @vendor_name }"
+  puts "The #{ @dir } extension has been enabled. You can disable it by running"
+  puts "rake ray:dis name=#{ @dir }"
   puts '=============================================================================='
   attempt_server_restart
 end
