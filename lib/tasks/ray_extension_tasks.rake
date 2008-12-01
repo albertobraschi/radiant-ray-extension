@@ -55,7 +55,10 @@ namespace :ray do
 
   namespace :setup do
     task :restart do
-      restart_preference_setup
+      @message = "You have to tell me what kind of server you're running"
+      @example = 'rake ray:setup:restart server=server_type'
+      validate_command_input
+      set_restart_preference
     end
     task :download do
       set_download_preference
@@ -85,12 +88,14 @@ namespace :ray do
 end
 
 def validate_command_input
-  unless ENV[ 'term' ] or ENV[ 'name' ]
+  unless ENV[ 'term' ] or ENV[ 'name' ] or ENV[ 'server' ]
     complain_about_command_input
     exit
   end
   if ENV[ 'term' ]
     @term = ENV[ 'term' ]
+  elsif ENV[ 'server' ]
+    @pref = ENV[ 'server' ]
   else
     @term = ENV[ 'name' ]
     @name = @term.gsub( /_/, '-' )
@@ -569,7 +574,26 @@ def run_extension_unupdate_task
     end
   end
 end
-
+def set_restart_preference
+  require 'ftools'
+  unless @pref == 'mongrel' or @pref == 'passenger'
+    puts '=============================================================================='
+    puts "I don't know how to restart #{ @pref }."
+    puts 'Your preference has not been saved.'
+    puts "'mongrel' and 'passenger' are the only kinds of servers I can restart."
+    puts '=============================================================================='
+    exit
+  end
+  unless File.exist?( "#{ @conf }" )
+    Dir.mkdir( "#{ @conf }" )
+  end
+  File.open( "#{ @conf }/restart.txt", 'w' ) do |p|
+    p.puts @pref
+  end
+  puts '=============================================================================='
+  puts "Your restart preference has been set to #{ @pref }"
+  puts '=============================================================================='
+end
 
 def extension_pull
   Dir.chdir( "#{ @path }/#{ @proper_dir }" ) do
@@ -663,27 +687,6 @@ def extension_bundle_install
   end
 end
 
-
-def restart_preference_setup
-  require 'ftools'
-  if ENV[ 'server' ]
-    pref = ENV[ 'server' ]
-    File.makedirs( "#{ @conf }" )
-    File.open( "#{ @conf }/restart.txt", 'w' ) do |p|
-      p.puts pref
-    end
-    puts '=============================================================================='
-    puts "Your restart preference has been set to #{ pref }"
-    puts '=============================================================================='
-  else
-    puts '=============================================================================='
-    puts "You have to tell what kind of server you'd like to restart, e.g."
-    puts 'rake ray:setup:restart server=mongrel'
-    puts 'rake ray:setup:restart server=passenger'
-    puts '=============================================================================='
-    exit
-  end
-end
 
 # supress faulty error messages
 namespace :radiant do
