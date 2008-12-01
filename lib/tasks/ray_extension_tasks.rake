@@ -535,42 +535,35 @@ def extension_enable
   attempt_server_restart
 end
 def uninstall_extension
-  unless Dir.open( "#{ @path }/#{ @vendor_name }" )
+  unless Dir.open( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
-    puts "The #{ @vendor_name } extension does not appear to be installed."
+    puts "The #{ @dir } extension does not appear to be installed."
     puts '=============================================================================='
     exit
   end
-  unless Dir.open( "#{ @ray }/removed_extensions" )
-    Dir.new( "#{ @ray }/removed_extensions" )
+  unless File.exist?( "#{ @ray }/removed_extensions" )
+    Dir.mkdir( "#{ @ray }/removed_extensions" )
   end
   @uninstall = true
   check_extension_tasks
-  # extension_run_tasks_uninstall
-  system "mv #{ @path }/#{ @proper_dir } #{ @ray }/removed_extensions/#{ @proper_dir }"
-  rm_r "#{ @ray }/removed_extensions/#{ @proper_dir }"
-  puts '=============================================================================='
-  puts "The #{ @proper_dir } extension has been uninstalled."
-  puts "I tried to delete static assets associated with the #{ @proper_dir } extension,"
-  puts 'but may have missed something in an effort not to catch too much.'
-  puts 'You may want manually clean up your public directory after an uninstall.'
-  puts '=============================================================================='
-  restart_server
+  system "mv #{ @path }/#{ @dir } #{ @ray }/removed_extensions/#{ @dir }"
+  rm_r "#{ @ray }/removed_extensions/#{ @dir }"
+  attempt_server_restart
 end
 def run_extension_uninstall_task
-  system "rake radiant:extensions:#{ @vendor_name }:uninstall"
+  system "rake radiant:extensions:#{ @dir }:uninstall"
 end
 def run_extension_unmigrate_task
-  system "rake radiant:extensions:#{ @vendor_name }:migrate VERSION=0"
+  system "rake radiant:extensions:#{ @dir }:migrate VERSION=0"
 end
 def run_extension_unupdate_task
   require 'find'
   files = []
-  Find.find( "#{ @path }/#{ @vendor_name }/public" ) { |file| files << file }
+  Find.find( "#{ @path }/#{ @dir }/public" ) { |file| files << file }
   files.each do |f|
     if f.include?( '.' )
       unless f.include?( '.DS_Store' )
-        file = f.gsub( /#{ @path }\/#{ @vendor_name }\/public/, 'public' )
+        file = f.gsub( /#{ @path }\/#{ @dir }\/public/, 'public' )
         File.delete( "#{ file }" ) rescue nil
       end
     end
