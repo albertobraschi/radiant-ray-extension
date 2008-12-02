@@ -142,7 +142,7 @@ This option is most useful for extension development and thus uses your clone ur
 Once you've setup your remotes you can use
 
     rake ray:pull name=extension_name
-
+    
     # or pull in remotes for all extensions
     rake ray:pull
 
