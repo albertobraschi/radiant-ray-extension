@@ -53,7 +53,7 @@ namespace :ray do
   namespace :setup do
     task :restart do
       @message = "You have to tell me what kind of server you're running"
-      @example = 'rake ray:setup:restart server=server_type'
+      @example = 'rake ray:setup:restart server=[mongrel|passenger]'
       validate_command_input
       set_restart_preference
     end
