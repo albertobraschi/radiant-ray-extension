@@ -430,7 +430,7 @@ def install_extension_submodule
     else
       system "git clone #{ @module_name[ i ] } #{ @module_path[ i ] }"
     end
-    i =+ 1
+    i += 1
   end
 end
 
