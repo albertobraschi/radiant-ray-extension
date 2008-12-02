@@ -1,10 +1,19 @@
 namespace :ray do
+  # ray path shortcuts, makes for less typing commonly referred to paths
   @ray  = 'vendor/extensions/ray'
   @conf = "#{ @ray }/config"
+
+  # @path can be overridden to enable installing extensions wherever
+  # on the command line: path=/somewhere/else
+  # from extensions.yml: @path = "/somewhere/else"
   unless ENV[ 'path' ]
     @path = 'vendor/extensions'
   end
 
+  # extension management tasks
+  # @message and @error are passed to the complain_about_command_input method
+  # when the validate_command_input decides the user input is bad
+  # refer to individual methods for details
   namespace :extension do
     task :install do
       @message = 'You have to tell me which extension to install, e.g.'
@@ -59,6 +68,7 @@ namespace :ray do
     end
   end
 
+  # ray setup and configuration tasks
   namespace :setup do
     task :restart do
       @message = "You have to tell me what kind of server you're running"
@@ -71,39 +81,42 @@ namespace :ray do
     end
   end
 
+  # shortcuts to the most common commands
+  # namely these are what show up in rake -T ray
   desc 'Install an extension.'
   task :ext => ['extension:install']
-
   desc 'Search available extensions.'
   task :search => ['extension:search']
-
   desc 'Disable an extension.'
   task :dis => ['extension:disable']
-
   desc 'Enable an extension.'
   task :en => ['extension:enable']
-
   desc 'Uninstall an extension.'
   task :rm => ['extension:remove']
-
-  desc 'Merge all remotes of an extension.'
-  task :pull => ['extension:pull']
-
   desc 'Install a bundle of extensions.'
   task :bundle => ['extension:bundle']
 end
 
+# check validity of user input
 def validate_command_input
+  # unless we have one of these the command is DOA
   unless ENV[ 'term' ] or ENV[ 'name' ] or ENV[ 'server' ]
     complain_about_command_input
     exit
   end
+
+  # with the remote option make sure there was an extension named
+  # TODO: ray:extension:pull shouldn't actually require a name
+  #       it should just pull remotes for all extensions with remotes
+  #       http://github.com/netzpirat/radiant-ray-extension/commit/a9d1576
   if ENV[ 'remote' ]
     unless ENV[ 'name' ]
       complain_about_command_input
       exit
     end
   end
+
+  # validate ray:search, ray:setup:restart and ray:ext input
   if ENV[ 'term' ]
     @term = ENV[ 'term' ]
   elsif ENV[ 'server' ]
@@ -114,19 +127,29 @@ def validate_command_input
     @dir  = @name.gsub( /-/, '_' )
   end
 end
+
+# run when validate_command_input decides user input is bad
+# uses @message and @error defined in the task to help the user get it right
 def complain_about_command_input
   puts '=============================================================================='
   print "#{ @message }\n#{ @example }\n"
   puts '=============================================================================='
   exit
 end
+
+# check that we have a download preference
 def check_download_preference
+  # if we don't have a preference, set it
   unless File.exist?( "#{ @conf }/download.txt" )
     set_download_preference
   end
+  # if we do have a preference, get it
   get_download_preference
 end
+
+# writes a new download preference file
 def set_download_preference
+  # run git_check to determine the preference
   git_check
   require 'ftools'
   File.makedirs( "#{ @conf }" )
@@ -134,6 +157,9 @@ def set_download_preference
   puts '=============================================================================='
   puts "Your download preference has been set to #{ @download }"
 end
+
+# check for git and use it presence (or lack of)
+# to determine the user's download preference
 def git_check
   if system 'git --version'
     @download = 'git'
@@ -141,23 +167,40 @@ def git_check
     @download = 'http'
   end
 end
+
+# read the contents of the download preference
+# if you want to know the download preferenceu se
+# check_download_preference instead of this method
+# that way you'll always get back a reasonable response
 def get_download_preference
   File.open( "#{ @conf }/download.txt", 'r' ) { |d| @download = d.gets }
 end
+
+# refer to the individual methods for more information
 def prep_extension_install
   search_extensions
   determine_extension_to_install
   install_extension
 end
+
+# search through a local search file for extensions matching @name or @term
 def search_extensions
+  # if we don't have a local search file get one
   unless File.exist?( "#{ @ray }/search.yml" )
-    get_search_cache
+    # TODO: implement get_search_cache
+    puts "NOT IMPLEMENTED: get_search_cache"
   end
+
   cached_search
+
+  # pass in the @show = true option to force search results
+  # useful if you have an exact match but still want to see the results
   if @show
     show_search_results
   end
 end
+
+# use search.yml to find extensions to manage
 def cached_search
   require 'yaml'
   @extension = []
@@ -170,7 +213,7 @@ def cached_search
       for i in 0...total
         extension = repository[ 'repositories' ][i][ 'name' ]
         if @name or @term
-          # return filtered results
+          # return a list of extensions filtered by @name or @term
           extension_description = repository[ 'repositories' ][i][ 'description' ]
           unless @name; @name = @term; @show = true; end
           if extension.include?( @term ) or extension.include?( @name ) or extension_description.include?( @term ) or extension_description.include?( @name )
@@ -183,7 +226,7 @@ def cached_search
             @description << description
           end
         else
-          # return all results
+          # return a list of all available extensions
           extension = repository[ 'repositories' ][i][ 'name' ]
           @extension << extension
           source = repository[ 'repositories' ][i][ 'owner' ]
@@ -197,6 +240,9 @@ def cached_search
     end
   end
 end
+
+# show the results of cached_search in a nice list
+# note, you exit immediately after showing search results
 def show_search_results
   puts '=============================================================================='
   if @extension.length == 0
@@ -216,13 +262,16 @@ def show_search_results
   end
   exit
 end
+
+# uses the results of cached_search to decide which extension to install
 def determine_extension_to_install
-  # only one extension to choose from
+  # if there is only one extension to choose choose it
   if @extension.length == 1
     @url = @http_url[0]
     return
   end
-  # choose an exact match from multiple options
+  # if there are multiple near matches and 1 exact choose the exact match
+  # otherwise return a nice list of the near matches
   if @extension.include?( @name ) or @extension.include?( "radiant-#{ @name }-extension")
     @extension.each do |e|
       ext_name = e.gsub( /radiant[-|_]/, '' ).gsub( /[-|_]extension/, '' )
@@ -237,6 +286,9 @@ def determine_extension_to_install
     show_search_results
   end
 end
+
+# decide which installation method to use
+# or repair a broken preference if the content isn't git or http
 def install_extension
   if @download == "git\n"
     install_extension_with_git
@@ -246,6 +298,9 @@ def install_extension
     fix_download_preference
   end
 end
+
+# use submodule or clone to install an extension with git
+# a "yes" for ./.git/HEAD is all it takes to use submodules
 def install_extension_with_git
   @url = @url.gsub( /http/, 'git' )
   if File.exist?( '.git/HEAD' )
@@ -254,9 +309,17 @@ def install_extension_with_git
     system "git clone -q #{ @url }.git #{ @path }/#{ @dir }"
   end
 end
+
+# TODO: implement the http installation method
 def install_extension_with_http
-  puts 'TODO: HTTP extension installation method is not yet implemented.'
+  puts 'NOT IMPLEMENTED: install_extension_with_http'
 end
+
+# fix up a broken download preference file
+# this won't be called until it's been deemed necessary
+# so it seems fine to just trash the file straight away
+# TODO: it'd be nice to remove to the call to prep_extension_install
+#       as is it's probably not right to use outside the current use
 def fix_download_preference
   require 'ftools'
   File.delete( "#{ @conf }/download.txt" )
@@ -267,18 +330,25 @@ def fix_download_preference
   get_download_preference
   prep_extension_install
 end
+
+# refer to individual methods for more information
 def post_extension_install
   validate_extension_directory
-  check_extension_submodules
-  check_extension_dependencies
+  # if 'remote' is used with ray:ext add and pull the requested remote
+  # do it first in case the remote changed submodules, dependencies or tasks
   if ENV[ 'remote' ]
     @remote = ENV[ 'remote' ]
     add_extension_remote
     pull_extension_remote
   end
+  check_extension_submodules
+  check_extension_dependencies
   check_extension_tasks
   attempt_server_restart
 end
+
+# check the source for the extensions definitive name and
+# relocate_extension_to_proper_dir if it's not in the definitive directory
 def validate_extension_directory
   unless File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
     path = Regexp.escape( @path )
@@ -287,13 +357,18 @@ def validate_extension_directory
   end
   @vendor_name = @dir
 end
+
+# move an extension into it's definitely named directory
 def relocate_extension_to_proper_dir
   move( "#{ @path }/#{ @dir }", "#{ @path }/#{ @vendor_name }" )
+  # if we had to move a submodule we need to reset and re-add it
   if File.exist?( '.gitmodules' )
     reset_git_submodule
   end
   @dir = @vendor_name
 end
+
+# reset and re-add a submodule after relocating it
 def reset_git_submodule
   File.open( ".gitmodules", "r+" ) do |f|
     dir = f.read.gsub( "#{ @path }/#{ @dir }", "#{ @path }/#{ @vendor_name }" )
@@ -303,12 +378,17 @@ def reset_git_submodule
   system "git reset HEAD #{ @path }/#{ @dir }"
   system "git add #{ @path }/#{ @vendor_name }"
 end
+
+# check an extension for any included submodules
 def check_extension_submodules
   if File.exist?( "#{ @path }/#{ @vendor_name }/.gitmodules" )
     get_extension_submodules
     install_extension_submodule
   end
 end
+
+# read submodules from extension_name/.gitmodules
+# builds an array of names and an array of paths
 def get_extension_submodules
   @module_name = []
   @module_path = []
@@ -324,6 +404,9 @@ def get_extension_submodules
     end
   end  
 end
+
+# uses the arrays from get_extension_submodules
+# to install the necessary submodules
 def install_extension_submodule
   i = 0
   while i < @module_name.length
@@ -335,12 +418,21 @@ def install_extension_submodule
     i =+ 1
   end
 end
+
+# check an extension for any included dependencies
 def check_extension_dependencies
   if File.exist?( "#{ @path }/#{ @vendor_name }/dependency.yml" )
     get_extension_dependencies
     install_extension_dependency
   end
 end
+
+# read dependencies from extension_name/dependency.yml
+# builds an array of extension and gem dependencies
+# TODO: see if it's worth implementing plugin dependencies
+#       for now ray documentation says to use submodules to include plugins
+#       the page_attachments extension is a good example for how to do that
+#       see install_extension_plugin_dependency for what happens now
 def get_extension_dependencies
   File.open( "#{ @path }/#{ @vendor_name }/dependency.yml" ) do |dependence|
     YAML.load_documents( dependence ) do |dependency|
@@ -362,6 +454,10 @@ def get_extension_dependencies
     end
   end
 end
+
+# uses the arrays from get_extension_dependencies
+# to install the necessary dependencies
+# see get_extension_dependencies comment for more about plugin dependencies
 def install_extension_dependency
   if @depend_ext.length > 0
     install_extension_extension_dependency
@@ -373,9 +469,13 @@ def install_extension_dependency
     install_extension_plugin_dependency
   end
 end
+
+# install extension dependencies
 def install_extension_extension_dependency
   @depend_ext.each { |e| system "rake ray:ext name=#{ e }" }
 end
+
+# install gem dependencies
 def install_extension_gem_dependency
   puts '=============================================================================='
   puts "The #{ @vendor_name } extension requires one or more gems."
@@ -384,16 +484,22 @@ def install_extension_gem_dependency
     system "sudo gem install #{ g }"
   end
 end
+
+# let the user know an extension requires a plugin
+# and let them know they'll need to install it manually
 def install_extension_plugin_dependency
   puts '=============================================================================='
   puts 'Plugin dependencies are not yet supported by Ray.'
   puts 'Consider adding plugins as git submodules, which are supported by Ray.'
+  puts "If you're not the extension author consider contacting them about this issue."
   @depend_plug.each do |p|
     puts "The #{ @vendor_name } extension requires the #{ p } plugin,"
-    puts "but I don't really support plugin dependencies."
+    puts "but I don't support plugin dependencies."
     puts "Please install the #{ p } plugin manually."
   end
 end
+
+# figure out which extension rake task(s) to run
 def check_extension_tasks
   rake_file = `ls #{ @path }/#{ @vendor_name }/lib/tasks/*_tasks.rake`.gsub( /\n/, '' )
   if rake_file
@@ -419,6 +525,9 @@ def check_extension_tasks
     run_extension_task
   end
 end
+
+# run the methods appropriate for the extension rake tasks
+# the uninstall_extension method uses the @uninstall instance variable
 def run_extension_task
   if @rake_tasks.empty?
     if @uninstall
@@ -476,15 +585,23 @@ def run_extension_task
     end
   end
 end
+
+# use an extension install rake task to install the extension
 def run_extension_install_task
   system "rake radiant:extensions:#{ @vendor_name }:install"
 end
+
+# run an extension migrate rake task
 def run_extension_migrate_task
   system "rake radiant:extensions:#{ @vendor_name }:migrate"
 end
+
+# run an extension update rake task
 def run_extension_update_task
   system "rake radiant:extensions:#{ @vendor_name }:update"
 end
+
+# check if there is any server to try restarting
 def attempt_server_restart
   unless File.exist?( "#{ @conf }/restart.txt" )
     puts 'You need to restart your server.'
@@ -497,6 +614,9 @@ def attempt_server_restart
   end
   get_restart_preference
 end
+
+# figure out what kind of server we're restarting
+# or complain about not knowing how to restart
 def get_restart_preference
   File.open( "#{ @conf }/restart.txt", 'r' ) { |r| @restart = r.gets }
   if @restart == "mongrel\n"
@@ -509,11 +629,16 @@ def get_restart_preference
     puts '=============================================================================='
   end
 end
+
+# restart a mongrel cluster
+# TODO: restart single mongrels or a cluster
 def restart_mongrel
   system 'mongrel_rails cluster::restart'
   puts 'Mongrel cluster has been restarted.'
   puts '=============================================================================='
 end
+
+# restart passenger
 def restart_passenger
   tmp = Dir.open( 'tmp' ) rescue nil
   unless tmp
@@ -523,6 +648,8 @@ def restart_passenger
   puts 'Passenger has been restarted.'
   puts '=============================================================================='
 end
+
+# move an extension into the disabled_extensions directory
 def disable_extension
   unless Dir.open( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
@@ -540,6 +667,8 @@ def disable_extension
   puts '=============================================================================='
   attempt_server_restart
 end
+
+# move an extension from the disabled_extensions directory back into use
 def extension_enable
   unless Dir.open( "#{ @ray }/disabled_extensions/#{ @dir }" )
     puts '=============================================================================='
@@ -556,6 +685,8 @@ def extension_enable
   puts '=============================================================================='
   attempt_server_restart
 end
+
+# completely uninstall and remove an extension
 def uninstall_extension
   unless Dir.open( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
@@ -572,12 +703,19 @@ def uninstall_extension
   rm_r "#{ @ray }/removed_extensions/#{ @dir }"
   attempt_server_restart
 end
+
+# someday maybe authors will include uninstall tasks
 def run_extension_uninstall_task
   system "rake radiant:extensions:#{ @dir }:uninstall"
 end
+
+# reverse extension migrations
 def run_extension_unmigrate_task
   system "rake radiant:extensions:#{ @dir }:migrate VERSION=0"
 end
+
+# look in an extension's public directory and try to
+# match those files to ones in public/* – matches are deleted
 def run_extension_unupdate_task
   require 'find'
   files = []
@@ -591,6 +729,8 @@ def run_extension_unupdate_task
     end
   end
 end
+
+# create a restart preference
 def set_restart_preference
   require 'ftools'
   unless @pref == 'mongrel' or @pref == 'passenger'
@@ -611,12 +751,16 @@ def set_restart_preference
   puts "Your restart preference has been set to #{ @pref }"
   puts '=============================================================================='
 end
+
+# add a remote to an installed extension
 def add_extension_remote
   search_extensions
   determine_extension_to_install
   @url = @url.gsub( /http/, 'git' ).gsub( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
   system "cd #{ @path }/#{ @vendor_name }; git remote add #{ @remote } #{ @url }"
 end
+
+# pull remotes on an extension
 def pull_extension_remote
   Dir.chdir( "#{ @path }/#{ @dir }" ) do
     config = File.open( '.git/config', 'r' )
@@ -626,7 +770,7 @@ def pull_extension_remote
           system 'git checkout master'
           system "git pull #{ $1 } master"
           puts '=============================================================================='
-          puts "The changes from hub #{ $1 } have been pulled into the #{ @dir } extension"
+          puts "The remote changes from '#{ $1 }' have been pulled into the #{ @dir } extension."
           puts '=============================================================================='
         end
       end
@@ -634,6 +778,9 @@ def pull_extension_remote
   end
 end
 
+# uses config/extensions.yml to batch install extensions
+# TODO: implement bundle install
+#       not sure exactly but I think ray2 has some yml format changes
 def extension_bundle_install
   require 'yaml'
   unless File.exist?( 'config/extensions.yml' )
@@ -710,7 +857,7 @@ def extension_bundle_install
   end
 end
 
-# supress faulty error messages
+# prints friendly messages in place of harmless error messages
 namespace :radiant do
   namespace :extensions do
     namespace :ray do
