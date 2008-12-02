@@ -49,9 +49,6 @@ namespace :ray do
       uninstall_extension
     end
     task :pull do
-      @message = 'You have to tell me which extension you want to pull the remotes on, e.g.'
-      @example = 'rake ray:pull name=extension_name'
-      validate_command_input
       pull_extension_remote
     end
     task :remote do
@@ -106,9 +103,6 @@ def validate_command_input
   end
 
   # with the remote option make sure there was an extension named
-  # TODO: ray:extension:pull shouldn't actually require a name
-  #       it should just pull remotes for all extensions with remotes
-  #       http://github.com/netzpirat/radiant-ray-extension/commit/a9d1576
   if ENV[ 'remote' ]
     @remote = ENV[ 'remote' ]
     unless ENV[ 'name' ]
