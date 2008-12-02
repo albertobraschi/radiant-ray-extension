@@ -110,6 +110,7 @@ def validate_command_input
   #       it should just pull remotes for all extensions with remotes
   #       http://github.com/netzpirat/radiant-ray-extension/commit/a9d1576
   if ENV[ 'remote' ]
+    @remote = ENV[ 'remote' ]
     unless ENV[ 'name' ]
       complain_about_command_input
       exit
@@ -771,7 +772,10 @@ def add_extension_remote
   search_extensions
   determine_extension_to_install
   @url = @url.gsub( /http/, 'git' ).gsub( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
-  system "cd #{ @path }/#{ @vendor_name }; git remote add #{ @remote } #{ @url }"
+  system "cd #{ @path }/#{ @dir }; git remote add #{ @remote } #{ @url }"
+  puts '=============================================================================='
+  puts "#{ @remote } had been added as a remote to the #{ @dir } extension."
+  puts '=============================================================================='
 end
 
 # pull remotes on an extension
@@ -787,7 +791,7 @@ def pull_extension_remote
               system 'git checkout master'
               system "git pull #{ $1 } master"
               puts '=============================================================================='
-              puts "Remote changes from '#{ $1 }' have been pulled into the #{ vendor_name } extension."
+              puts "Changes from '#{ $1 }' have been pulled into the #{ vendor_name } extension."
               puts '=============================================================================='
             end
           end
