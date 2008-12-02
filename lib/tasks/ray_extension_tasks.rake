@@ -776,16 +776,21 @@ end
 
 # pull remotes on an extension
 def pull_extension_remote
-  Dir.chdir( "#{ @path }/#{ @dir }" ) do
-    config = File.open( '.git/config', 'r' )
-    while ( line = config.gets )
-      if line =~ /remote \"([a-zA-Z0-9]+)\"/
-        unless $1 == 'origin'
-          system 'git checkout master'
-          system "git pull #{ $1 } master"
-          puts '=============================================================================='
-          puts "The remote changes from '#{ $1 }' have been pulled into the #{ @dir } extension."
-          puts '=============================================================================='
+  vendor_names = @name ? @name.gsub( /\-/, '_' ) : Dir.entries( @path ) - [ '.', '..' ]
+  vendor_names.each do |vendor_name|
+    if File.directory?( "#{ @path }/#{ vendor_name }" )
+      Dir.chdir( "#{ @path }/#{ vendor_name }" ) do
+        config = File.open( '.git/config', 'r' )
+        while ( line = config.gets )
+          if line =~ /remote \"([a-zA-Z0-9]+)\"/
+            unless $1 == 'origin'
+              system 'git checkout master'
+              system "git pull #{ $1 } master"
+              puts '=============================================================================='
+              puts "Remote changes from '#{ $1 }' have been pulled into the #{ vendor_name } extension."
+              puts '=============================================================================='
+            end
+          end
         end
       end
     end
