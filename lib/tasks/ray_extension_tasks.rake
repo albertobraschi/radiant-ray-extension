@@ -40,10 +40,7 @@ namespace :ray do
       uninstall_extension
     end
     task :pull do
-      @message = 'You have to tell me which extension to pull, e.g.'
-      @example = 'rake ray:pull name=extension_name'
-      validate_command_input
-      extension_pull
+      pull_extension_remote
     end
     task :bundle do
       extension_bundle_install
@@ -259,6 +256,10 @@ def post_extension_install
   validate_extension_directory
   check_extension_submodules
   check_extension_dependencies
+  if ENV[ 'remote' ]
+    @remote = ENV[ 'remote' ]
+    add_extension_remote
+  end
   check_extension_tasks
   attempt_server_restart
 end
@@ -594,9 +595,12 @@ def set_restart_preference
   puts "Your restart preference has been set to #{ @pref }"
   puts '=============================================================================='
 end
-
-def extension_pull
-  Dir.chdir( "#{ @path }/#{ @proper_dir }" ) do
+def add_extension_remote
+  @url = @url.gsub( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
+  system "cd #{ @path }/#{ @vendor_name }; git remote add #{ @remote } #{ @url }"
+end
+def pull_extension_remote
+  Dir.chdir( "#{ @path }/#{ @dir }" ) do
     config = File.open( '.git/config', 'r' )
     while ( line = config.gets )
       if line =~ /remote \"([a-zA-Z0-9]+)\"/
@@ -604,13 +608,14 @@ def extension_pull
           system 'git checkout master'
           system "git pull #{ $1 } master"
           puts '=============================================================================='
-          puts "The changes from hub #{ $1 } have been pulled into the #{ vendor_name } extension"
+          puts "The changes from hub #{ $1 } have been pulled into the #{ @dir } extension"
           puts '=============================================================================='
         end
       end
     end
   end
 end
+
 def extension_bundle_install
   require 'yaml'
   unless File.exist?( 'config/extensions.yml' )
@@ -686,7 +691,6 @@ def extension_bundle_install
     # system "rm -r #{@ray}/tmp"
   end
 end
-
 
 # supress faulty error messages
 namespace :radiant do
