@@ -778,15 +778,17 @@ def pull_extension_remote
   vendor_names.each do |vendor_name|
     if File.directory?( "#{ @path }/#{ vendor_name }" )
       Dir.chdir( "#{ @path }/#{ vendor_name }" ) do
-        config = File.open( '.git/config', 'r' )
-        while ( line = config.gets )
-          if line =~ /remote \"([a-zA-Z0-9]+)\"/
-            unless $1 == 'origin'
-              system 'git checkout master'
-              system "git pull #{ $1 } master"
-              puts '=============================================================================='
-              puts "Changes from '#{ $1 }' have been pulled into the #{ vendor_name } extension."
-              puts '=============================================================================='
+        config = File.open( '.git/config', 'r' ) rescue nil
+        if config
+          while ( line = config.gets )
+            if line =~ /remote \"([a-zA-Z0-9]+)\"/
+              unless $1 == 'origin'
+                system 'git checkout master'
+                system "git pull #{ $1 } master"
+                puts '=============================================================================='
+                puts "Changes from '#{ $1 }' have been pulled into the #{ vendor_name } extension."
+                puts '=============================================================================='
+              end
             end
           end
         end
