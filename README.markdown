@@ -1,1 +1,1 @@
-For Help refer to [the help file](master/HELP_admin.markdown)
+For Help refer to [the help file](HELP_admin.markdown)
