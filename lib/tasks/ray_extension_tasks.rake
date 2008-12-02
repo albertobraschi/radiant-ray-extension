@@ -274,6 +274,7 @@ def post_extension_install
   if ENV[ 'remote' ]
     @remote = ENV[ 'remote' ]
     add_extension_remote
+    pull_extension_remote
   end
   check_extension_tasks
   attempt_server_restart
