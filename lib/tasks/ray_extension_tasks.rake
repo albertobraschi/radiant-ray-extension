@@ -310,9 +310,23 @@ def install_extension_with_git
   end
 end
 
-# TODO: implement the http installation method
+# install extensions with http when git is unavailable
 def install_extension_with_http
-  puts 'NOT IMPLEMENTED: install_extension_with_http'
+  require 'net/http'
+  @url = URI.parse("#{ @url }/tarball/master")
+  found = false
+  until found
+    host, port = @url.host, @url.port if @url.host && @url.port
+    github_request = Net::HTTP::Get.new( @url.path )
+    github_response = Net::HTTP.start( host, port ) { |http| http.request(github_request) }
+    github_response.header[ 'location' ] ? @url = URI.parse( github_response.header[ 'location' ] ) :
+    found = true
+  end
+  open( "#{ @ray }/tmp/#{ @dir }.tar.gz", "wb") { |file|
+    file.write(github_response.body)
+  }
+  system "cd #{ @ray }/tmp; tar xzvf #{ @dir }.tar.gz; rm *.tar.gz"
+  system "mv #{ @ray }/tmp/* #{ @path }/#{ @dir }"
 end
 
 # fix up a broken download preference file
