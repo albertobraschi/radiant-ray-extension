@@ -40,7 +40,16 @@ namespace :ray do
       uninstall_extension
     end
     task :pull do
+      @message = 'You have to tell me which extension you want to pull the remotes on, e.g.'
+      @example = 'rake ray:pull name=extension_name'
+      validate_command_input
       pull_extension_remote
+    end
+    task :remote do
+      @message = "You have to give me more information about the remote you want to add.\nThis command requires the name and remote options, try something like:"
+      @example = "rake ray:extension:remote name=extension_name remote=user_name"
+      validate_command_input
+      add_extension_remote
     end
     task :bundle do
       extension_bundle_install
@@ -88,6 +97,12 @@ def validate_command_input
   unless ENV[ 'term' ] or ENV[ 'name' ] or ENV[ 'server' ]
     complain_about_command_input
     exit
+  end
+  if ENV[ 'remote' ]
+    unless ENV[ 'name' ]
+      complain_about_command_input
+      exit
+    end
   end
   if ENV[ 'term' ]
     @term = ENV[ 'term' ]
@@ -596,7 +611,9 @@ def set_restart_preference
   puts '=============================================================================='
 end
 def add_extension_remote
-  @url = @url.gsub( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
+  search_extensions
+  determine_extension_to_install
+  @url = @url.gsub( /http/, 'git' ).gsub( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
   system "cd #{ @path }/#{ @vendor_name }; git remote add #{ @remote } #{ @url }"
 end
 def pull_extension_remote
