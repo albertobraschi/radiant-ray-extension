@@ -6,8 +6,6 @@ Ray is a collection of `rake` tasks meant to simplify extension management.
 Installing Ray
 --------------
 
-Ray can be installed as a regular Radiant extension directly into your project and used with `rake`, or installed globally and used with `sake`. Using Ray with `sake` is particularly handy on a development machine where you manage extensions in a number of different Radiant projects and don't want to bother installing Ray over and over again.
-
     Regular Radiant extension (Git)
     ===============================
     -- pick one --
@@ -21,14 +19,6 @@ Ray can be installed as a regular Radiant extension directly into your project a
     wget -O ray.tar.gz http://github.com/johnmuhl/radiant-ray-extension/tarball/master
     tar xzvf ray.tar.gz
     mv johnmuhl-radiant-ray-extension-* ray
-
-    Global Sake tasks
-    =================
-    sake -i http://is.gd/8PIg
-
-The "is.gd" link points to [this Gist][gist].
-
-[gist]: http://gist.github.com/raw/28574/47b7e610b50ccf595479bda66fe284bd9535f650
 
 Upgrading from Ray 1.x
 ----------------------
