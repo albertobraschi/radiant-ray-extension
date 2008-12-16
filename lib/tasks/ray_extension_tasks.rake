@@ -112,6 +112,7 @@ def validate_command_input
       complain_about_command_input
       exit
     end
+    @hub = ENV[ 'hub' ]
     unless ENV[ 'name' ]
       @example = 'rake ray:ext name=extension_name hub=user_name remote=another_user'
       puts @example
@@ -308,6 +309,9 @@ end
 # a "yes" for ./.git/HEAD is all it takes to use submodules
 def install_extension_with_git
   @url = @url.gsub( /http/, 'git' )
+  if @remote and @hub
+    @url.gsub!(/git:\/\/github.com\/.*(\/.*)/, "git@github.com:#{ @hub }\\1")
+  end
   if File.exist?( '.git/HEAD' )
     system "git submodule -q add #{ @url }.git #{ @path }/#{ @dir }"
   else
