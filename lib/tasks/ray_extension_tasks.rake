@@ -308,7 +308,7 @@ end
 # use submodule or clone to install an extension with git
 # a "yes" for ./.git/HEAD is all it takes to use submodules
 def install_extension_with_git
-  @url = @url.gsub( /http/, 'git' )
+  @url.gsub!( /http/, 'git' )
   if @remote and @hub
     @url.gsub!(/git:\/\/github.com\/.*(\/.*)/, "git@github.com:#{ @hub }\\1")
   end
@@ -779,7 +779,7 @@ end
 def add_extension_remote
   search_extensions
   determine_extension_to_install
-  @url = @url.gsub( /http/, 'git' ).gsub( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
+  @url.gsub!( /http/, 'git' ).gsub!( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
   system "cd #{ @path }/#{ @dir }; git remote add #{ @remote } #{ @url }"
   puts '=============================================================================='
   puts "#{ @remote } had been added as a remote to the #{ @dir } extension."
