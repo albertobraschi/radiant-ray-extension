@@ -191,6 +191,7 @@ def search_extensions
 
   # pass in the @show = true option to force search results
   # useful if you have an exact match but still want to see the results
+  # internally @show is used to return a list of all available extensions
   if @show
     show_search_results
   end
