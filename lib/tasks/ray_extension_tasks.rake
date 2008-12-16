@@ -98,7 +98,7 @@ end
 # check validity of user input
 def validate_command_input
   # unless we have one of these the command is DOA
-  unless ENV[ 'term' ] or ENV[ 'name' ] or ENV[ 'server' ]
+  unless ENV[ 'term' ] or ENV[ 'name' ] or ENV[ 'server' ] or ENV[ 'remote' ]
     complain_about_command_input
     exit
   end
@@ -106,7 +106,15 @@ def validate_command_input
   # with the remote option make sure there was an extension named
   if ENV[ 'remote' ]
     @remote = ENV[ 'remote' ]
+    unless ENV[ 'hub' ]
+      @message = 'You have to tell me your GitHub user name, e.g.'
+      @example = 'rake ray:ext name=enxtension_name hub=user_name remote=another_user'
+      complain_about_command_input
+      exit
+    end
     unless ENV[ 'name' ]
+      @example = 'rake ray:ext name=extension_name hub=user_name remote=another_user'
+      puts @example
       complain_about_command_input
       exit
     end
