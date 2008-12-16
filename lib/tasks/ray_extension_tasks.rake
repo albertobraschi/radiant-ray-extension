@@ -61,7 +61,8 @@ namespace :ray do
       extension_bundle_install
     end
     task :all do
-      show_all_extensions
+      @show = true
+      search_extensions
     end
   end
 
