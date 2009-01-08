@@ -154,7 +154,7 @@ to install all of the listed extensions at once. Here is what the `extensions.ym
       lib: mini_magick
     - name: blog
       hub: netzpirat
-      remote: saturnflyer/radiant-blog-extension
+      remote: saturnflyer
 
 Special extensions
 ------------------
