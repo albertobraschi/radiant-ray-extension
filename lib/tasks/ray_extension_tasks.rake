@@ -341,8 +341,6 @@ end
 # fix up a broken download preference file
 # this won't be called until it's been deemed necessary
 # so it seems fine to just trash the file straight away
-# TODO: it'd be nice to remove to the call to prep_extension_install
-#       as is it's probably not right to use outside the current use
 def fix_download_preference
   require 'ftools'
   File.delete( "#{ @conf }/download.txt" )
@@ -452,10 +450,6 @@ end
 
 # read dependencies from extension_name/dependency.yml
 # builds an array of extension and gem dependencies
-# TODO: see if it's worth implementing plugin dependencies
-#       for now ray documentation says to use submodules to include plugins
-#       the page_attachments extension is a good example for how to do that
-#       see install_extension_plugin_dependency for what happens now
 def get_extension_dependencies
   File.open( "#{ @path }/#{ @vendor_name }/dependency.yml" ) do |dependence|
     YAML.load_documents( dependence ) do |dependency|
@@ -480,7 +474,6 @@ end
 
 # uses the arrays from get_extension_dependencies
 # to install the necessary dependencies
-# see get_extension_dependencies comment for more about plugin dependencies
 def install_extension_dependency
   if @depend_ext.length > 0
     install_extension_extension_dependency
@@ -829,64 +822,18 @@ def extension_bundle_install
     YAML.load_documents( bundle ) do |extension|
       total = extension.length - 1
       for i in 0..total do
-        
+        @name = extension[ i ][ 'name' ]
+        if extension[ i ][ 'hub' ]
+          @hub = extension[ i ][ 'hub' ]
+        end
+        if extension[ i ][ 'remote' ]
+          @remote = extension[ i ][ 'remote' ]
+        end
+        if extension[ i ][ 'lib' ]
+          @lib = extension[ i ][ 'lib' ]
+        end
       end
-      # for count in 0..total do
-      #   name = extension[ count ][ 'name' ]
-      #   installer = File.open( "#{ @ray }/tmp/#{ name }_extension_install.rb", 'a' )
-      #   installer.puts "\@name\ \=\ \"#{ name }\""
-      #   if extension[ count ][ 'fullname' ]
-      #     fullname = extension[ count ][ 'fullname' ]
-      #     installer.puts "\@fullname\ \=\ \"#{ fullname }\""
-      #   end
-      #   if extension[ count ][ 'hub' ]
-      #     hub = extension[ count ][ 'hub' ]
-      #     installer.puts "\@hub\ \=\ \"#{ hub }\""
-      #   end
-      #   if extension[ count ][ 'lib' ]
-      #     lib = extension[ count ][ 'lib' ]
-      #     installer.puts "\@lib\ \=\ \"#{ lib }\""
-      #   end
-      #   if extension[ count ][ 'remote' ]
-      #     remote = extension[ count ][ 'remote' ]
-      #     installer.puts "\@remote\ \=\ \"#{ remote }\""
-      #   end
-      #   if extension[ count ][ 'plugin' ]
-      #     plugin = extension[ count ][ 'plugin' ]
-      #     installer.puts "\@plugin\ \=\ \"#{ plugin }\""
-      #   end
-      #   if extension[ count ][ 'plugin_path' ]
-      #     plugin_path = extension[ count ][ 'plugin_path' ]
-      #     installer.puts "\@plugin_path\ \=\ \"#{ plugin_path }\""
-      #   end
-      #   if extension[ count ][ 'plugin_repository' ]
-      #     plugin_repository = extension[ count][ 'plugin_repository' ]
-      #     installer.puts "\@plugin_repository\ \=\ \"#{ plugin_repository }\""
-      #   end
-      #   if extension[ count ][ 'rake' ]
-      #     rake = extension[ count ][ 'rake' ]
-      #     installer.puts "\@rake\ \=\ \"#{ rake }\""
-      #   end
-      #   if extension[ count ][ 'vendor' ]
-      #     vendor = extension[ count ][ 'vendor' ]
-      #     installer.puts "\@vendor\ \=\ \"#{ vendor }\""
-      #   end
-      #   if extension[ count ][ 'path' ]
-      #     path = extension[ count ][ 'path' ]
-      #     installer.puts "\@path\ \=\ \"#{ path }\""
-      #   else
-      #     installer.puts "\@path\ \=\ \"vendor\/extensions\""
-      #   end
-      #   installer.puts "\@ray\ \=\ \"vendor\/extensions\/ray\""
-      #   installer.puts "\@task\ \=\ \"\#\{ \@ray \}\/lib\/tasks\""
-      #   installer.puts "\@conf\ \=\ \"\#\{ \@ray \}\/config\""
-        # generic_install = File.read("#{@task}/_extension_install.rb")
-        # installer.puts generic_install
-        # installer.close
-        # system "ruby #{@ray}/tmp/#{name}_extension_install.rb && rm #{@ray}/tmp/#{name}_extension_install.rb"
-      # end
     end
-    # system "rm -r #{@ray}/tmp"
   end
 end
 
