@@ -174,7 +174,7 @@ def git_check
 end
 
 # read the contents of the download preference
-# if you want to know the download preferenceu se
+# if you want to know the download preference use
 # check_download_preference instead of this method
 # that way you'll always get back a reasonable response
 def get_download_preference
