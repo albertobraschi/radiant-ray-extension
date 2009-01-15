@@ -824,16 +824,18 @@ def extension_bundle_install
     YAML.load_documents( bundle ) do |extension|
       total = extension.length - 1
       for i in 0..total do
-        @name = extension[ i ][ 'name' ]
+        name = extension[ i ][ 'name' ]
+        options = []
         if extension[ i ][ 'hub' ]
-          @hub = extension[ i ][ 'hub' ]
+          options << " hub=" + extension[ i ][ 'hub' ]
         end
         if extension[ i ][ 'remote' ]
-          @remote = extension[ i ][ 'remote' ]
+          options << " remote=" + extension[ i ][ 'remote' ]
         end
         if extension[ i ][ 'lib' ]
-          @lib = extension[ i ][ 'lib' ]
+          options << " lib=" + extension[ i ][ 'lib' ]
         end
+        system "rake ray:ext name=#{ name }#{ options }"
       end
     end
   end
