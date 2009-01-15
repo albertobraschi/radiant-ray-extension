@@ -193,6 +193,7 @@ def search_extensions
   # if we don't have a local search file get one
   unless File.exist?( "#{ @ray }/search.yml" )
     # TODO: implement get_search_cache
+    #       waiting on a GitHub API update
     puts "NOT IMPLEMENTED: get_search_cache"
   end
 
@@ -648,6 +649,7 @@ end
 
 # restart a mongrel cluster
 # TODO: restart single mongrels or a cluster
+#       low priority, just use passenger or a mongrel_cluster
 def restart_mongrel
   system 'mongrel_rails cluster::restart'
   puts 'Mongrel cluster has been restarted.'
