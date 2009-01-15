@@ -3,15 +3,6 @@
 # updated: 2009/01/14
 --- 
 repositories: 
-- name: radiant-extension-registry
-  watchers: 16
-  private: false
-  url: http://github.com/radiant/radiant-extension-registry
-  fork: false
-  description: A web service to support the distribution and installation of extensions for Radiant CMS.
-  forks: 2
-  homepage: ""
-  owner: radiant
 - name: radiant-extensions-extension
   watchers: 5
   private: false
