@@ -707,6 +707,7 @@ def extension_enable
 end
 
 # completely uninstall and remove an extension
+# TODO: what to do with plugins added by the extension being uninstalled?
 def uninstall_extension
   unless Dir.open( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
