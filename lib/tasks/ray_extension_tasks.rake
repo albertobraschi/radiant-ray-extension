@@ -807,8 +807,6 @@ def pull_extension_remote
 end
 
 # uses config/extensions.yml to batch install extensions
-# TODO: implement bundle install
-#       not sure exactly but I think ray2 has some yml format changes
 def extension_bundle_install
   require 'yaml'
   unless File.exist?( 'config/extensions.yml' )
