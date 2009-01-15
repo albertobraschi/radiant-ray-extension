@@ -846,10 +846,10 @@ namespace :radiant do
   namespace :extensions do
     namespace :ray do
       task :migrate do
-        puts 'No migrations necessary.'
+        puts "Ray doesn't have any migrations to run."
       end
       task :update do
-        puts 'No static assets to copy.'
+        puts "Ray doesn't have any static assets to copy."
       end
     end
   end
