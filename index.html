@@ -6,7 +6,7 @@
 html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,code,del,dfn,em,img,q,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline}body{line-height:1.5}table{border-collapse:separate;border-spacing:0}caption,th,td{text-align:left;font-weight:normal}table,td,th{vertical-align:middle}blockquote:before,blockquote:after,q:before,q:after{content:""}blockquote,q{quotes:"" ""}a img{border:none}
 body{font-size:75%;font-family:'Helvetica Neue', Arial, Helvetica, sans-serif;color:#222222;background:#ffffff}h1{font-weight:normal;color:#111;font-size:3em;line-height:1;margin-bottom:0.5em}h1 img{margin:0}h2{font-weight:normal;color:#111;font-size:2em;margin-bottom:0.75em}h2 img{margin:0}h3{font-weight:normal;color:#111;font-size:1.5em;line-height:1;margin-bottom:1em}h3 img{margin:0}h4{font-weight:normal;color:#111;font-size:1.2em;line-height:1.25;margin-bottom:1.25em}h4 img{margin:0}h5{font-weight:normal;color:#111;font-size:1em;font-weight:bold;margin-bottom:1.5em}h5 img{margin:0}h6{font-weight:normal;color:#111;font-size:1em;font-weight:bold}h6 img{margin:0}p{margin:0 0 1.5em}p img.left{float:left;margin:1.5em 1.5em 1.5em 0;padding:0}p img.left.right{float:right;margin:1.5em 0 1.5em 1.5em}a{color:#000099;text-decoration:underline}a:focus,a:hover{color:#000000}blockquote{margin:1.5em;color:#666666;font-style:italic}strong{font-weight:bold}em,dfn{font-style:italic}dfn{font-weight:bold}sup,sub{line-height:0}abbr,acronym{border-bottom:1px dotted #666666}address{margin:0 0 1.5em;font-style:italic}del{color:#666666}pre{margin:1.5em 0;white-space:pre}pre,code,tt{font-size:1em;font-family:'andale mono', 'lucida console', monospace;line-height:1.5}li ul,li ol{margin:0 1.5em}ul,ol{margin:0 1.5em 1.5em 1.5em}ul{list-style-type:disc}ol{list-style-type:decimal}dl{margin:0 0 1.5em 0}dl dt{font-weight:bold}dd{margin-left:1.5em}table{margin-bottom:1.4em;width:100%}th{font-weight:bold}thead th{background:#c3d9ff}th,td,caption{padding:4px 10px 4px 5px}tr.even td{background:#e5ecf9}tfoot{font-style:italic}caption{background:#eeeeee}
 .container{width:950px;margin:0 auto}.last{margin-right:0}hr{background:#dddddd;color:#dddddd;clear:both;float:none;width:100%;height:.1em;margin:0 0 1.45em;border:none}hr .space{background:#ffffff;color:#ffffff}.clearfix:after,.container:after{content:'\0020';display:block;height:0;clear:both;visibility:hidden;overflow:hidden}.clearfix,.container{display:block}
-.container { width: 53.8461em; }
+.container { font-family: "DejaVu Sans", "Helvetica Neue", Arial, Helvetica, sans-serif; width: 53.8461em; }
 .quiet { background-color: inherit; color: #666666;}
 .title { display: block; margin-top: 4em; }
 .title h1 { font-size: 400%; font-weight: bold; display: inline; letter-spacing: -1px; margin-right: -0.1em; }
@@ -63,52 +63,33 @@ section section section h1 { font-size: 175%; }
 </section>
 <section id="overview">
   <header><h1>Overview</h1></header>
-  <p>
-    Ray is just a rake file with some tasks that simplify the installation, disabling, enabling and uninstallation of other Radiant extensions. Although Ray relies on GitHub (as the extension host) it does not rely on the <code>git</code> command, if you don’t have <code>git</code> installed then the Ruby HTTP library is used to download compressed archives.
-  </p>
-  <p>
-    To use Ray you need <code>git</code> or <code>tar</code> installed in addition to the normal Radiant stack; Windows users probably need one of those “unixy” environment things since Ray does occasionally call out to system tools. Ray <strong>only</strong> supports the <code>git</code> <abbr title="Source Code Management">SCM</abbr>; although I’d happily accept a patch that used <code>git</code>’s tools to access CVS, SVN or whatever else it can handle. If you need to install extensions from other sources you should use Radiant’s built-in <code>script/extension install</code> command which can handle a wide variety of installation types.
-  </p>
+  <p>Ray is just a rake file with some tasks that simplify the installation, disabling, enabling and uninstallation of other Radiant extensions. Although Ray relies on GitHub (as the extension host) it does not rely on the <code>git</code> command, if you don&rsquo;t have <code>git</code> installed then the Ruby HTTP library is used to download compressed archives.</p>
+  <p>To use Ray you need <code>git</code> or <code>tar</code> installed in addition to the normal Radiant stack; Windows users probably need one of those &ldquo;unixy&rdquo; environment things since Ray does occasionally call out to system tools. Ray <strong>only</strong> supports the <code>git</code> <abbr title="Source Code Management">SCM</abbr>; although I&rsquo;d happily accept a patch that used <code>git</code>&rsquo;s tools to access CVS, SVN or whatever else it can handle. If you need to install extensions from other sources you should use Radiant&rsquo;s built-in <code>script/extension install</code> command which can handle a wide variety of installation types.</p>
 </section>
 <section id="install">
   <header><h1>Installation</h1></header>
-  <p>
-    If you have Radiant 0.6.8 or newer simply run<br>
-    <code>script/extension install ray</code>
-  </p>
-  <p>
-    If you’re on an older version of Radiant and have <code>git</code> installed run<br>
-    <code>git clone git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray</code>
-  </p>
-  <p>
-    If you prefer to manage your extensions as <code>git</code> submodules run<br>
-    <code>git submodule add git://github.com/johnmuhl/radiant-ray-extension.git vendor/extensions/ray</code>
-  </p>
-  <p>
-    If you don’t have <code>git</code> installed download the <a href="http://github.com/johnmuhl/radiant-ray-extension/tarball/master">tar</a> or <a href="http://github.com/johnmuhl/radiant-ray-extension/zipball/master">zip</a> archive from GitHub</a>, unpack it and place it <code>site/vendor/extensions/ray</code>.
-  </p>
-  <p>
-    Ray does not have any installation tasks to run, in fact you don’t even need to restart Radiant in order to start using the tasks.
-  </p>
+  <p>If you have Radiant 0.6.8 or newer simply run</p>
+<pre><code>script/extension install ray</code></pre>
+  <p>If you&rsquo;re on an older version of Radiant and have <code>git</code> installed, move to your Radiant site&rsquo;s <code>vendor/extension</code> directory and run</p>
+<pre><code>git clone git://github.com/johnmuhl/radiant-ray-extension.git ray</code></pre>
+  <p>If you prefer to manage your extensions as <code>git</code> submodules, move to your Radiant site&rsquo;s <code>vendor/extension</code> directory and run</p>
+<pre><code>git submodule add git://github.com/johnmuhl/radiant-ray-extension.git ray</code></pre>
+  <p>If you don&rsquo;t have <code>git</code> installed download the <a href="http://github.com/johnmuhl/radiant-ray-extension/tarball/master">tar</a> or <a href="http://github.com/johnmuhl/radiant-ray-extension/zipball/master">zip</a> archive from GitHub, unpack it and place it <code>vendor/extensions/ray</code>.</p>
+  <p>Ray does not have any installation tasks to run, in fact you don&rsquo;t even need to restart Radiant in order to start using the tasks.</p>
 </section>
 <section id="bugs">
   <header><h1>Bugs &amp; feature requests</h1></header>
-  <p>
-    Bug reports and feature requests can be lodged at <a href="http://jmm.lighthouseapp.com/projects/23552/home">Ray’s Lighthouse page</a>. When filing bugs please include your Radiant and Ray versions and if appropriate the GitHub URL of the extension you’re having trouble with. Also, don’t forget to add yourself to the watchers list on tickets you file in case I try to follow up with you.
-  </p>
+  <p>Bug reports and feature requests can be created at <a href="http://jmm.lighthouseapp.com/projects/23552/home">Ray&rsquo;s Lighthouse page</a>. When filing bugs please include your Radiant and Ray versions, and if appropriate the GitHub URL of the extension you&rsquo;re having trouble with. <em>Don&rsquo;t forget to add yourself to the watchers list on tickets you file in case I need to follow up</em>.</p>
 </section>
 <section id="usage">
   <header><h1>Usage</h1></header>
   <section id="ext-install">
     <header><h1>Installing extensions</h1></header>
-    <p>
-      Most of what you’re likely to be doing with Ray is installing extensions, so Ray tries to make this as easy as possible. You don’t even need to know the name or author of the extension you want to install.
-    </p>
-    <p>Try something like<br>
-      <code>rake ray:ext name=meta</code><br>
-      and you see some output similar to…
-    </p>
-<pre><code>==============================================================================
+    <p>Most of what you&rsquo;re likely to be doing with Ray is installing extensions, so Ray tries to make this as easy as possible. You don&rsquo;t even need to know the name or author of the extension you want to install.</p>
+    <p>Take a look at the output from this command and you&rsquo;ll see what I mean.</p>
+<pre><code>rake ray:ext name=meta
+
+==============================================================================
 I couldn't find an extension named 'meta'.
 The following is a list of extensions that might be related.
 Use the command listed to install the appropriate extension.
@@ -123,20 +104,14 @@ description: Radiant extension to allow publishing/adding pages via MetaWeb...
 description: Provides extra tags for page meta information.
     command: rake ray:ext name=seo_help
 ==============================================================================</code></pre>
-    <p>
-      What happened was Ray searched for an extension named “meta”, didn’t find one, then searched through all the available extensions for the ones that include “meta” in their name or description. Notice on the last line of each extension listing is the Ray command you’d run to install that extension. Don’t worry, if you know the name of the extension you want it will be installed “no questions asked.”
-    </p>
+    <p>What happened was Ray searched for an extension named &ldquo;meta&rdquo;, didn&rsquo;t find one, then searched through all the available extensions for the ones that include &ldquo;meta&rdquo; in their name or description. Notice on the last line of each extension listing is the Ray command you&rsquo;d run to install that extension. Don&rsquo;t worry, if you know the name of the extension you want it will be installed &ldquo;no questions asked.&rdquo;</p>
   </section>
   <section id="ext-search">
     <header><h1>Searching for extensions</h1></header>
-    <p>
-      While not installing extensions you’ll probably spend a fair amount of time looking for extensions that fulfill your various desires. Of course, you can just jump on <a href="http://github.com/">GitHub</a>, search around and then come back to the terminal to install your finds; but why bother ever leaving the terminal?
-    </p>
-    <p>Try something like<br>
-      <code>rake ray:search term=blog</code><br>
-      and you see some output similar to…
-    </p>
-<pre><code>==============================================================================
+    <p>While not installing extensions you&rsquo;ll probably spend a fair amount of time looking for extensions that fulfill your various desires. Of course, you can just jump on <a href="http://github.com/">GitHub</a>, search around and then come back to the terminal to install your finds; but why bother ever leaving the terminal?</p>
+<pre><code>rake ray:search term=blog
+  
+==============================================================================
   extension: metaweblog
      author: skrat
 description: Radiant extension to allow publishing/adding pages via MetaWeb...
@@ -157,43 +132,29 @@ description: Adds features for blogging
 description: An extension that provides some useful blogging tags for the R...
     command: rake ray:ext name=blogtags
 ==============================================================================</code></pre>
-    <p>
-      Again the Ray command you’d run to install that extension is listed on the last line of each extension listing. I imagine you’re now asking, “But how do I spend a rainy day exploring the 150+ extensions for Radiant?”<br>
-      <code>rake ray:extension:all</code>
-    </p>
+    <p>Again the Ray command you&rsquo;d run to install that extension is listed on the last line of each extension listing. I imagine you&rsquo;re now asking, &ldquo;But how do I spend a rainy day exploring the 150+ extensions for Radiant?&rdquo;</p>
+<pre><code>rake ray:extension:all</code></pre>
   </section>
   <section id="ext-disable">
     <header><h1>Disabling extensions</h1></header>
-    <p>
-      Regardless whether or not you used Ray to install an extension, Ray can disable it for you. Disabling an extension is a safe operation in that no data is destroyed, it’s just moved to a location where Radiant doesn’t look for extensions.<br>
-      <code>rake ray:dis name=extension_name</code>
-    </p>
+    <p>Regardless whether or not you used Ray to install an extension, Ray can disable it for you. Disabling an extension is a safe operation in that no data is destroyed, it&rsquo;s just moved to a location where Radiant doesn&rsquo;t look for extensions.</p>
+<pre><code>rake ray:dis name=extension_name</code></pre>
   </section>
   <section id="ext-enable">
     <header><h1>Enabling extensions</h1></header>
-    <p>
-      After you’ve disabled an extension with Ray you can enable it again just as easily. Enabling an extension is only possible if you disabled it with Ray; it <em>is not</em> for installing new extensions.<br>
-      <code>rake ray:en name=extension_name</code>
-    </p>
+    <p>After you&rsquo;ve disabled an extension with Ray you can enable it again just as easily. Enabling an extension is only possible if you disabled it with Ray; it <em>is not</em> for installing new extensions.</p>
+<pre><code>rake ray:en name=extension_name</code></pre>
   </section>
   <section id="ext-uninstall">
     <header><h1>Uninstalling extensions</h1></header>
-    <p>
-      As with disabling it doesn’t matter whether or not you used Ray to install an extension, Ray can uninstall it for you. Uninstalling an extension destroys as much data associated with the extension as possible, and is therefore not recommend in all but the most extreme cases when <strong>you are sure you’re really done</strong> with an extension.<br>
-      <code>rake ray:rm name=extension_name</code>
-    </p>
-    <p>
-      Due to the nature of extensions it’s not possible to guarantee all the static assets (javascripts, stylesheets, images, etc.) will be deleted. Since these files reside in various locations throughout your <code>site/public</code> directory Ray chooses to take a conservative approach when tracking files down for deletion. Therefore, if you’re really dedicated to getting rid of all traces of an extension you’ll still need manually poke around in <code>site/public</code> to manually verify the uninstallation of static assets.
-    </p>
+    <p>As with disabling it doesn&rsquo;t matter whether or not you used Ray to install an extension, Ray can uninstall it for you. Uninstalling an extension destroys as much data associated with the extension as possible, and is therefore not recommend in all but the most extreme cases when <strong>you are sure you&rsquo;re really done</strong> with an extension.</p>
+<pre><code>rake ray:rm name=extension_name</code></pre>
+    <p>Due to the nature of extensions it&rsquo;s not possible to guarantee all the static assets (javascripts, stylesheets, images, etc.) will be deleted. Since these files reside in various locations throughout your <code>site/public</code> directory Ray chooses to take a conservative approach when tracking files down for deletion. Therefore, if you&rsquo;re really dedicated to getting rid of all traces of an extension you&rsquo;ll still need manually poke around in <code>site/public</code> to manually verify the uninstallation of static assets.</p>
   </section>
   <section id="ext-bundle">
     <header><h1>Bundling extensions</h1></header>
-    <p>
-      Bundling extensions is handy for site maintainers who want to spend a little less time re-installing a site’s extensions every time they load it up on a new system. The idea is provide a single file that describes the extensions and extension dependencies that Ray can then examine and act upon.
-    </p>
-    <p>
-      To use this feature you’ll need to create a file called <code>extensions.yml</code> inside you <code>site/config</code> directory. Here’s an example <code>extensions.yml</code> file.
-    </p>
+    <p>Bundling extensions is handy for site maintainers who want to spend a little less time re-installing a site&rsquo;s extensions every time they load it up on a new system. The idea is provide a single file that describes the extensions and extension dependencies that Ray can then examine and act upon.</p>
+    <p>To use this feature you&rsquo;ll need to create a file called <code>extensions.yml</code> inside you <code>site/config</code> directory. Here&rsquo;s an example <code>extensions.yml</code> file.</p>
 <pre><code>---
 - name: aggregation
 - name: link-roll
@@ -205,91 +166,61 @@ description: An extension that provides some useful blogging tags for the R...
   hub: netzpirat
   remote: saturnflyer</code></pre>
     <aside>
-      If you have an existing <code>extensions.yml</code> file you use with Ray 1.x you’ll need to update it before it’s compatibile with Ray 2.x; mostly this will just require deleting things that Ray can now determine on its own.
+      If you have an existing <code>extensions.yml</code> file you use with Ray 1.x you&rsquo;ll need to update it before it&rsquo;s compatibile with Ray 2.x; mostly this will just require deleting things that Ray can now determine on its own.
     </aside>
   </section>
 </section>
 <section id="dependencies">
   <header><h1>Extension dependencies</h1></header>
-  <p>
-    While extension bundling is for site maintainers, extension dependencies are for extension authors. As you can probably guess it lets you tell Ray about your extension’s dependencies. All you need is a <code>dependency.yml</code> file in the root directory of your extension. Here’s an example <code>dependency.yml</code> file.
-  </p>
+  <p>While extension bundling is for site maintainers, extension dependencies are for extension authors. As you can probably guess it lets you tell Ray about your extension&rsquo;s dependencies. All you need is a <code>dependency.yml</code> file in the root directory of your extension. Here&rsquo;s an example <code>dependency.yml</code> file.</p>
 <pre><code>- extension: my_extension_helpers</code></pre>
-  <p>
-    You can list as many dependencies as you need and they can include gems as well as other extensions.
-  </p>
+  <p>You can list as many dependencies as you need and they can include gems as well as other extensions.</p>
 <pre><code>- extension: this_extension_helps_a_ton
 - extension: some_other_voodoo
 - gem: this_one
 - gem: that_too</code></pre>
-  <p>
-    The absence of support for plugin dependencies is intentional. You are much better off adding plugins to your extension as <code>git</code> submodules and letting Ray deal with them during the normal installation of your extension. As an added bonus your plugin dependencies will also be recognized and respected by Radiant’s built-in <code>script/extension install</code>.
-  </p>
+  <p>The absence of support for plugin dependencies is intentional. You are much better off adding plugins to your extension as <code>git</code> submodules and letting Ray deal with them during the normal installation of your extension. As an added bonus your plugin dependencies will also be recognized and respected by Radiant&rsquo;s built-in <code>script/extension install</code>.</p>
 </section>
 <section id="advanced">
   <header><h1>Advanced usage</h1></header>
-  <p>
-    In addition to the few tasks you see if you run <code>rake -T ray</code>, Ray includes a few more tasks.
-  </p>
+  <p>In addition to the few tasks you see if you run <code>rake -T ray</code>, Ray includes a few more tasks.</p>
   <section id="setup-download">
     <header><h1>Download preference setup</h1></header>
-    <p>
-      The most important of Ray’s setup tasks, <code>rake ray:setup:download</code>, will be run for you automatically the first time you try to install an extension. However you might not have had <code>git</code> installed when you initially installed Ray. If that’s the case you can manually run<br>
-      <code>rake ray:setup:download</code><br>
-      and Ray will change your preference for all future installations.
-    </p>
+    <p>The most important of Ray&rsquo;s setup tasks, <code>rake ray:setup:download</code>, will be run for you automatically the first time you try to install an extension. However you might not have had <code>git</code> installed when you initially installed Ray. If that&rsquo;s the case you can change your preference for all future installations by running.</p>
+<pre><code>rake ray:setup:download</code></pre>
   </section>
   <section id="setup-restart">
     <header><h1>Server restart preference setup</h1></header>
-    <p>
-      Ray’s other setup task, <code>rake ray:setup:restart</code>, can be used to have Ray automatically restart your server whenever necessary, such as after you install a new extension. Currently, Ray only supports restarting a Mongrel cluster or Phusion Passenger.
-    </p>
+    <p>Ray&rsquo;s other setup task, <code>rake ray:setup:restart</code>, can be used to have Ray automatically restart your server whenever necessary, such as after you install a new extension. Currently, Ray only supports restarting a Mongrel cluster or Phusion Passenger.</p>
 <pre><code>rake ray:setup:restart server=mongrel
 rake ray:setup:restart server=passenger</code></pre>
   </section>
   <section id="ext-remote">
     <header><h1>Adding extension remotes</h1></header>
-    <p>
-      Before you get going with remote branches in Ray you’ll need to make sure you’ve setup at least your GitHub username in your global <code>git</code> configuration file.
-    </p>
+    <p>Before you get going with remote branches in Ray you&rsquo;ll need to make sure you&rsquo;ve setup at least your GitHub username in your global <code>git</code> configuration file.</p>
 <pre><code>git config --global github.user your_github_username</code></pre>
-    <p>
-      That will add a bit of code to your <code>~/.gitconfig</code> file. Ray can then use that information to determine when you’re installing your own extensions. Now when you install from your own repositories Ray will use your private URL instead of the public one; which means you can push your local changes back to your GitHub repository.
-    </p>
-    <p>
-      Now you can install your extensions as you normally would with Ray. Then tell Ray which other users you want to track.
-    </p>
+    <p>That will add a bit of code to your <code>~/.gitconfig</code> file. Ray can then use that information to determine when you&rsquo;re installing your own extensions. Now when you install from your own repositories Ray will use your private URL instead of the public one; which means you can push your local changes back to your GitHub repository.</p>
+    <p>Now you can install your extensions as you normally would with Ray. Then tell Ray which other users you want to track.</p>
 <pre><code>rake ray:ext name=extension
 rake ray:extension:remote name=extension remote=other_user</code></pre>
-    <p>
-      As you add remotes Ray will setup tracking branches named like “other_user/branch_name” for each branch the remote user has in their repository. Nothing is merged by Ray and you’ll be returned to your current branch after the remote is setup. Just like when you’re using <code>git</code> directly you’ll want to <em>make sure your current branch is clean</em> (commit or stash) before adding remotes.
-    </p>
+    <p>As you add remotes Ray will setup tracking branches named like &ldquo;other_user/branch_name&rdquo; for each branch the remote user has in their repository. Nothing is merged by Ray and you&rsquo;ll be returned to your current branch after the remote is setup. Just like when you&rsquo;re using <code>git</code> directly you&rsquo;ll want to <em>make sure your current branch is clean</em> (commit or stash) before adding remotes.</p>
   </section>
   <section id="ext-pull">
     <header><h1>Pulling extension remotes</h1></header>
-    <p>
-      Once you’ve setup a remote repository on an extension you’ll want to pull down the changes occasionally. You can pull in the remote repositories for either a specific extension or all extensions with remotes setup.
-    </p>
+    <p>Once you&rsquo;ve setup a remote repository on an extension you&rsquo;ll want to pull down the changes occasionally. You can pull in the remote repositories for either a specific extension or all extensions with remotes setup.</p>
 <pre><code># pull remotes on a single extension
 rake ray:extension:pull name=extension_name
 
 # pull remotes on all extensions
 rake ray:extension:pull</code></pre>
-    </section>
   </section>
 </section>
 <section id="legacy">
   <header><h1>Legacy information</h1></header>
-  <p>For the most part each Ray release is “compatible” with the previous one. Occasionally though things change between versions, you can find out all about what “breaking” changes the latest version has here.</p>
-  <p>
-    In some cases, a shortcut that existed in Ray 1.x will no longer be present in Ray 2.x. If you find this to be a particular hassle please <a href="http://jmm.lighthouseapp.com/projects/23552/tickets/new">create a ticket</a> complaining about it and I’ll give you your shortcut back.
-  </p>
-  <p>
-    All users of the extension bundling mechanism will need to update their <code>extensions.yml</code> before Ray 2.x can understand them. This is mainly because the original format was not very well considered; you’ll find most of your updating gets done with the delete key.
-  </p>
-  <p>
-    Users of previous versions may notice that the commands have changed. While this appears to be the case it’s not actually (mostly). All the same old commands are available, so if you got comfortable with <code>rake ray:extension:install name=mailer</code> and don’t want to switch to <code>rake ray:ext name=mailer</code> you can keep right on using the long versions.
-  </p>
+  <p>For the most part each Ray release is &ldquo;compatible&rdquo; with the previous one. Occasionally though things change between versions, you can find out all about what &ldquo;breaking&rdquo; changes the latest version has here.</p>
+  <p>In some cases, a shortcut that existed in Ray 1.x will no longer be present in Ray 2.x. If you find this to be a particular hassle please <a href="http://jmm.lighthouseapp.com/projects/23552/tickets/new">create a ticket</a> complaining about it and I&rsquo;ll give you your shortcut back.</p>
+  <p>All users of the extension bundling mechanism will need to update their <code>extensions.yml</code> before Ray 2.x can understand them. This is mainly because the original format was not very well considered; you&rsquo;ll find most of your updating gets done with the delete key.</p>
+  <p>Users of previous versions may notice that the commands have changed. While this appears to be the case it&rsquo;s not actually (mostly). All the same old commands are available, so if you got comfortable with <code>rake ray:extension:install name=mailer</code> and don&rsquo;t want to switch to <code>rake ray:ext name=mailer</code> you can keep right on using the long versions.</p>
 </section>
 <section id="authors">
   <header><h1>Authors</h1></header>
@@ -315,6 +246,5 @@ try {
 var pageTracker = _gat._getTracker("UA-408933-9");
 pageTracker._trackPageview();
 } catch(err) {}</script>
-</body>
 </body>
 </html>
