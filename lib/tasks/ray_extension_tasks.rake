@@ -269,7 +269,8 @@ def show_search_results
   end
 
   # show a nicely formatted list of the extensions we can find
-  @extension.each do |extension|
+  i = 0
+  while i < @extension.length
     ext_name = @extension[ i ].gsub( /radiant-/, '' ).gsub( /-extension/, '' )
     ext_desc = @description[ i ]
     ext_desc = ext_desc[ 0..61 ] + "..." if ext_desc.length > 64
@@ -278,6 +279,7 @@ def show_search_results
     puts 'description: ' + ext_desc
     puts "    command: rake ray:ext name=#{ ext_name }"
     puts '=============================================================================='
+    i += 1
   end
 
   exit
