@@ -341,12 +341,14 @@ def install_extension_with_git
   # compare the user = user in ~/.gitconfig to the clone url
   unless @public
     path = `echo ~`.gsub!( "\n", '' )
-    File.readlines( "#{ path }/.gitconfig" ).map do |l|
-      line = l.rstrip
-      if line.include? 'user = '
-        me = line.gsub(/\tuser\ =\ /, '')
-        origin = @url.gsub(/git:\/\/github.com\/(.*)\/.*/, "\\1")
-        @url.gsub!(/git:\/\/github.com\/(.*\/.*)/, "git@github.com:\\1") if me == origin
+    if File.exist?( "#{ path }/.gitconfig" )
+      File.readlines( "#{ path }/.gitconfig" ).map do |l|
+        line = l.rstrip
+        if line.include? 'user = '
+          me = line.gsub(/\tuser\ =\ /, '')
+          origin = @url.gsub(/git:\/\/github.com\/(.*)\/.*/, "\\1")
+          @url.gsub!(/git:\/\/github.com\/(.*\/.*)/, "git@github.com:\\1") if me == origin
+        end
       end
     end
   end
