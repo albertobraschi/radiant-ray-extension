@@ -131,6 +131,11 @@ def validate_command_input
     @name = @term.gsub( /_/, '-' )
     @dir  = @name.gsub( /-/, '_' )
   end
+
+  # catch the url=public switch
+  if ENV[ 'url' ]
+    @public = true
+  end
 end
 
 # run when validate_command_input decides user input is bad
@@ -312,6 +317,19 @@ end
 # a "yes" for ./.git/HEAD is all it takes to use submodules
 def install_extension_with_git
   @url.gsub!( /http/, 'git' )
+  unless @public
+    path = `echo ~`.gsub!( "\n", '' )
+    f = File.readlines( "#{ path }/.gitconfig" ).map do |l|
+      line = l.rstrip
+      if line.include? 'user = '
+        me = line.gsub(/\tuser\ =\ /, '')
+        origin = @url.gsub(/http:\/\/github.com\/(.*)\/.*/, "\\1")
+        if me == origin
+          @url.gsub!(/git:\/\/github.com\/(.*\/.*)/, "git@github.com:\\1")
+        end
+      end
+    end
+  end
   if File.exist?( '.git/HEAD' )
     system "git submodule -q add #{ @url }.git #{ @path }/#{ @dir }"
   else
