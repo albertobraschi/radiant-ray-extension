@@ -784,12 +784,21 @@ def add_extension_remote
   search_extensions
   determine_extension_to_install
   @url.gsub!( /http/, 'git' ).gsub!( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
-  system "cd #{ @path }/#{ @dir }; git remote add #{ @remote } #{ @url }.git; git fetch #{ @remote }"
-  branches = `cd #{ @path }/#{ @dir }; git branch -a`.split("\n")
-  @new_branch = []
-  branches.each { |b| b.strip!; @new_branch << b if b.include?( @remote ); @current_branch = b.gsub!( /\*\ /, '' ) if b.include?( '* ' ) }
-  @new_branch.each { |n| system "cd #{ @path }/#{ @dir }; git checkout -b #{ n } #{ n }" }
-  system "cd #{ @path }/#{ @dir }; git checkout #{ @current_branch }"
+  Dir.chdir( "#{ @path }/#{ @dir }" ) do
+    system "git remote add #{ @remote } #{ @url }.git"
+    system "git fetch #{ @remote }"
+    branches = `git branch -a`.split("\n")
+    @new_branch = []
+    branches.each do |branch|
+      branch.strip!
+      @new_branch << branch if branch.include?( @remote )
+      @current_branch = branch.gsub!( /\*\ /, '' ) if branch.include?( '* ' )
+    end
+    @new_branch.each do |branch|
+      system "git checkout -b #{ branch } #{ branch }"
+    end
+    system "git checkout #{ @current_branch }"
+  end
   puts '=============================================================================='
   puts "All of #{ @remote }'s branches have been pulled into local branches."
   puts 'Use your normal git workflow to inspect and merge these branches.'
@@ -800,17 +809,44 @@ end
 def pull_extension_remote
   @name = ENV[ 'name' ] if ENV[ 'name' ]
   if @name
-    branches = `cd #{ @path }/#{ @name }; git branch`.split("\n")
     @pull_branch = []
-    branches.each { |b| b.strip!; @pull_branch << b if b.include?( '/' ); @current_branch = b.gsub!( /\*\ /, '' ) if b.include?( '* ' ) }
-    @pull_branch.each { |p| system "cd #{ @path }/#{ @name }; git checkout #{ p }; git pull #{ p.gsub( /(.*)\/.*/, "\\1") } #{ p.gsub( /.*\/(.*)/, "\\1") }" }
-    system "cd #{ @path }/#{ @name }; git checkout #{ @current_branch }"
+    Dir.chdir( "#{ @path }/#{ @name }" ) do
+      branches = `git branch`.split( "\n" )
+      branches.each do |branch|
+        branch.strip!
+        @pull_branch << branch if branch.include?( '/' )
+        @current_branch = branch.gsub!( /\*\ /, '' ) if branch.include?( '* ' )
+      end
+      @pull_branch.each do |branch|
+        system "git checkout #{ branch }"
+        system "git pull #{ branch.gsub( /(.*)\/.*/, "\\1") } #{ branch.gsub( /.*\/(.*)/, "\\1") }"
+      end
+      system "git checkout #{ @current_branch }"
+    end
     puts '=============================================================================='
     puts "Updated all remote branches of the #{ @name } extension."
     puts 'Use your normal git workflow to inspect and merge these branches.'
     puts '=============================================================================='
   else
-    # TODO
+    extensions = @name ? @name.gsub( /\-/, '_' ) : Dir.entries( @path ) - [ '.', '..' ]
+    extensions.each do |extension|
+      Dir.chdir( "#{ @path }/#{ extension }" ) do
+        @pull_branch = []
+        branches = `git branch`.split( "\n" )
+        branches.each do |branch|
+          branch.strip!
+          @pull_branch << branch if branch.include?( '/' )
+          @current_branch = branch.gsub!( /\*\ /, '' ) if branch.include?( '* ' )
+        end
+        unless @pull_branch.length == 0
+          @pull_branch.each do |branch|
+            system "git checkout #{ branch }"
+            system "git pull #{ branch.gsub( /(.*)\/.*/, "\\1") } #{ branch.gsub( /.*\/(.*)/, "\\1") }"
+            system "git checkout #{ @current_branch }"
+          end
+        end
+      end
+    end
   end
 end
 
