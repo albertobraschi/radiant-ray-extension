@@ -106,16 +106,7 @@ def validate_command_input
   # with the remote option make sure there was an extension named
   if ENV[ 'remote' ]
     @remote = ENV[ 'remote' ]
-    unless ENV[ 'hub' ]
-      @message = 'You have to tell me your GitHub user name, e.g.'
-      @example = 'rake ray:ext name=enxtension_name hub=user_name remote=another_user'
-      complain_about_command_input
-      exit
-    end
-    @hub = ENV[ 'hub' ]
     unless ENV[ 'name' ]
-      @example = 'rake ray:ext name=extension_name hub=user_name remote=another_user'
-      puts @example
       complain_about_command_input
       exit
     end
@@ -793,9 +784,15 @@ def add_extension_remote
   search_extensions
   determine_extension_to_install
   @url.gsub!( /http/, 'git' ).gsub!( /(git:\/\/github.com\/).*(\/.*)/, '\1' + @remote + '\2' )
-  system "cd #{ @path }/#{ @dir }; git remote add #{ @remote } #{ @url }"
+  system "cd #{ @path }/#{ @dir }; git remote add #{ @remote } #{ @url }.git; git fetch #{ @remote }"
+  branches = `cd #{ @path }/#{ @dir }; git branch -a`.split("\n")
+  @new_branch = []
+  branches.each { |b| b.strip!; @new_branch << b if b.include?( @remote ); @current_branch = b.gsub!( /\*\ /, '' ) if b.include?( '* ' ) }
+  @new_branch.each { |n| system "cd #{ @path }/#{ @dir }; git checkout -b #{ n } #{ n }" }
+  system "cd #{ @path }/#{ @dir }; git checkout #{ @current_branch }"
   puts '=============================================================================='
-  puts "#{ @remote } had been added as a remote to the #{ @dir } extension."
+  puts "All of #{ @remote }'s branches have been pulled into local branches."
+  puts 'Use your normal git workflow to inspect and merge these branches.'
   puts '=============================================================================='
 end
 
