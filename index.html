@@ -39,7 +39,7 @@ section section section h1 { font-size: 175%; }
     <li><a href="#bugs">Bugs &amp; feature requests</a></li>
     <li><a href="#usage">Usage</a>
       <ol>
-        <li><a href="#ext-isntall">Installing extensions</a></li>
+        <li><a href="#ext-install">Installing extensions</a></li>
         <li><a href="#ext-search">Searching for extensions</a></li>
         <li><a href="#ext-disable">Disabling extensions</a></li>
         <li><a href="#ext-enable">Enabling extensions</a></li>
@@ -63,7 +63,7 @@ section section section h1 { font-size: 175%; }
 </section>
 <section id="overview">
   <header><h1>Overview</h1></header>
-  <p>Ray is just a rake file with some tasks that simplify the installation, disabling, enabling and uninstallation of other Radiant extensions. Although Ray relies on GitHub (as the extension host) it does not rely on the <code>git</code> command, if you don&rsquo;t have <code>git</code> installed then the Ruby HTTP library is used to download compressed archives.</p>
+  <p>Ray is just a rake file with some tasks that simplify the installation, disabling, enabling and uninstallation of Radiant extensions. Although Ray relies on GitHub (as the extension host) it does not rely on the <code>git</code> command, if you don&rsquo;t have <code>git</code> installed then the Ruby HTTP library is used to download compressed archives.</p>
   <p>To use Ray you need <code>git</code> or <code>tar</code> installed in addition to the normal Radiant stack; Windows users probably need one of those &ldquo;unixy&rdquo; environment things since Ray does occasionally call out to system tools. Ray <strong>only</strong> supports the <code>git</code> <abbr title="Source Code Management">SCM</abbr>; although I&rsquo;d happily accept a patch that used <code>git</code>&rsquo;s tools to access CVS, SVN or whatever else it can handle. If you need to install extensions from other sources you should use Radiant&rsquo;s built-in <code>script/extension install</code> command which can handle a wide variety of installation types.</p>
 </section>
 <section id="install">
@@ -132,7 +132,7 @@ description: Adds features for blogging
 description: An extension that provides some useful blogging tags for the R...
     command: rake ray:ext name=blogtags
 ==============================================================================</code></pre>
-    <p>Again the Ray command you&rsquo;d run to install that extension is listed on the last line of each extension listing. I imagine you&rsquo;re now asking, &ldquo;But how do I spend a rainy day exploring the 150+ extensions for Radiant?&rdquo;</p>
+    <p>Again the Ray command you&rsquo;d run to install an extension is listed on the last line of each extension listing. I imagine you&rsquo;re now asking, &ldquo;But how do I spend a rainy day exploring the 150+ extensions for Radiant?&rdquo;</p>
 <pre><code>rake ray:extension:all</code></pre>
   </section>
   <section id="ext-disable">
@@ -245,6 +245,7 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 try {
 var pageTracker = _gat._getTracker("UA-408933-9");
 pageTracker._trackPageview();
-} catch(err) {}</script>
+} catch(err) {}
+</script>
 </body>
 </html>
