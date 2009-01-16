@@ -798,26 +798,19 @@ end
 
 # pull remotes on an extension
 def pull_extension_remote
-  vendor_names = @name ? @name.gsub( /\-/, '_' ) : Dir.entries( @path ) - [ '.', '..' ]
-  vendor_names.each do |vendor_name|
-    if File.directory?( "#{ @path }/#{ vendor_name }" )
-      Dir.chdir( "#{ @path }/#{ vendor_name }" ) do
-        config = File.open( '.git/config', 'r' ) rescue nil
-        if config
-          while ( line = config.gets )
-            if line =~ /remote \"([a-zA-Z0-9]+)\"/
-              unless $1 == 'origin'
-                system 'git checkout master'
-                system "git pull #{ $1 } master"
-                puts '=============================================================================='
-                puts "Changes from '#{ $1 }' have been pulled into the #{ vendor_name } extension."
-                puts '=============================================================================='
-              end
-            end
-          end
-        end
-      end
-    end
+  @name = ENV[ 'name' ] if ENV[ 'name' ]
+  if @name
+    branches = `cd #{ @path }/#{ @name }; git branch`.split("\n")
+    @pull_branch = []
+    branches.each { |b| b.strip!; @pull_branch << b if b.include?( '/' ); @current_branch = b.gsub!( /\*\ /, '' ) if b.include?( '* ' ) }
+    @pull_branch.each { |p| system "cd #{ @path }/#{ @name }; git checkout #{ p }; git pull #{ p.gsub( /(.*)\/.*/, "\\1") } #{ p.gsub( /.*\/(.*)/, "\\1") }" }
+    system "cd #{ @path }/#{ @name }; git checkout #{ @current_branch }"
+    puts '=============================================================================='
+    puts "Updated all remote branches of the #{ @name } extension."
+    puts 'Use your normal git workflow to inspect and merge these branches.'
+    puts '=============================================================================='
+  else
+    # TODO
   end
 end
 
