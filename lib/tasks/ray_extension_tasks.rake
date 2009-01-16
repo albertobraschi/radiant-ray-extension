@@ -330,6 +330,11 @@ def install_extension_with_git
   # fix up the url we get back from the search
   @url.gsub!( /http/, 'git' )
 
+  if ENV[ 'hub' ]
+    @hub = ENV[ 'hub' ]
+    @url.gsub!( /(.*github\.com[:|\/]).*(\/.*)/, "\\1#{ @hub }\\2" )
+  end
+
   # unless the user specifically request the public clone url
   # compare the user = user in ~/.gitconfig to the clone url
   unless @public
@@ -338,7 +343,7 @@ def install_extension_with_git
       line = l.rstrip
       if line.include? 'user = '
         me = line.gsub(/\tuser\ =\ /, '')
-        origin = @url.gsub(/http:\/\/github.com\/(.*)\/.*/, "\\1")
+        origin = @url.gsub(/git:\/\/github.com\/(.*)\/.*/, "\\1")
         @url.gsub!(/git:\/\/github.com\/(.*\/.*)/, "git@github.com:\\1") if me == origin
       end
     end
