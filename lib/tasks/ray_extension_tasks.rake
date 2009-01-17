@@ -1006,7 +1006,7 @@ def update_extension
     check_download_preference
     puts '=============================================================================='
     if @download == "git\n"
-      extensions = Dir.entries( @path ) - [ '.', '.DS_Store', '..' ]
+      extensions = Dir.entries( @path ) - [ '.', '.DS_Store', 'ray', '..' ]
       extensions.each do |extension|
         Dir.chdir( "#{ @path }/#{ extension }" ) do
           system "git pull origin master"
@@ -1015,7 +1015,7 @@ def update_extension
         end
       end
     elsif
-      extensions = Dir.entries( @path ) - [ '.', '.DS_Store', '..' ]
+      extensions = Dir.entries( @path ) - [ '.', '.DS_Store', 'ray', '..' ]
       extensions.each do |extension|
         Dir.chdir( "#{ @path }/#{ extension }" ) do
           system "rake ray:dis name=#{ extension }"
