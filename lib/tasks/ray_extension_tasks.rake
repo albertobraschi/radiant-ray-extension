@@ -438,8 +438,10 @@ def validate_extension_directory
   # a simple way to check if an extension is in the proper directory
   unless File.exist?( "#{ @path }/#{ @dir }/#{ @dir }_extension.rb" )
     path = Regexp.escape( @path )
-    @vendor_name = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ path }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "")
-    relocate_extension_to_proper_dir
+    if File.exist?( "#{ @path }/#{ @dir }" )
+      @vendor_name = `ls #{ @path }/#{ @dir }/*_extension.rb`.gsub( /#{ path }\/#{ @dir }\//, "").gsub( /_extension.rb/, "").gsub( /\n/, "") rescue nil
+      relocate_extension_to_proper_dir
+    end
   end
 
   @vendor_name = @dir
