@@ -988,6 +988,10 @@ def pull_extension_remote
         end
       end
     end
+    puts '=============================================================================='
+    puts "Updated all remote branches of all extensions with remote branches."
+    puts 'Use your normal git workflow to inspect and merge these branches.'
+    puts '=============================================================================='
   end
 
 end
