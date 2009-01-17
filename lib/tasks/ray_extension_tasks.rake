@@ -63,6 +63,9 @@ namespace :ray do
       @show = true
       search_extensions
     end
+    task :update do
+      update_extension
+    end
   end
 
   # ray setup and configuration tasks
@@ -969,7 +972,7 @@ def pull_extension_remote
     puts 'Use your normal git workflow to inspect and merge these branches.'
     puts '=============================================================================='
   else
-    extensions = @name ? @name.gsub( /\-/, '_' ) : Dir.entries( @path ) - [ '.', '..' ]
+    extensions = @name ? @name.gsub( /\-/, '_' ) : Dir.entries( @path ) - [ '.', '.DS_Store', '..' ]
     extensions.each do |extension|
       Dir.chdir( "#{ @path }/#{ extension }" ) do
         @pull_branch = []
@@ -994,6 +997,64 @@ def pull_extension_remote
     puts '=============================================================================='
   end
 
+end
+
+# update extensions
+def update_extension
+  @name = ENV[ 'name' ] if ENV[ 'name' ]
+  if @name == 'all'
+    check_download_preference
+    puts '=============================================================================='
+    if @download == "git\n"
+      extensions = Dir.entries( @path ) - [ '.', '.DS_Store', '..' ]
+      extensions.each do |extension|
+        Dir.chdir( "#{ @path }/#{ extension }" ) do
+          system "git pull origin master"
+          puts "#{ extension } extension updated."
+          puts '=============================================================================='
+        end
+      end
+    elsif
+      puts "TODO: use http to update all extensions"
+    else
+      puts '=============================================================================='
+      puts 'Your download preference is broken.'
+      puts 'Please run, `rake ray:setup:download` to repair it.'
+      puts '=============================================================================='
+    end
+  elsif @name
+    check_download_preference
+    if @download == "git\n"
+      system "cd #{ @path }/#{ @name }; git pull origin master; cd ../../.."
+      puts '=============================================================================='
+      puts "#{ @name } extension updated."
+      puts '=============================================================================='
+    elsif
+      puts "TODO: use http to update #{ @name } extension"
+    else
+      puts '=============================================================================='
+      puts 'Your download preference is broken.'
+      puts 'Please run, `rake ray:setup:download` to repair it.'
+      puts '=============================================================================='
+    end
+  else
+    check_download_preference
+    if @download == "git\n"
+      system "cd #{ @path }/ray; git pull origin master; cd ../../.."
+      puts '=============================================================================='
+      puts "Ray extension updated."
+      puts '=============================================================================='
+    elsif @download == "http\n"
+      puts '=============================================================================='
+      puts "Ray can only update itself with git."
+      puts '=============================================================================='
+    else
+      puts '=============================================================================='
+      puts 'Your download preference is broken.'
+      puts 'Please run, `rake ray:setup:download` to repair it.'
+      puts '=============================================================================='
+    end
+  end
 end
 
 # uses config/extensions.yml to batch install extensions
