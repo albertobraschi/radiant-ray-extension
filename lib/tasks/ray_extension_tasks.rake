@@ -773,7 +773,7 @@ def restart_passenger
   tmp = Dir.open( 'tmp' ) rescue nil
 
   Dir.new( 'tmp' ) unless tmp
-  File.new( 'tmp/restart.txt' )
+  File.new( 'tmp/restart.txt', 'w' )
 
   puts 'Passenger has been restarted.'
   puts '=============================================================================='
