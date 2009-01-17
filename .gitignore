@@ -1,0 +1,5 @@
+.DS_Store
+config/
+disabled_extensions/
+removed_extensions/
+tmp/
