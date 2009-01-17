@@ -806,7 +806,7 @@ end
 # move an extension from the disabled_extensions directory back into use
 def extension_enable
 
-  unless Dir.open( "#{ @ray }/disabled_extensions/#{ @dir }" )
+  unless File.exist?( "#{ @ray }/disabled_extensions/#{ @dir }" )
     puts '=============================================================================='
     puts "I've never disabled the #{ @dir } extension."
     puts "If you'd like to install it use the following command,"
