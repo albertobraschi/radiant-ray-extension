@@ -783,7 +783,7 @@ end
 # move an extension into the disabled_extensions directory
 def disable_extension
 
-  unless Dir.open( "#{ @path }/#{ @dir }" )
+  unless File.exist?( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
     puts "The #{ @dir } extension does not appear to be installed."
     puts '=============================================================================='
@@ -830,7 +830,7 @@ end
 # TODO: what to do with plugins added by the extension being uninstalled?
 def uninstall_extension
 
-  unless Dir.open( "#{ @path }/#{ @dir }" )
+  unless File.exist?( "#{ @path }/#{ @dir }" )
     puts '=============================================================================='
     puts "The #{ @dir } extension does not appear to be installed."
     puts '=============================================================================='
