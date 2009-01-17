@@ -40,6 +40,15 @@ Usage
     
     # view all available extensions
     rake ray:extension:all
+    
+    # update ray (requires git)
+    rake ray:extension:update
+    
+    # update a single extension
+    rake ray:extension:update name=extension_name
+    
+    # update all extensions
+    rake ray:extension:update name=all
 
 Bugs & feature requests
 ---
