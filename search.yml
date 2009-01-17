@@ -772,15 +772,6 @@ repositories:
   forks: 0
   homepage: http://www.saturnflyer.com
   owner: saturnflyer
-- name: radiant-browser-extension
-  watchers: 1
-  private: false
-  url: http://github.com/saturnflyer/radiant-browser-extension
-  fork: false
-  description: An onscreen browser for snippets and other assets for Radiant CMS
-  forks: 0
-  homepage: http://www.saturnflyer.com
-  owner: saturnflyer
 - name: radiant-audio_player-extension
   watchers: 6
   private: false
