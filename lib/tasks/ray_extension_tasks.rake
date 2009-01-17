@@ -1015,7 +1015,14 @@ def update_extension
         end
       end
     elsif
-      puts "TODO: use http to update all extensions"
+      extensions = Dir.entries( @path ) - [ '.', '.DS_Store', '..' ]
+      extensions.each do |extension|
+        Dir.chdir( "#{ @path }/#{ extension }" ) do
+          system "rake ray:dis name=#{ extension }"
+          system "rake ray:ext name=#{ extension }"
+          puts "#{ extension } extension updated."
+        end
+      end
     else
       puts '=============================================================================='
       puts 'Your download preference is broken.'
@@ -1030,7 +1037,8 @@ def update_extension
       puts "#{ @name } extension updated."
       puts '=============================================================================='
     elsif
-      puts "TODO: use http to update #{ @name } extension"
+      system "rake ray:dis name=#{ @name }"
+      system "rake ray:ext name=#{ @name }"
     else
       puts '=============================================================================='
       puts 'Your download preference is broken.'
