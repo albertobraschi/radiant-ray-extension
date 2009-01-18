@@ -9,6 +9,9 @@ namespace :ray do
   # from extensions.yml: @path = "/somewhere/else"
   @path = 'vendor/extensions' unless ENV[ 'path' ]
 
+  # use the current Rails environment in rake commands
+  @env = RAILS_ENV
+
   # extension management tasks
   # @message and @error are passed to the complain_about_command_input method
   # when the validate_command_input decides the user input is bad
@@ -708,14 +711,14 @@ end
 # use an extension install rake task to install the extension
 def run_extension_install_task
 
-  system "rake radiant:extensions:#{ @vendor_name }:install"
+  system "rake #{ @env } radiant:extensions:#{ @vendor_name }:install"
 
 end
 
 # run an extension migrate rake task
 def run_extension_migrate_task
 
-  system "rake radiant:extensions:#{ @vendor_name }:migrate"
+  system "rake #{ @env } radiant:extensions:#{ @vendor_name }:migrate"
 
 end
 
@@ -860,14 +863,14 @@ end
 # someday maybe authors will include uninstall tasks
 def run_extension_uninstall_task
 
-  system "rake radiant:extensions:#{ @dir }:uninstall"
+  system "rake #{ @env } radiant:extensions:#{ @dir }:uninstall"
 
 end
 
 # reverse extension migrations
 def run_extension_unmigrate_task
 
-  system "rake radiant:extensions:#{ @dir }:migrate VERSION=0"
+  system "rake #{ @env } radiant:extensions:#{ @dir }:migrate VERSION=0"
 
 end
 
