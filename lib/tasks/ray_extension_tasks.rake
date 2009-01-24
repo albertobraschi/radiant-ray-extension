@@ -42,13 +42,14 @@ namespace :ray do
       uninstall_extension
     end
     task :pull do
-      pull_extension
+      pull_remote
     end
     task :remote do
       message = 'The remote command requires an extension name and a GitHub username.'
       example = 'rake ray:extension:remote name=extension_name remote=user_name'
       required_options = [ENV['name'], ENV['remote']]
       validate_command(message, example, required_options)
+      add_remote
     end
     task :bundle do
     end
@@ -416,7 +417,30 @@ def uninstall_extension
   example = "rake ray:ext name=#{@name}"
   output(message, example)
 end
-def pull_extension_remote
+def add_remote
+  search_extensions
+  choose_extension_to_install
+  @url.gsub!(/http/, 'git').gsub!(/(git:\/\/github.com\/).*(\/.*)/, "\\1" + @remote + "\\2")
+  Dir.chdir("#{@path}/#{@name}") do
+    sh("git remote add #{@remote} #{@url}.git")
+    sh("git fetch #{@remote}")
+    branches = `git branch -a`.split("\n")
+    @new_branch = []
+    branches.each do |branch|
+      branch.strip!
+      @new_branch << branch if branch.include?(@remote)
+      @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
+    end
+    @new_branch.each do |branch|
+      sh("git checkout -b #{branch} #{branch}")
+    end
+    sh("git checkout #{@current_branch}")
+  end
+  message = "All of #{@remote}'s branches have been pulled into local branches."
+  example = 'Use your normal git workflow to inspect and merge these branches.'
+  output(message, example)
+end
+def pull_remote
   @name = ENV['name'] if ENV[ 'name' ]
   if @name
     @pull_branch = []
