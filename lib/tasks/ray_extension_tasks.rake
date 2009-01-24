@@ -5,6 +5,7 @@ namespace :ray do
   @ray  = "#{@path}/ray"
   @conf = "#{@ray}/config"
   namespace :extension do
+    desc "Install an extension."
     task :install do
       message = 'The install command requires an extension name.'
       example = 'rake ray:extension:install name=extension_name'
@@ -12,6 +13,7 @@ namespace :ray do
       validate_command(message, example, required_options)
       install_extension
     end
+    desc "Search available extensions."
     task :search do
       message = 'The search command requires a search term.'
       example = 'rake ray:extension:search term=search_term'
@@ -20,6 +22,7 @@ namespace :ray do
       search_extensions
       search_results
     end
+    desc "Disable an extension."
     task :disable do
       message = 'The disable command requires an extension name.'
       example = 'rake ray:extension:disable name=extension_name'
@@ -27,6 +30,7 @@ namespace :ray do
       validate_command(message, example, required_options)
       disable_extension
     end
+    desc "Enable an extension."
     task :enable do
       message = 'The enable command requires an extension name.'
       example = 'rake ray:extension:enable name=extension_name'
@@ -34,6 +38,7 @@ namespace :ray do
       validate_command(message, example, required_options)
       enable_extension
     end
+    desc "Uninstall an extension"
     task :uninstall do
       message = 'The remove command requires an extension name.'
       example = 'rake ray:extension:remove name=extension_name'
@@ -41,10 +46,12 @@ namespace :ray do
       validate_command(message, example, required_options)
       uninstall_extension
     end
+    desc "Update existing remotes on an extension."
     task :pull do
       require_git
       pull_remote
     end
+    desc "Setup a new remote on an extension."
     task :remote do
       require_git
       message = 'The remote command requires an extension name and a GitHub username.'
@@ -53,18 +60,22 @@ namespace :ray do
       validate_command(message, example, required_options)
       add_remote
     end
+    desc "Install an extension bundle."
     task :bundle do
       install_extension_bundle
     end
+    desc "View all available extensions."
     task :all do
       search_extensions
       search_results
     end
+    desc "Update an extension."
     task :update do
       update_extension
     end
   end
   namespace :setup do
+    desc "Set server auto-restart preference."
     task :restart do
       message = "I need to know the type of server you'd like auto-restarted."
       example = "rake ray:setup:restart server=mongrel\nrake ray:setup:restart server=passenger"
@@ -72,10 +83,15 @@ namespace :ray do
       validate_command(message, example, required_options)
       set_restart_preference
     end
+    desc "Set extension download preference."
     task :download do
       set_download_preference
     end
   end
+  task :ext => ["extension:install"]
+  task :dis => ["extension:disable"]
+  task :en => ["extension:enable"]
+  task :search => ["extension:search"]
 end
 def validate_command(message, example, required_options)
   required_options.each do |option|
@@ -86,15 +102,14 @@ def validate_command(message, example, required_options)
   end
 end
 def output(message, example)
-  puts('================================================================================')
   print "#{message}\n#{example}\n"
-  puts('================================================================================')
 end
 def install_extension
   @name = ENV['name']
   get_download_preference
   search_extensions
   choose_extension_to_install
+  replace_github_username if ENV['hub']
   git_extension_install if @download == "git"
   http_extension_install if @download == "http"
   set_download_preference if @download != "git" and @download != "http"
@@ -156,13 +171,14 @@ end
 def choose_extension_to_install
   if @extension.length == 1
     @url = @http_url[0]
+    @ext_name = @url.gsub(/http:\/\/github.com\/.*\//, '').gsub(/radiant[-|_]/, '').gsub(/[-|_]extension/, '')
     return
   end
   if @extension.include?(@name) or @extension.include?("radiant-#{@name}-extension")
     @extension.each do |e|
-      ext_name = e.gsub(/radiant[-|_]/, '').gsub(/[-|_]extension/, '')
+      @ext_name = e.gsub(/radiant[-|_]/, '').gsub(/[-|_]extension/, '')
       @url = @http_url[@extension.index(e)]
-      break if ext_name == @name
+      break if @ext_name == @name
     end
   else
     message = "I couldn't find an extension named '#{@name}'."
@@ -170,6 +186,9 @@ def choose_extension_to_install
     output(message, example)
     search_results
   end
+end
+def replace_github_username
+  @url.gsub!(/(http:\/\/github.com\/).*(\/radiant-help-extension)/, "\\1#{ENV['hub']}\\2")
 end
 def git_extension_install
   @url.gsub!(/http/, 'git')
@@ -328,12 +347,10 @@ def install_submodules(submodules)
   end
 end
 def validate_extension_location
-  @extension = @extension[0].to_s
-  @extension.gsub!(/(radiant-)(.*)(-extension)/, "\\2")
-  unless File.exist?("#{@path}/#{@extension}/#{@extension}_extension.rb")
+  unless File.exist?("#{@path}/#{@name}/#{@name}_extension.rb")
     path = Regexp.escape(@path)
-    @name = `ls #{@path}/#{@extension}/*_extension.rb`.gsub(/#{path}\/#{@extension}\//, "").gsub(/_extension.rb/, "").gsub(/\n/, "") rescue nil
-    move_extension
+    vendor_name = `ls #{@path}/#{@name}/*_extension.rb`.gsub(/#{path}\/#{@name}\//, "").gsub(/_extension.rb/, "").gsub(/\n/, "") rescue nil
+    move_extension(vendor_name)
   end
 end
 def check_rake_tasks
@@ -458,8 +475,9 @@ def restart_server
     output(message, example)
   end
 end
-def move_extension
-  move("#{@path}/#{@extension}", "#{@path}/#{@name}")
+def move_extension(vendor_name)
+  move("#{@path}/#{@name}", "#{@path}/#{vendor_name}")
+  @name = vendor_name
 end
 def quarantine_extension(cause, err)
   File.makedirs("#{@ray}/disabled_extensions")
@@ -725,6 +743,7 @@ def update_extension
 end
 def online_search
   puts("Online searching is not implemented.") # TODO: implement online_search
+  exit
 end
 namespace :radiant do
   namespace :extensions do
