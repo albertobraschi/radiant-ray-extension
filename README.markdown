@@ -9,21 +9,24 @@ Table of contents
 =================
 
 1. [Installation][i]
-1. [Bugs & feature requests][b]
-1. [Usage][u]
+2. [Bugs & feature requests][b]
+3. [Usage][u]
   1. [Installing extensions][ui]
-  1. [Searching for extensions][us]
-  1. [Disabling extensions][ud]
-  1. [Enabling extensions][ue]
-  1. [Uninstalling extensions][uu]
-  1. [Bundling extensions][ub]
-1. [Extension dependencies][d]
-1. [Advanced usage][a]
+  2. [Searching for extensions][us]
+  3. [Disabling extensions][ud]
+  4. [Enabling extensions][ue]
+  5. [Uninstalling extensions][uu]
+  6. [Bundling extensions][ub]
+4. [Extension dependencies][d]
+5. [Advanced usage][a]
   1. [Download preference setup][ad]
-  1. [Server restart preference setup][as]
-  1. [Adding extension remotes][aa]
-  1. [Pulling extension remotes][ap]
-1. [Legacy information][l]
+  2. [Server restart preference setup][as]
+  3. [Adding extension remotes][aa]
+  4. [Pulling extension remotes][ap]
+6. [Legacy information][l]
+  1. [What happened to "some" shortcut?][ls]
+  2. [What changed in `extensions.yml`?][lb]
+  3. [What if I don't like the new commands?][lc]
 
 Authors
 =======
@@ -58,3 +61,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [aa]: http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#ext-remote
 [ap]: http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#ext-pull
 [l]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information
+[ls]: http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#shortcuts-redux
+[lb]: http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#ext-bundle
+[lc]: http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#shortcuts
