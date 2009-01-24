@@ -57,6 +57,8 @@ namespace :ray do
       install_extension_bundle
     end
     task :all do
+      search_extensions
+      search_results
     end
     task :update do
     end
@@ -83,9 +85,9 @@ def validate_command(message, example, required_options)
   end
 end
 def output(message, example)
-  puts('===============================================================================')
+  puts('================================================================================')
   print "#{message}\n#{example}\n"
-  puts('===============================================================================')
+  puts('================================================================================')
 end
 def install_extension
   @name = ENV['name']
@@ -133,7 +135,6 @@ def cached_search
             @term = @name
           elsif @term
             @name = @term
-            @show = true
           end
           if extension.include?(@term) or extension.include?(@name) or extension_description.include?(@term) or extension_description.include?(@name)
             @extension << extension
@@ -369,21 +370,21 @@ def enable_extension
   restart_server
 end
 def search_results
-  puts '=============================================================================='
+  puts '================================================================================'
   if @extension.length == 0
     puts "Your search term '#{@term}' did not match any extensions."
-    puts '=============================================================================='
+    puts '================================================================================'
     exit
   end
   for i in 0...@extension.length
     name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
     description = @description[i]
-    description = description[0..77] + "..." if description.length > 80
+    description = description[0..63] + "..." if description.length >= 63
     puts '  extension: ' + name
     puts '     author: ' + @source[i]
     puts 'description: ' + description
     puts "    command: rake ray:ext name=#{name}"
-    puts '=============================================================================='
+    puts '================================================================================'
   end
   exit
 end
