@@ -42,9 +42,11 @@ namespace :ray do
       uninstall_extension
     end
     task :pull do
+      require_git
       pull_remote
     end
     task :remote do
+      require_git
       message = 'The remote command requires an extension name and a GitHub username.'
       example = 'rake ray:extension:remote name=extension_name remote=user_name'
       required_options = [ENV['name'], ENV['remote']]
@@ -52,6 +54,7 @@ namespace :ray do
       add_remote
     end
     task :bundle do
+      install_extension_bundle
     end
     task :all do
     end
@@ -483,6 +486,36 @@ def pull_remote
     message = "Updated all remote branches of all extensions with remote branches."
     example = 'Use your normal git workflow to inspect and merge these branches.'
     output(message, example)
+  end
+end
+def require_git
+  get_download_preference
+  unless @download == "git"
+    message = "This commands requires git."
+    example = "Refer to http://git-scm.com/ for installation instructions."
+    output(message, example)
+    exit
+  end
+end
+def install_extension_bundle
+  unless File.exist?('config/extensions.yml')
+    message = "You don't seem to have a bundle file available.\nRefer to the documentation for more information on extension bundles."
+    example = 'http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-bundle'
+    output(message, example)
+    exit
+  end
+  File.open('config/extensions.yml') do |bundle|
+    YAML.load_documents(bundle) do |extension|
+      total = extension.length - 1
+      for i in 0..total do
+        name = extension[i]['name']
+        options = []
+        options << " hub=" + extension[i]['hub'] if extension[i]['hub']
+        options << " remote=" + extension[i]['remote'] if extension[i]['remote']
+        options << " lib=" + extension[i]['lib'] if extension[i]['lib']
+        sh("rake ray:ext name=#{name}#{options}")
+      end
+    end
   end
 end
 def online_search
