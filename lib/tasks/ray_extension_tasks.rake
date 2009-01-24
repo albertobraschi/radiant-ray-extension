@@ -25,20 +25,21 @@ namespace :ray do
       example = 'rake ray:extension:disable name=extension_name'
       required_options = [ENV['name']]
       validate_command(message, example, required_options)
-      extension_disable
+      disable_extension
     end
     task :enable do
       message = 'The enable command requires an extension name.'
       example = 'rake ray:extension:enable name=extension_name'
       required_options = [ENV['name']]
       validate_command(message, example, required_options)
-      extension_enable
+      enable_extension
     end
-    task :remove do
+    task :uninstall do
       message = 'The remove command requires an extension name.'
       example = 'rake ray:extension:remove name=extension_name'
-      required_options = [ENV[ 'name' ]]
+      required_options = [ENV['name']]
       validate_command(message, example, required_options)
+      uninstall_extension
     end
     task :pull do
     end
@@ -90,7 +91,7 @@ def install_extension
   http_extension_install if @download == "http"
   setup_download_preference if @download != "git" and @download != "http"
   validate_extension_location
-  run_rake_tasks
+  check_rake_tasks
   message = "The #{@name} extension has been installed successfully."
   example = "Disable it with: rake ray:dis name=#{@name}"
   output(message, example)
@@ -199,7 +200,7 @@ def validate_extension_location
     move_extension
   end
 end
-def run_rake_tasks
+def check_rake_tasks
   rake_file = `ls #{@path}/#{@name}/lib/tasks/*_tasks.rake`.gsub(/\n/, '')
   if rake_file
     @rake_tasks = []
@@ -210,40 +211,92 @@ def run_rake_tasks
       @rake_tasks << 'update' if line.include? 'task :update =>'
       @rake_tasks << 'uninstall' if line.include? 'task :uninstall =>'
     end
-    if @rake_tasks.empty?
-      puts("The #{@name} extension has no tasks to run.")
+    if @uninstall
+      run_uninstall_tasks
     else
-      if @rake_tasks.include?('install')
-        begin
-          sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:install")
-          puts('Install task ran successfully.')
-        rescue Exception => err
-          cause = 'install'
-          quarantine_extension(cause, err)
-        end
-      else
-        if @rake_tasks.include?('migrate')
-          begin
-            puts("rake #{RAILS_ENV} radiant:extensions:#{@name}:migrate")
-            puts('Migrate task ran successfully.')
-          rescue Exception => err
-            cause = 'migrate'
-            quarantine_extension(cause, err)
-          end
-        end
-        if @rake_tasks.include?('update')
-          begin
-            sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:update")
-            puts('Update task ran successfully.')
-          rescue Exception => err
-            cause = 'update'
-            quarantine_extension(cause, err)
-          end
-        end
-      end
+      run_rake_tasks
     end
   else
     puts("The #{@name} extension has no task file.")
+  end
+end
+def run_rake_tasks
+  if @rake_tasks.empty?
+    puts("The #{@name} extension has no tasks to run.")
+  else
+    if @rake_tasks.include?('install')
+      begin
+        sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:install")
+        puts('Install task ran successfully.')
+      rescue Exception => err
+        cause = 'install'
+        quarantine_extension(cause, err)
+      end
+    else
+      if @rake_tasks.include?('migrate')
+        begin
+          sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:migrate")
+          puts('Migrate task ran successfully.')
+        rescue Exception => err
+          cause = 'migrate'
+          quarantine_extension(cause, err)
+        end
+      end
+      if @rake_tasks.include?('update')
+        begin
+          sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:update")
+          puts('Update task ran successfully.')
+        rescue Exception => err
+          cause = 'update'
+          quarantine_extension(cause, err)
+        end
+      end
+    end
+  end
+end
+def run_uninstall_tasks
+  if @rake_tasks.empty?
+    puts("The #{@name} extension has no tasks to run.")
+  else
+    if @rake_tasks.include?('uninstall')
+      begin
+        sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:uninstall")
+        puts('Uninstall task ran successfully.')
+      rescue Exception
+        message = "The #{@name} extension failed to uninstall properly.\nPlease uninstall the extension manually."
+        example = "rake radiant:extensions:#{@name}:migrate VERSION=0\nThen remove any associated files and directories."
+        output(message, example)
+        exit
+      end
+    else
+      if @rake_tasks.include?('migrate')
+        begin
+          sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:migrate VERSION=0")
+          puts('Migrated to VERSION=0 successfully.')
+        rescue Exception
+          message = "The #{@name} extension failed to uninstall properly.\nPlease uninstall the extension manually."
+          example = "rake radiant:extensions:#{@name}:migrate VERSION=0\nThen remove any associated files and directories."
+          output(message, example)
+          exit
+        end
+      end
+      if @rake_tasks.include?('update')
+        require 'find'
+        files = []
+        Find.find( "#{ @path }/#{ @dir }/public" ) { |file| files << file }
+        files.each do |f|
+          if f.include?( '.' )
+            unless f.include?( '.DS_Store' )
+              file = f.gsub( /#{ @path }\/#{ @dir }\/public/, 'public' )
+              File.delete( "#{ file }" ) rescue nil
+            end
+          end
+        end
+        message = "I tried to delete assets associated with the #{@name} extension,\nbut may have missed some while trying not to delete anything accidentally."
+        example = "You may want manually clean up your public directory after an uninstall."
+        output(message, example)
+      end
+    end
   end
 end
 def restart_server
@@ -281,7 +334,7 @@ def quarantine_extension(cause, err)
   print "\nERROR:\n#{err}\n"
   exit
 end
-def extension_disable
+def disable_extension
   extension = ENV['name']
   unless File.exist?("#{@path}/#{extension}")
     message = "The #{extension} extension does not appear to be installed."
@@ -293,9 +346,10 @@ def extension_disable
   move( "#{@path}/#{extension}", "#{@ray}/disabled_extensions/#{extension}")
   message = "The #{extension} extension has been disabled."
   example = "To enable it run, rake ray:en name=#{extension}"
+  output(message, example)
   restart_server
 end
-def extension_enable
+def enable_extension
   extension = ENV[ 'name' ]
   unless File.exist?("#{@ray}/disabled_extensions/#{extension}")
     message = "The #{extension} extension was not disabled by Ray."
@@ -352,6 +406,14 @@ def setup_restart_preference
     example = "rake ray:setup:restart server=mongrel\nrake ray:setup:restart server=passenger"
     output(message, example)
   end
+end
+def uninstall_extension
+  @uninstall = true
+  @name = ENV['name']
+  check_rake_tasks
+  message = "The #{@name} extension has been uninstalled. To install it run:"
+  example = "rake ray:ext name=#{@name}"
+  output(message, example)
 end
 def online_search
   puts "Online searching is not implemented." # TODO: implement online_search
