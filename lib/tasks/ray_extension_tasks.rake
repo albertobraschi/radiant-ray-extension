@@ -215,7 +215,7 @@ def run_rake_tasks
     else
       if @rake_tasks.include?('install')
         begin
-          sh("rake radiant:extensions:#{@name}:install")
+          sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:install")
           puts('Install task ran successfully.')
         rescue Exception => err
           cause = 'install'
@@ -224,7 +224,7 @@ def run_rake_tasks
       else
         if @rake_tasks.include?('migrate')
           begin
-            sh("rake radiant:extensions:#{@name}:migrate")
+            puts("rake #{RAILS_ENV} radiant:extensions:#{@name}:migrate")
             puts('Migrate task ran successfully.')
           rescue Exception => err
             cause = 'migrate'
@@ -233,7 +233,7 @@ def run_rake_tasks
         end
         if @rake_tasks.include?('update')
           begin
-            sh("rake radiant:extensions:#{@name}:update")
+            sh("rake #{RAILS_ENV} radiant:extensions:#{@name}:update")
             puts('Update task ran successfully.')
           rescue Exception => err
             cause = 'update'
@@ -348,8 +348,8 @@ def setup_restart_preference
     example = "Now I'll auto-restart your server whenever necessary."
     output(message, example)
   else
-    message = "I don't know how to restart #{ preference }."
-    example = 'Only Mongrel clusters and Phusion Passenger are currently supported.'
+    message = "I don't know how to restart #{ preference }.\nOnly Mongrel clusters and Phusion Passenger are currently supported.\nRun one of the following commands:"
+    example = "rake ray:setup:restart server=mongrel\nrake ray:setup:restart server=passenger"
     output(message, example)
   end
 end
