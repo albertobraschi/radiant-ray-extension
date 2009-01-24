@@ -726,3 +726,15 @@ end
 def online_search
   puts("Online searching is not implemented.") # TODO: implement online_search
 end
+namespace :radiant do
+  namespace :extensions do
+    namespace :ray do
+      task :migrate do
+        puts("Ray doesn't have any migrate tasks to run.")
+      end
+      task :update do
+        puts("Ray doesn't have any static assets to copy.")
+      end
+    end
+  end
+end
