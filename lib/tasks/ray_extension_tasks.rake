@@ -197,6 +197,7 @@ def git_extension_install
     sh("git clone #{@url}.git #{@path}/#{@name}")
   end
   check_submodules
+  check_dependencies
 end
 def http_extension_install
   require 'net/http'
@@ -223,8 +224,10 @@ def http_extension_install
     end
     rm("#{@name}.tar.gz")
   end
+  # puts "mv #{@ray}/tmp/* #{@path}/#{@name}"; exit
   sh("mv #{@ray}/tmp/* #{@path}/#{@name}")
   check_submodules
+  check_dependencies
 end
 def check_submodules
   if File.exist?("#{@path}/#{@name}/.gitmodules")
@@ -234,6 +237,47 @@ def check_submodules
       submodules << line.gsub(/\turl\ =\ /, '') if line.include? 'url = '
     end
     install_submodules(submodules)
+  end
+end
+def check_dependencies
+  if File.exist?("#{@path}/#{@name}/dependency.yml")
+    File.open("#{@path}/#{@name}/dependency.yml" ) do |dependence|
+      YAML.load_documents(dependence) do |dependency|
+        total = dependency.length - 1
+        @extensions = []
+        @gems = []
+        @plugins = []
+        for i in 0..total do
+          @extensions << dependency[i]['extension'] if dependency[i].include?('extension')
+          @gems << dependency[i]['gem'] if dependency[i].include?('gem')
+          @plugins << dependency[ i ][ 'plugin' ] if dependency[ i ].include?( 'plugin' )
+        end
+      end
+    end
+    install_dependencies
+  end
+end
+def install_dependencies
+  if @extensions.length > 0
+    @extensions.each {|e| system "rake ray:extension:install name=#{e}"}
+  end
+  if @gems.length > 0
+    message = "The #{@name} extension requires one or more gems."
+    example = 'YOU MAY BE PROMPTED FOR YOU SYSTEM ADMINISTRATOR PASSWORD!'
+    output(message, example)
+    @gems.each do |g|
+      sh("sudo gem install #{g}")
+    end
+  end
+  if @plugins.length > 0
+    message = "Plugin dependencies are not yet supported by Ray.\nConsider adding plugins as git submodules, which are supported by Ray."
+    example = "If you're not the extension author consider contacting them about this issue."
+    output(message, example)
+    @plugins.each do |p|
+      message = "The #{@name} extension requires the #{p} plugin,\nbut I don't support plugin dependencies."
+      example = "Please install the #{p} plugin manually."
+      output(message, example)
+    end
   end
 end
 def install_submodules(submodules)
