@@ -61,6 +61,7 @@ namespace :ray do
       search_results
     end
     task :update do
+      update_extension
     end
   end
   namespace :setup do
@@ -370,21 +371,21 @@ def enable_extension
   restart_server
 end
 def search_results
-  puts '================================================================================'
+  puts('================================================================================')
   if @extension.length == 0
-    puts "Your search term '#{@term}' did not match any extensions."
-    puts '================================================================================'
+    puts("Your search term '#{@term}' did not match any extensions.")
+    puts('================================================================================')
     exit
   end
   for i in 0...@extension.length
     name = @extension[i].gsub(/radiant-/, '').gsub(/-extension/, '')
     description = @description[i]
     description = description[0..63] + "..." if description.length >= 63
-    puts '  extension: ' + name
-    puts '     author: ' + @source[i]
-    puts 'description: ' + description
-    puts "    command: rake ray:ext name=#{name}"
-    puts '================================================================================'
+    puts('  extension: ' + name)
+    puts('     author: ' + @source[i])
+    puts('description: ' + description)
+    puts("    command: rake ray:ext name=#{name}")
+    puts('================================================================================')
   end
   exit
 end
@@ -396,14 +397,14 @@ def setup_download_preference
   rescue
     @download = "http"
   end
-  File.open("#{@conf}/download.txt", 'w') {|f| f.puts @download}
-  puts "Your download preference has been set to #{@download}."
+  File.open("#{@conf}/download.txt", 'w') {|f| f.puts(@download)}
+  puts("Your download preference has been set to #{@download}.")
 end
 def setup_restart_preference
   File.makedirs("#{@conf}")
   preference = ENV['server']
   if preference == 'mongrel' or preference == 'passenger'
-    File.open("#{@conf}/restart.txt", 'w') {|f| f.puts preference}
+    File.open("#{@conf}/restart.txt", 'w') {|f| f.puts(preference)}
     message = "Your restart preference has been set to #{preference}."
     example = "Now I'll auto-restart your server whenever necessary."
     output(message, example)
@@ -514,11 +515,65 @@ def install_extension_bundle
         options << " hub=" + extension[i]['hub'] if extension[i]['hub']
         options << " remote=" + extension[i]['remote'] if extension[i]['remote']
         options << " lib=" + extension[i]['lib'] if extension[i]['lib']
-        sh("rake ray:ext name=#{name}#{options}")
+        sh("rake ray:extension:install name=#{name}#{options}")
       end
     end
   end
 end
+def update_extension
+  @name = ENV['name'] if ENV['name']
+  if @name == 'all'
+    get_download_preference
+    if @download == "git"
+      extensions = Dir.entries(@path) - ['.', '.DS_Store', 'ray', '..']
+      extensions.each do |extension|
+        Dir.chdir("#{@path}/#{extension}") do
+          sh("git pull origin master")
+          puts("#{extension} extension updated.")
+        end
+      end
+    elsif
+      extensions = Dir.entries(@path) - ['.', '.DS_Store', 'ray', '..']
+      extensions.each do |extension|
+        Dir.chdir("#{@path}/#{extension}") do
+          sh("rake ray:extension:disable name=#{extension}")
+          sh("rake ray:extension:install name=#{extension}")
+          puts("#{extension} extension updated.")
+        end
+      end
+    else
+      message = 'Your download preference is broken.'
+      example = 'Please run, `rake ray:setup:download` to repair it.'
+      output(message, example)
+    end
+  elsif @name
+    get_download_preference
+    if @download == "git"
+      sh("cd #{@path}/#{@name}; git pull origin master; cd ../../..")
+      puts("#{@name} extension updated.")
+    elsif @download == "http"
+      sh("rake ray:extension:disable name=#{@name}")
+      sh("rake ray:extension:install name=#{@name}")
+      puts("#{@name} extension updated.")
+    else
+      message = 'Your download preference is broken.'
+      example = 'Please run, `rake ray:setup:download` to repair it.'
+      output(message, example)
+    end
+  else
+    get_download_preference
+    if @download == "git"
+      sh("cd #{@path}/ray; git pull origin master; cd ../../..")
+      puts("Ray extension updated.")
+    elsif @download == "http\n"
+      puts("Ray can only update itself with git.")
+    else
+      message = 'Your download preference is broken.'
+      example = 'Please run, `rake ray:setup:download` to repair it.'
+      output(message, example)
+    end
+  end
+end
 def online_search
-  puts "Online searching is not implemented." # TODO: implement online_search
+  puts("Online searching is not implemented.") # TODO: implement online_search
 end
