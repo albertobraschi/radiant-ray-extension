@@ -2,9 +2,9 @@
 # require_dependency 'application'
 
 class RayExtension < Radiant::Extension
-  version "2.0b3"
+  version "2.0b4"
   description "In Flux."
-  url "http://johnmuhl.com/workbook/ray"
+  url "http://wiki.github.com/johnmuhl/radiant-ray-extension"
   
   # define_routes do |map|
   #   map.connect 'admin/ray/:action', :controller => 'admin/ray'
