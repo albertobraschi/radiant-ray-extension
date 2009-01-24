@@ -42,6 +42,7 @@ namespace :ray do
       uninstall_extension
     end
     task :pull do
+      pull_extension
     end
     task :remote do
       message = 'The remote command requires an extension name and a GitHub username.'
@@ -414,6 +415,51 @@ def uninstall_extension
   message = "The #{@name} extension has been uninstalled. To install it run:"
   example = "rake ray:ext name=#{@name}"
   output(message, example)
+end
+def pull_extension_remote
+  @name = ENV['name'] if ENV[ 'name' ]
+  if @name
+    @pull_branch = []
+    Dir.chdir("#{@path}/#{@name}") do
+      branches = `git branch`.split("\n")
+      branches.each do |branch|
+        branch.strip!
+        @pull_branch << branch if branch.include?('/')
+        @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
+      end
+      @pull_branch.each do |branch|
+        sh("git checkout #{branch}")
+        sh("git pull #{branch.gsub(/(.*)\/.*/, "\\1")} #{branch.gsub(/.*\/(.*)/, "\\1")}")
+      end
+      sh("git checkout #{@current_branch}")
+    end
+    message = "Updated all remote branches of the #{@name} extension."
+    example = 'Use your normal git workflow to inspect and merge these branches.'
+    output(message, example)
+  else
+    extensions = @name ? @name.gsub(/\-/, '_') : Dir.entries(@path) - ['.', '.DS_Store', '..']
+    extensions.each do |extension|
+      Dir.chdir("#{@path}/#{extension}") do
+        @pull_branch = []
+        branches = `git branch`.split("\n")
+        branches.each do |branch|
+          branch.strip!
+          @pull_branch << branch if branch.include?('/')
+          @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
+        end
+        unless @pull_branch.length == 0
+          @pull_branch.each do |branch|
+            sh("git checkout #{branch}")
+            sh("git pull #{branch.gsub(/(.*)\/.*/, "\\1")} #{branch.gsub(/.*\/(.*)/, "\\1")}")
+            sh("git checkout #{@current_branch}")
+          end
+        end
+      end
+    end
+    message = "Updated all remote branches of all extensions with remote branches."
+    example = 'Use your normal git workflow to inspect and merge these branches.'
+    output(message, example)
+  end
 end
 def online_search
   puts "Online searching is not implemented." # TODO: implement online_search
