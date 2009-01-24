@@ -95,7 +95,7 @@ def install_extension
   get_download_preference
   search_extensions
   choose_extension_to_install
-  extension_install_git if @download == "git"
+  git_extension_install if @download == "git"
   http_extension_install if @download == "http"
   set_download_preference if @download != "git" and @download != "http"
   validate_extension_location
@@ -171,6 +171,33 @@ def choose_extension_to_install
     search_results
   end
 end
+def git_extension_install
+  @url.gsub!(/http/, 'git')
+  if ENV['hub']
+    @hub = ENV['hub']
+    @url.gsub!(/(.*github\.com[:|\/]).*(\/.*)/, "\\1#{ @hub }\\2")
+  end
+  # check if the user is cloning their own repo and switch to ssh
+  unless ENV['public']
+    path = `echo ~`.gsub!("\n", '')
+    if File.exist?("#{path}/.gitconfig")
+      File.readlines("#{path}/.gitconfig").map do |f|
+        line = f.rstrip
+        if line.include? 'user = '
+          me = line.gsub(/\tuser\ =\ /, '')
+          origin = @url.gsub(/git:\/\/github.com\/(.*)\/.*/, "\\1")
+          @url.gsub!(/git:\/\/github.com\/(.*\/.*)/, "git@github.com:\\1") if me == origin
+        end
+      end
+    end
+  end
+  if File.exist?('.git/HEAD')
+    sh("git submodule add #{@url}.git #{@path}/#{@name}")
+  else
+    sh("git clone #{@url}.git #{@path}/#{@name}")
+  end
+  check_submodules
+end
 def http_extension_install
   require 'net/http'
   @url = URI.parse("#{@url}/tarball/master")
@@ -197,6 +224,64 @@ def http_extension_install
     rm("#{@name}.tar.gz")
   end
   sh("mv #{@ray}/tmp/* #{@path}/#{@name}")
+  check_submodules
+end
+def check_submodules
+  if File.exist?("#{@path}/#{@name}/.gitmodules")
+    submodules = []
+    File.readlines("#{@path}/#{@name}/.gitmodules").map do |f|
+      line = f.rstrip
+      submodules << line.gsub(/\turl\ =\ /, '') if line.include? 'url = '
+    end
+    install_submodules(submodules)
+  end
+end
+def install_submodules(submodules)
+  get_download_preference
+  if @download == "git"
+    if File.exist?('.git/HEAD')
+      submodules.each do |submodule|
+        sh("git submodule add #{submodule} vendor/plugins/#{submodule.gsub!(/(git:\/\/github.com\/.*\/)(.*)(.git)/, "\\2")}")
+      end
+    else
+      submodules.each do |submodule|
+        sh("git clone #{submodule} vendor/plugins/#{submodule.gsub!(/(git:\/\/github.com\/.*\/)(.*)(.git)/, "\\2")}")
+      end
+    end
+  elsif @download == "http"
+    submodules.each do |submodule|
+      submodule.gsub!(/(git:)(\/\/github.com\/.*\/.*)(.git)/, "http:\\2/tarball/master")
+      url = URI.parse("#{submodule}")
+      found = false
+      until found
+        host, port = url.host, url.port if url.host && url.port
+        github_request = Net::HTTP::Get.new(url.path)
+        github_response = Net::HTTP.start(host, port) {|http| http.request(github_request)}
+        github_response.header['location'] ? url = URI.parse(github_response.header['location']) :
+        found = true
+      end
+      File.makedirs("#{@ray}/tmp")
+      submodule.gsub!(/http:\/\/github.com\/.*\/(.*)\/tarball\/master/, "\\1")
+      open("#{@ray}/tmp/#{submodule}.tar.gz", "wb") {|f| f.write(github_response.body)}
+      Dir.chdir("#{@ray}/tmp") do
+        begin
+          sh("tar xzvf #{submodule}.tar.gz")
+        rescue Exception
+          rm("#{submodule}.tar.gz")
+          message = "The #{submodule} extension archive is not decompressing properly."
+          example = 'You can usually fix this by simply running the command again.'
+          output(message, example)
+          exit
+        end
+        rm("#{submodule}.tar.gz")
+      end
+      sh("mv #{@ray}/tmp/* vendor/plugins/#{submodule}")
+    end
+  else
+    message = 'Your download preference is broken.'
+    example = 'Please run, `rake ray:setup:download` to repair it.'
+    output(message, example)
+  end
 end
 def validate_extension_location
   @extension = @extension[0].to_s
