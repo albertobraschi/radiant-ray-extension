@@ -70,10 +70,10 @@ namespace :ray do
       example = "rake ray:setup:restart server=mongrel\nrake ray:setup:restart server=passenger"
       required_options = [ENV['server']]
       validate_command(message, example, required_options)
-      setup_restart_preference
+      set_restart_preference
     end
     task :download do
-      setup_download_preference
+      set_download_preference
     end
   end
 end
@@ -97,7 +97,7 @@ def install_extension
   choose_extension_to_install
   extension_install_git if @download == "git"
   http_extension_install if @download == "http"
-  setup_download_preference if @download != "git" and @download != "http"
+  set_download_preference if @download != "git" and @download != "http"
   validate_extension_location
   check_rake_tasks
   message = "The #{@name} extension has been installed successfully."
@@ -287,6 +287,7 @@ def run_uninstall_tasks
           exit
         end
       end
+      # do a simple search to find files to remove, misses are frequent
       if @rake_tasks.include?('update')
         require 'find'
         files = []
@@ -350,6 +351,7 @@ def disable_extension
     exit
   end
   File.makedirs("#{@ray}/disabled_extensions")
+  rm_r("#{@ray}/disabled_extensions/#{extension}") rescue nil
   move( "#{@path}/#{extension}", "#{@ray}/disabled_extensions/#{extension}")
   message = "The #{extension} extension has been disabled."
   example = "To enable it run, rake ray:en name=#{extension}"
@@ -389,10 +391,10 @@ def search_results
   end
   exit
 end
-def setup_download_preference
+def set_download_preference
   File.makedirs("#{@conf}")
   begin
-    sh("ssgit --version")
+    sh("git --version")
     @download = "git"
   rescue
     @download = "http"
@@ -400,7 +402,7 @@ def setup_download_preference
   File.open("#{@conf}/download.txt", 'w') {|f| f.puts(@download)}
   puts("Your download preference has been set to #{@download}.")
 end
-def setup_restart_preference
+def set_restart_preference
   File.makedirs("#{@conf}")
   preference = ENV['server']
   if preference == 'mongrel' or preference == 'passenger'
@@ -423,23 +425,29 @@ def uninstall_extension
   output(message, example)
 end
 def add_remote
+  # get an @url to work with
   search_extensions
   choose_extension_to_install
+  # fix up the @url for the requested user
   @url.gsub!(/http/, 'git').gsub!(/(git:\/\/github.com\/).*(\/.*)/, "\\1" + @remote + "\\2")
   Dir.chdir("#{@path}/#{@name}") do
     sh("git remote add #{@remote} #{@url}.git")
     sh("git fetch #{@remote}")
+    # find new user's branches
     branches = `git branch -a`.split("\n")
     @new_branch = []
     branches.each do |branch|
       branch.strip!
       @new_branch << branch if branch.include?(@remote)
+      # store the current branch so we can return to it later
       @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
     end
+    # checkout user's branches
     @new_branch.each do |branch|
       sh("git checkout -b #{branch} #{branch}")
+      # return to the branch we started on
+      sh("git checkout #{@current_branch}")
     end
-    sh("git checkout #{@current_branch}")
   end
   message = "All of #{@remote}'s branches have been pulled into local branches."
   example = 'Use your normal git workflow to inspect and merge these branches.'
@@ -447,6 +455,7 @@ def add_remote
 end
 def pull_remote
   @name = ENV['name'] if ENV[ 'name' ]
+  # pull remotes on a single extension
   if @name
     @pull_branch = []
     Dir.chdir("#{@path}/#{@name}") do
@@ -465,6 +474,7 @@ def pull_remote
     message = "Updated all remote branches of the #{@name} extension."
     example = 'Use your normal git workflow to inspect and merge these branches.'
     output(message, example)
+  # pull remotes on all extensions with remotes
   else
     extensions = @name ? @name.gsub(/\-/, '_') : Dir.entries(@path) - ['.', '.DS_Store', '..']
     extensions.each do |extension|
@@ -507,6 +517,7 @@ def install_extension_bundle
     exit
   end
   File.open('config/extensions.yml') do |bundle|
+    # load up a yaml file and send the contents back into ray for installation
     YAML.load_documents(bundle) do |extension|
       total = extension.length - 1
       for i in 0..total do
@@ -522,8 +533,10 @@ def install_extension_bundle
 end
 def update_extension
   @name = ENV['name'] if ENV['name']
+  # update all extensions, except ray
   if @name == 'all'
     get_download_preference
+    # update extensions with git
     if @download == "git"
       extensions = Dir.entries(@path) - ['.', '.DS_Store', 'ray', '..']
       extensions.each do |extension|
@@ -532,6 +545,7 @@ def update_extension
           puts("#{extension} extension updated.")
         end
       end
+    # update extensions with http
     elsif
       extensions = Dir.entries(@path) - ['.', '.DS_Store', 'ray', '..']
       extensions.each do |extension|
@@ -546,11 +560,14 @@ def update_extension
       example = 'Please run, `rake ray:setup:download` to repair it.'
       output(message, example)
     end
+  # update a single extension
   elsif @name
     get_download_preference
+    # update extension with git
     if @download == "git"
       sh("cd #{@path}/#{@name}; git pull origin master; cd ../../..")
       puts("#{@name} extension updated.")
+    # update extension with http
     elsif @download == "http"
       sh("rake ray:extension:disable name=#{@name}")
       sh("rake ray:extension:install name=#{@name}")
@@ -560,11 +577,14 @@ def update_extension
       example = 'Please run, `rake ray:setup:download` to repair it.'
       output(message, example)
     end
+  # update ray
   else
     get_download_preference
+    # update ray with git
     if @download == "git"
       sh("cd #{@path}/ray; git pull origin master; cd ../../..")
       puts("Ray extension updated.")
+    # can't update ray with http since scripts would get moved while running
     elsif @download == "http\n"
       puts("Ray can only update itself with git.")
     else
