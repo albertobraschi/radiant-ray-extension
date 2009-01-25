@@ -1,9 +1,11 @@
 namespace :ray do
   require 'ftools'
   require 'yaml'
+
   @path = "vendor/extensions"
   @ray  = "#{@path}/ray"
   @conf = "#{@ray}/config"
+
   namespace :extension do
     task :install do
       messages = ["The install command requires an extension name.", "rake ray:extension:install name=extension_name"]
@@ -60,6 +62,7 @@ namespace :ray do
       update_extension
     end
   end
+
   namespace :setup do
     desc "Set server auto-restart preference."
     task :restart do
@@ -73,6 +76,7 @@ namespace :ray do
       set_download_preference
     end
   end
+
   desc "Install an extension."
   task :ext => ["extension:install"]
   desc "Disable an extension."
