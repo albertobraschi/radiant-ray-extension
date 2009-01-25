@@ -2,7 +2,7 @@
 # require_dependency 'application'
 
 class RayExtension < Radiant::Extension
-  version "2.0b4"
+  version "2.0b5"
   description "In Flux."
   url "http://wiki.github.com/johnmuhl/radiant-ray-extension"
   
