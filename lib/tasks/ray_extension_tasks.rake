@@ -670,25 +670,31 @@ def add_remote(messages, require_options)
   # fix up @url and @extension for this use
   @url.gsub!(/(http)(:\/\/github.com\/).*(\/.*)/, "git\\2" + hub + "\\3")
   @extension.gsub!(/-/, '_')
-  Dir.chdir("#{@path}/#{@extension}") do
-    sh("git remote add #{hub} #{@url}.git")
-    sh("git fetch #{hub}")
-    # find new remote's branches
-    branches = `git branch -a`.split("\n")
-    @new_branch = []
-    branches.each do |branch|
-      branch.strip!
-      @new_branch << branch if branch.include?(hub)
-      @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
+  if File.exist?("#{@path}/#{@extension}/.git")
+    Dir.chdir("#{@path}/#{@extension}") do
+      sh("git remote add #{hub} #{@url}.git")
+      sh("git fetch #{hub}")
+      # find new remote's branches
+      branches = `git branch -a`.split("\n")
+      @new_branch = []
+      branches.each do |branch|
+        branch.strip!
+        @new_branch << branch if branch.include?(hub)
+        @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
+      end
+      # checkout user's branches
+      @new_branch.each do |branch|
+        sh("git fetch #{hub} #{branch}:refs/remotes/#{hub}/#{branch}")
+        sh("git update-ref refs/heads/#{hub}/#{branch} refs/remotes/#{hub}/#{branch}")
+      end
     end
-    # checkout user's branches
-    @new_branch.each do |branch|
-      sh("git fetch #{hub} #{branch}:refs/remotes/#{hub}/#{branch}")
-      sh("git update-ref refs/heads/#{hub}/#{branch} refs/remotes/#{hub}/#{branch}")
-    end
+    messages = ["All of #{hub}'s branches have been pulled into local branches.", "Use your normal git workflow to inspect and merge these branches."]
+    output(messages)
+  else
+    messages = ["#{@path}/#{@extension} is not a git repository."]
+    output(messages)
+    exit
   end
-  messages = ["All of #{hub}'s branches have been pulled into local branches.", "Use your normal git workflow to inspect and merge these branches."]
-  output(messages)
 end
 def pull_remote
   require_git
