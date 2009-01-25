@@ -8,25 +8,36 @@ To use Ray you need `git` or `tar` installed in addition to the normal Radiant s
 Table of contents
 =================
 
-1. [Installation][i]
-2. [Bugs & feature requests][b]
-3. [Usage][u]
-  1. [Installing extensions][ui]
-  2. [Searching for extensions][us]
-  3. [Disabling extensions][ud]
-  4. [Enabling extensions][ue]
-  5. [Uninstalling extensions][uu]
-  6. [Bundling extensions][ub]
-4. [Extension dependencies][d]
-5. [Advanced usage][a]
-  1. [Download preference setup][ad]
-  2. [Server restart preference setup][as]
-  3. [Adding extension remotes][aa]
-  4. [Pulling extension remotes][ap]
-6. [Legacy information][l]
-  1. [What happened to "some" shortcut?][ls]
-  2. [What changed in `extensions.yml`?][lb]
-  3. [What if I don't like the new commands?][lc]
+<ol>
+  <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/installation">Installation</a></li>
+  <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/bugs-feature-requests">Bugs &amp; feature requests</a></li>
+  <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage">Usage</a>
+    <ol>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-install">Installing extensions</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-search">Searching for extensions</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-disable">Disabling extensions</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-enable">Enabling extensions</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-uninstall">Uninstalling extensions</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-bundle">Bundling extensions</a></li>
+    </ol>
+  </li>
+  <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/extension-dependencies">Extension dependencies</a></li>
+  <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage">Advanced usage</a>
+    <ol>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#setup-download">Download preference setup</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#setup-restart">Server restart preference setup</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#ext-remote">Adding extension remotes</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#ext-pull">Pulling extension remotes</a></li>
+    </ol>
+  </li>
+  <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information">Legacy information</a>
+    <ol>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#shortcuts-redux">What happened to &#8220;some&#8221; shortcut?</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#ext-bundle">What changed in <code>extensions.yml</code>?</a></li>
+      <li><a href="http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#shortcuts">What if I don&#8217;t like the new commands?</a></li>
+    </ol>
+  </li>
+</ol>
 
 Authors
 =======
@@ -44,23 +55,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-[i]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/installation
-[b]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/bugs-feature-requests
-[u]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/usage
-[ui]: http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-install
-[us]: http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-search
-[ud]: http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-disable
-[ue]: http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-enable
-[uu]: http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-uninstall
-[ub]: http://wiki.github.com/johnmuhl/radiant-ray-extension/usage#ext-bundle
-[d]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/extension-dependencies
-[a]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage
-[ad]: http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#setup-download
-[as]: http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#setup-restart
-[aa]: http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#ext-remote
-[ap]: http://wiki.github.com/johnmuhl/radiant-ray-extension/advanced-usage#ext-pull
-[l]:  http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information
-[ls]: http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#shortcuts-redux
-[lb]: http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#ext-bundle
-[lc]: http://wiki.github.com/johnmuhl/radiant-ray-extension/legacy-information#shortcuts
