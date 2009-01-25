@@ -98,7 +98,7 @@ def install_extension(messages, require_options)
   set_download_preference if @download != "git" and @download != "http"
   validate_extension_location
   check_rake_tasks
-  messages = ["The #{@_name} extension has been installed successfully.", "Disable it with: rake ray:dis name=#{@_name}"]
+  messages = ["The #{@name} extension has been installed successfully.", "Disable it with: rake ray:dis name=#{@name}"]
   output(messages)
   restart_server
 end
