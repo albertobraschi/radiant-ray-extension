@@ -684,8 +684,9 @@ def add_remote(messages, require_options)
       end
       # checkout user's branches
       @new_branch.each do |branch|
-        sh("git fetch #{hub} #{branch}:refs/remotes/#{hub}/#{branch}")
-        sh("git update-ref refs/heads/#{hub}/#{branch} refs/remotes/#{hub}/#{branch}")
+        sh("git fetch #{hub} #{branch.gsub(/.*\/(.*)/, "\\1")}")
+        sh("git checkout --track -b #{branch} #{branch}")
+        sh("git checkout #{@current_branch}")
       end
     end
     messages = ["All of #{hub}'s branches have been pulled into local branches.", "Use your normal git workflow to inspect and merge these branches."]
@@ -703,44 +704,56 @@ def pull_remote
   if name
     @pull_branch = []
     Dir.chdir("#{@path}/#{name}") do
-      branches = `git branch`.split("\n")
-      branches.each do |branch|
-        branch.strip!
-        @pull_branch << branch if branch.include?('/')
-        @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
-      end
-      @pull_branch.each do |branch|
-        puts branch; exit
-        sh("git checkout #{branch}")
-        sh("git pull #{branch.gsub(/(.*)\/.*/, "\\1")} #{branch.gsub(/.*\/(.*)/, "\\1")}")
-        sh("git checkout #{@current_branch}")
-      end
-    end
-    messages = ["Updated all remote branches of the #{@name} extension.", "Use your normal git workflow to inspect and merge these branches."]
-    output(messages)
-  # pull remotes on all extensions with remotes
-  else
-    extensions = @name ? @name.gsub(/\-/, '_') : Dir.entries(@path) - ['.', '.DS_Store', '..']
-    extensions.each do |extension|
-      Dir.chdir("#{@path}/#{extension}") do
-        @pull_branch = []
+      if File.exist?(".git")
         branches = `git branch`.split("\n")
         branches.each do |branch|
           branch.strip!
           @pull_branch << branch if branch.include?('/')
           @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
         end
-        unless @pull_branch.length == 0
-          @pull_branch.each do |branch|
-            sh("git checkout #{branch}")
-            sh("git pull #{branch.gsub(/(.*)\/.*/, "\\1")} #{branch.gsub(/.*\/(.*)/, "\\1")}")
-            sh("git checkout #{@current_branch}")
+        @pull_branch.each do |branch|
+          sh("git checkout #{branch}")
+          sh("git pull #{branch.gsub(/(.*)\/.*/, "\\1")} #{branch.gsub(/.*\/(.*)/, "\\1")}")
+          sh("git checkout #{@current_branch}")
+        end
+      else
+        messages = ["#{@path}/#{name} is not a git repository."]
+        output(messages)
+        exit
+      end
+      messages = ["Updated all remote branches of the #{name} extension.", "Use your normal git workflow to inspect and merge these branches."]
+      output(messages)
+    end
+  # pull remotes on all extensions with remotes
+  else
+    extensions = @name ? @name.gsub(/\-/, '_') : Dir.entries(@path) - ['.', '.DS_Store', '..', 'ray']
+    extensions.each do |extension|
+      Dir.chdir("#{@path}/#{extension}") do
+        if File.exist?(".git")
+          @pull_branch = []
+          branches = `git branch`.split("\n")
+          branches.each do |branch|
+            branch.strip!
+            @pull_branch << branch if branch.include?('/')
+            @current_branch = branch.gsub!(/\*\ /, '') if branch.include?('* ')
           end
+          if @pull_branch.length > 0
+            @pull_branch.each do |branch|
+              sh("git checkout #{branch}")
+              sh("git pull #{branch.gsub(/(.*)\/.*/, "\\1")} #{branch.gsub(/.*\/(.*)/, "\\1")}")
+              sh("git checkout #{@current_branch}")
+              messages = ["Updated remote branches for the #{extension} extension."]
+              output(messages)
+            end
+          end
+        else
+          messages = ["#{@path}/#{extension} is not a git repository."]
+          output(messages)
         end
       end
     end
-    messages = ["Updated all remote branches of all extensions with remote branches.", "Use your normal git workflow to inspect and merge these branches."]
-    output(messages)
+    # messages = ["Use your normal git workflow to inspect and merge branches."]
+    # output(messages)
   end
 end
 
