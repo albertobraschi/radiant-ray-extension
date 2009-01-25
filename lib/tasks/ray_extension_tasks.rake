@@ -221,7 +221,13 @@ end
 def http_extension_install
   require 'open-uri'
   File.makedirs("#{@ray}/tmp")
-  tarball = open("#{@url}/tarball/master", "User-Agent" => "open-uri").read
+  begin
+    tarball = open("#{@url}/tarball/master", "User-Agent" => "open-uri").read
+  rescue OpenURI::HTTPError
+    messages = ["There was a glitch in the system and the extension could not be downloaded.", "These are usually temporary issues, just try it again."]
+    output(messages)
+    exit
+  end
   open("#{@ray}/tmp/#{@_name}.tar.gz", "wb") {|f| f.write(tarball)}
   Dir.chdir("#{@ray}/tmp") do
     begin
