@@ -44,7 +44,7 @@ namespace :ray do
     end
     desc "Setup a new remote on an extension."
     task :remote do
-      messages = ["The remote command requires an extension name and a GitHub username.", "rake ray:extension:remote name=extension_name remote=user_name"]
+      messages = ["The remote command requires an extension name and a GitHub username.", "rake ray:extension:remote name=extension_name hub=user_name"]
       require_options = [ENV['name'], ENV['hub']]
       add_remote(messages, require_options)
     end
