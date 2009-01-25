@@ -98,7 +98,7 @@ def install_extension(messages, require_options)
   set_download_preference if @download != "git" and @download != "http"
   validate_extension_location
   check_rake_tasks
-  messages = ["The #{@name} extension has been installed successfully.", "Disable it with: rake ray:dis name=#{@name}"]
+  messages = ["The #{@_name} extension has been installed successfully.", "Disable it with: rake ray:dis name=#{@_name}"]
   output(messages)
   restart_server
 end
@@ -302,7 +302,7 @@ def install_dependencies
       sh("sudo gem install #{g}")
     end
   end
-  if @plugins.length > 0
+  if @plugin_dependencies.length > 0
     messages = ["Plugin dependencies are not yet supported by Ray.", "Consider adding plugins as git submodules, which are supported by Ray.", "If you're not the extension author consider contacting them about this issue."]
     output(messages)
     @plugin_dependencies.each do |p|
