@@ -219,18 +219,10 @@ def git_extension_install
   check_dependencies
 end
 def http_extension_install
-  require 'net/http'
-  @url = URI.parse("#{@url}/tarball/master")
-  found = false
-  until found
-    host, port = @url.host, @url.port if @url.host && @url.port
-    github_request = Net::HTTP::Get.new(@url.path)
-    github_response = Net::HTTP.start(host, port) {|http| http.request(github_request)}
-    github_response.header['location'] ? @url = URI.parse(github_response.header['location']) :
-    found = true
-  end
+  require 'open-uri'
   File.makedirs("#{@ray}/tmp")
-  open("#{@ray}/tmp/#{@_name}.tar.gz", "wb") {|f| f.write(github_response.body)}
+  tarball = open("#{@url}/tarball/master", "User-Agent" => "open-uri").read
+  open("#{@ray}/tmp/#{@_name}.tar.gz", "wb") {|f| f.write(tarball)}
   Dir.chdir("#{@ray}/tmp") do
     begin
       sh("tar xzvf #{@_name}.tar.gz")
@@ -324,19 +316,11 @@ def install_submodules(submodules)
     end
   elsif @download == "http"
     submodules.each do |submodule|
-      submodule.gsub!(/(git:)(\/\/github.com\/.*\/.*)(.git)/, "http:\\2/tarball/master")
-      url = URI.parse("#{submodule}")
-      found = false
-      until found
-        host, port = url.host, url.port if url.host && url.port
-        github_request = Net::HTTP::Get.new(url.path)
-        github_response = Net::HTTP.start(host, port) {|http| http.request(github_request)}
-        github_response.header['location'] ? url = URI.parse(github_response.header['location']) :
-        found = true
-      end
       File.makedirs("#{@ray}/tmp")
+      submodule.gsub!(/(git:)(\/\/github.com\/.*\/.*)(.git)/, "http:\\2/tarball/master")
+      tarball = open("#{submodule}", "User-Agent" => "open-uri").read
       submodule.gsub!(/http:\/\/github.com\/.*\/(.*)\/tarball\/master/, "\\1")
-      open("#{@ray}/tmp/#{submodule}.tar.gz", "wb") {|f| f.write(github_response.body)}
+      open("#{@ray}/tmp/#{submodule}.tar.gz", "wb") {|f| f.write(tarball)}
       Dir.chdir("#{@ray}/tmp") do
         begin
           sh("tar xzvf #{submodule}.tar.gz")
@@ -349,6 +333,7 @@ def install_submodules(submodules)
         rm("#{submodule}.tar.gz")
       end
       sh("mv #{@ray}/tmp/* vendor/plugins/#{submodule}")
+      rm_r("#{@ray}/tmp")
     end
   else
     messages = ["Your download preference is broken.", "Please run, `rake ray:setup:download` to repair it."]
