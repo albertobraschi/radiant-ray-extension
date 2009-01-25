@@ -612,6 +612,15 @@ def validate_extension_location
   @name = @_name
   unless File.exist?("#{@path}/#{@_name}/#{@_name}_extension.rb")
     path = Regexp.escape(@path)
+    begin
+      sh("ls #{@path}/#{@_name}/*_extension.rb")
+    rescue Exception
+      rm_r("#{@ray}/disabled_extensions/#{@_name}")
+      move("#{@path}/#{@_name}", "#{@ray}/disabled_extensions/#{@_name}")
+      messages = ["#{@path}/#{@_name} is not a Radiant extension.", "It has been moved to #{@ray}/disabled_extensions/#{@_name}."]
+      output(messages)
+      exit
+    end
     vendor_name = `ls #{@path}/#{@_name}/*_extension.rb`.gsub(/#{path}\/#{@_name}\//, "").gsub(/_extension.rb/, "").gsub(/\n/, "") rescue nil
     move_extension(vendor_name)
   end
