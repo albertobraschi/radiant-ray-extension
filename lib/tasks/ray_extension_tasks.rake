@@ -252,7 +252,14 @@ def http_extension_install
     end
     rm("#{@_name}.tar.gz")
   end
-  sh("mv #{@ray}/tmp/* #{@path}/#{@_name}")
+  begin
+    sh("mv #{@ray}/tmp/* #{@path}/#{@_name}")
+  rescue
+    messages = ["You already have the #{@_name} extension installed.", "If you're trying to update it, use the update command instead.", "rake ray:extension:update name=#{@_name}"]
+    output(messages)
+    rm_r("#{@ray}/tmp")
+    exit
+  end
   rm_r("#{@ray}/tmp")
 end
 def git_extension_update(extension)
@@ -627,7 +634,14 @@ def validate_extension_location
   end
 end
 def move_extension(vendor_name)
-  move("#{@path}/#{@_name}", "#{@path}/#{vendor_name}")
+  begin
+    move("#{@path}/#{@_name}", "#{@path}/#{vendor_name}")
+  rescue
+    messages = ["You already have the #{@_name} extension installed.", "If you're trying to update it, use the update command instead.", "rake ray:extension:update name=#{@_name}"]
+    output(messages)
+    rm_r("#{@path}/#{@_name}")
+    exit
+  end
   @name = vendor_name
 end
 
