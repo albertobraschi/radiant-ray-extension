@@ -519,7 +519,7 @@ def online_search
 end
 def search_results
   if @extensions.length == 0
-    messages = ["Your search term '#{@term}' did not match any extensions."]
+    messages = ["Your search term '#{@_term}' did not match any extensions."]
     output(messages)
     exit
   end
