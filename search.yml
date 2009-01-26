@@ -1489,3 +1489,40 @@ repositories:
   forks: 1
   homepage: ""
   owner: astashov
+
+- name: radiant-rbac_snippets-extension
+  watchers: 5
+  private: false
+  url: http://github.com/saturnflyer/radiant-rbac_snippets-extension
+  fork: false
+  description: Requires the RbacBaseExtension and limits access to snippets to users in the “Snippets” role.
+  forks: 1
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-page_review_process-extension
+  watchers: 5
+  private: false
+  url: http://github.com/saturnflyer/radiant-page_review_process-extension
+  fork: false
+  description: Allows you to restrict users from making changes to pages based upon their role and the page’s status. Requires the rbac-base Extension
+  forks: 1
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-rbac_page_edit-extension
+  watchers: 5
+  private: false
+  url: http://github.com/saturnflyer/radiant-rbac_page_edit-extension
+  fork: false
+  description: Restricts users from editing pages based upon the assigned role. This works exactly like Page Group Permissons but is built on RBAC Base.
+  forks: 1
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
+- name: radiant-page_group_rbac_migrator-extension
+  watchers: 5
+  private: false
+  url: http://github.com/saturnflyer/radiant-page_group_rbac_migrator-extension
+  fork: false
+  description: Migrates data from Page Group Permissions to using RBAC Page Edit and maintains the connection between pages, users and roles/groups.
+  forks: 1
+  homepage: http://www.saturnflyer.com
+  owner: saturnflyer
