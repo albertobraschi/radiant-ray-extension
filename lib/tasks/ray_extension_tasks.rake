@@ -96,6 +96,8 @@ def install_extension(messages, require_options)
   git_extension_install if @download == "git"
   http_extension_install if @download == "http"
   set_download_preference if @download != "git" and @download != "http"
+  check_submodules
+  check_dependencies
   validate_extension_location
   check_rake_tasks
   messages = ["The #{@name} extension has been installed successfully.", "Disable it with: rake ray:dis name=#{@name}"]
@@ -227,8 +229,6 @@ def git_extension_install
       exit
     end
   end
-  check_submodules
-  check_dependencies
 end
 def http_extension_install
   require 'open-uri'
@@ -253,8 +253,6 @@ def http_extension_install
     rm("#{@_name}.tar.gz")
   end
   sh("mv #{@ray}/tmp/* #{@path}/#{@_name}")
-  check_submodules
-  check_dependencies
   rm_r("#{@ray}/tmp")
 end
 def git_extension_update(extension)
