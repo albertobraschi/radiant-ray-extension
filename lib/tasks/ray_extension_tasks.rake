@@ -211,9 +211,21 @@ def git_extension_install
     end
   end
   if File.exist?('.git/HEAD')
-    sh("git submodule add #{@url}.git #{@path}/#{@_name}")
+    begin
+      sh("git submodule add #{@url}.git #{@path}/#{@_name}")
+    rescue Exception => err
+      messages = [err]
+      output(messages)
+      exit
+    end
   else
-    sh("git clone #{@url}.git #{@path}/#{@_name}")
+    begin
+      sh("git clone #{@url}.git #{@path}/#{@_name}")
+    rescue Exception => err
+      messages = [err]
+      output(messages)
+      exit
+    end
   end
   check_submodules
   check_dependencies
@@ -606,7 +618,7 @@ def validate_extension_location
     begin
       sh("ls #{@path}/#{@_name}/*_extension.rb")
     rescue Exception
-      rm_r("#{@ray}/disabled_extensions/#{@_name}")
+      rm_r("#{@ray}/disabled_extensions/#{@_name}") rescue nil
       move("#{@path}/#{@_name}", "#{@ray}/disabled_extensions/#{@_name}")
       messages = ["#{@path}/#{@_name} is not a Radiant extension.", "It has been moved to #{@ray}/disabled_extensions/#{@_name}."]
       output(messages)
